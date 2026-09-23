@@ -1,0 +1,15 @@
+name: vaachak_sync
+version: 0.1.0
+publish_to: none
+resolution: workspace
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+dependencies:
+  vaachak_engine: any
+  vaachak_store: any
+  cryptography: 2.9.0
+  crypto: 3.0.7
+  http: 1.6.0
+  archive: 4.3.0
+dev_dependencies:
+  test: ^1.26.0

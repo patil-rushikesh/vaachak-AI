@@ -1,0 +1,40 @@
+BEGIN;
+CREATE FUNCTION pg_temp.check(ok boolean,label text) RETURNS void LANGUAGE plpgsql AS $$BEGIN IF ok IS DISTINCT FROM true THEN RAISE EXCEPTION 'Phase3 assertion: %',label;END IF;END$$;
+INSERT INTO auth.users(id) VALUES('10000000-0000-0000-0000-000000000021'),('10000000-0000-0000-0000-000000000022');
+INSERT INTO dev.orgs(id,name) VALUES('20000000-0000-0000-0000-000000000021','Phase3 SQL fixture');
+INSERT INTO dev.teachers VALUES('10000000-0000-0000-0000-000000000021','20000000-0000-0000-0000-000000000021','Teacher fixture');
+INSERT INTO dev.classes(id,org_id,name,code_hash,code_expires_at) VALUES('30000000-0000-0000-0000-000000000021','20000000-0000-0000-0000-000000000021','Class fixture',encode(extensions.digest('SYNTHETIC-CODE','sha256'),'hex'),now()+interval '20 minutes');
+INSERT INTO dev.teacher_assignments(class_id,teacher_id) VALUES('30000000-0000-0000-0000-000000000021','10000000-0000-0000-0000-000000000021');
+SELECT pg_temp.check(NOT has_function_privilege('authenticated','dev.ingest_events_base(jsonb)','EXECUTE'),'base ingestion cannot bypass enrollment');
+SELECT pg_temp.check(NOT has_table_privilege('authenticated','dev.pairings','SELECT'),'pair secrets available only through scoped RPC');
+SET LOCAL ROLE authenticated;
+SELECT set_config('request.jwt.claim.sub','10000000-0000-0000-0000-000000000022',true);
+SELECT dev.register_device('phase3-sql-device');
+SELECT pg_temp.check((dev.join_class('SYNTHETIC-CODE','00000000000000000000000021','Minor fixture','student',true,true)->>'status')='pending','minor pending');
+SELECT pg_temp.check(dev.sync_pairings()='[]'::jsonb,'minor cannot obtain pairing before guardian approval');
+DO $$BEGIN
+ BEGIN PERFORM dev.review_enrollment('30000000-0000-0000-0000-000000000021','00000000000000000000000021',true,'paper-reference');RAISE EXCEPTION 'unauthorized approval succeeded';
+ EXCEPTION WHEN OTHERS THEN IF SQLERRM='unauthorized approval succeeded' THEN RAISE;END IF;END;
+END$$;
+SELECT set_config('request.jwt.claim.sub','10000000-0000-0000-0000-000000000021',true);
+DO $$BEGIN
+ BEGIN PERFORM dev.review_enrollment('30000000-0000-0000-0000-000000000021','00000000000000000000000021',true,NULL);RAISE EXCEPTION 'minor approval without consent succeeded';
+ EXCEPTION WHEN OTHERS THEN IF SQLERRM='minor approval without consent succeeded' THEN RAISE;END IF;END;
+END$$;
+SELECT dev.review_enrollment('30000000-0000-0000-0000-000000000021','00000000000000000000000021',true,'synthetic-paper-reference');
+SELECT pg_temp.check(jsonb_array_length(dev.sync_pairings())=1,'approved teacher gets one scoped pairing');
+SELECT set_config('request.jwt.claim.sub','10000000-0000-0000-0000-000000000022',true);
+SELECT pg_temp.check(jsonb_array_length(dev.sync_pairings())=1,'approved device gets pairing');
+DO $$DECLARE r jsonb;BEGIN
+ FOR n IN 1..10 LOOP r:=dev.join_class('INVALID','00000000000000000000000022','Fixture','adult',false,true);END LOOP;
+ PERFORM pg_temp.check(r->>'error'='Too many join attempts. Try again in an hour.','rate limit persists invalid requests');
+END$$;
+SELECT dev.erase_learner('00000000000000000000000021');
+SELECT pg_temp.check(dev.sync_pairings()='[]'::jsonb,'erasure removes keys');
+SELECT pg_temp.check(jsonb_array_length(dev.pull_changes()->'erasures')=1,'erasure delivered');
+SELECT dev.ack_erasure('00000000000000000000000021');
+SELECT pg_temp.check(dev.pull_changes()->'erasures'='[]'::jsonb,'erasure acknowledged');
+RESET ROLE;
+SELECT pg_temp.check((SELECT count(*) FROM dev.guardians WHERE learner_id='00000000000000000000000021')=0,'guardian erased');
+SELECT pg_temp.check((SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname IN('dev','qa','prod') AND p.proname='join_class')=3,'three isolated environments');
+ROLLBACK;

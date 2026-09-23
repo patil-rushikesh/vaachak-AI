@@ -1,0 +1,18 @@
+BEGIN;
+CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
+SET LOCAL search_path=extensions,public;
+SELECT plan(12);
+SELECT has_schema('dev');
+SELECT has_schema('qa');
+SELECT has_schema('prod');
+SELECT has_table('dev','events','partitioned event log exists');
+SELECT has_table('dev','event_ids','global event identity registry exists');
+SELECT ok((SELECT relrowsecurity FROM pg_class WHERE oid='dev.events'::regclass),'events enforce RLS');
+SELECT ok((SELECT relrowsecurity FROM pg_class WHERE oid='dev.guardians'::regclass),'guardian records default-deny');
+SELECT ok(NOT has_table_privilege('authenticated','dev.events','INSERT'),'clients cannot insert directly');
+SELECT ok(NOT has_table_privilege('authenticated','dev.learners','DELETE'),'clients cannot erase directly');
+SELECT ok(NOT has_function_privilege('anon','dev.ingest_events(jsonb)','EXECUTE'),'anonymous role cannot ingest');
+SELECT ok(NOT has_function_privilege('authenticated','dev.fold_learner(text)','EXECUTE'),'clients cannot rewrite derived state');
+SELECT ok(has_function_privilege('authenticated','dev.teacher_intervene(text,uuid,text,text,uuid)','EXECUTE'),'teacher RPC is exposed with internal roster checks');
+SELECT * FROM finish();
+ROLLBACK;

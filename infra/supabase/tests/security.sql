@@ -1,0 +1,45 @@
+BEGIN;
+CREATE FUNCTION pg_temp.assert_true(ok boolean,message text) RETURNS void LANGUAGE plpgsql AS $$ BEGIN IF ok IS DISTINCT FROM true THEN RAISE EXCEPTION 'ASSERTION FAILED: %',message; END IF;END $$;
+INSERT INTO auth.users(id) VALUES('10000000-0000-0000-0000-000000000001'),('10000000-0000-0000-0000-000000000002'),('10000000-0000-0000-0000-000000000003');
+INSERT INTO dev.orgs(id,name) VALUES('20000000-0000-0000-0000-000000000001','Test school');
+INSERT INTO dev.teachers VALUES('10000000-0000-0000-0000-000000000001','20000000-0000-0000-0000-000000000001','Teacher A'),('10000000-0000-0000-0000-000000000002','20000000-0000-0000-0000-000000000001','Teacher B');
+INSERT INTO dev.classes(id,org_id,name) VALUES('30000000-0000-0000-0000-000000000001','20000000-0000-0000-0000-000000000001','Class A'),('30000000-0000-0000-0000-000000000002','20000000-0000-0000-0000-000000000001','Class B');
+INSERT INTO dev.teacher_assignments(class_id,teacher_id) VALUES('30000000-0000-0000-0000-000000000001','10000000-0000-0000-0000-000000000001'),('30000000-0000-0000-0000-000000000002','10000000-0000-0000-0000-000000000002');
+INSERT INTO dev.learners VALUES('00000000000000000000000001','20000000-0000-0000-0000-000000000001','Learner A','adult',false,now()),('00000000000000000000000002','20000000-0000-0000-0000-000000000001','Learner B','student',true,now());
+INSERT INTO dev.enrollments(class_id,learner_id,status) VALUES('30000000-0000-0000-0000-000000000001','00000000000000000000000001','active'),('30000000-0000-0000-0000-000000000002','00000000000000000000000002','active');
+INSERT INTO dev.devices(id,user_id) VALUES('device','10000000-0000-0000-0000-000000000003');
+INSERT INTO dev.device_learners VALUES('device','00000000000000000000000001');
+INSERT INTO dev.consents(learner_id,purpose,verified_via,version) VALUES('00000000000000000000000001','core','self',1),('00000000000000000000000001','serverSync','self',1);
+SET LOCAL ROLE authenticated;
+SELECT set_config('request.jwt.claim.sub','10000000-0000-0000-0000-000000000001',true);
+SELECT pg_temp.assert_true((SELECT count(*)=1 FROM dev.learners),'teacher sees only assigned learners');
+SELECT pg_temp.assert_true((SELECT count(*)=1 FROM dev.classes),'teacher sees only assigned classes');
+SELECT pg_temp.assert_true((SELECT count(*)=0 FROM qa.learners),'environment isolation');
+DO $$ BEGIN
+ BEGIN PERFORM dev.teacher_intervene('00000000000000000000000002','30000000-0000-0000-0000-000000000002','grammar.articles','pin');RAISE EXCEPTION 'cross-class intervention allowed';EXCEPTION WHEN insufficient_privilege THEN NULL;END;
+ BEGIN DELETE FROM dev.learners;RAISE EXCEPTION 'direct deletion allowed';EXCEPTION WHEN insufficient_privilege THEN NULL;END;
+END $$;
+SELECT dev.teacher_intervene('00000000000000000000000001','30000000-0000-0000-0000-000000000001','grammar.articles','pin');
+SELECT set_config('request.jwt.claim.sub','10000000-0000-0000-0000-000000000003',true);
+CREATE TEMP TABLE batch AS SELECT jsonb_build_array(jsonb_build_object('id','00000000000000000000000011','learnerId','00000000000000000000000001','deviceId','device','seq',1,'hlc','1770000000000:000000:device','type','PracticeAttempt','v',1,'payload',jsonb_build_object('nodeId','vocabulary.frequent_500','itemId','item','score',1))) AS value;
+SELECT dev.ingest_events(value) FROM batch;
+SELECT dev.ingest_events(value) FROM batch;
+SELECT pg_temp.assert_true((SELECT count(*)=1 FROM dev.events),'duplicate ingestion has exactly-once effect');
+SELECT pg_temp.assert_true((SELECT abs(p_learned-.6926829268292684)<1e-12 AND n_obs=1 FROM dev.learner_node_state),'server BKT matches Dart golden value');
+DO $$ BEGIN
+ BEGIN PERFORM dev.ingest_events(jsonb_set((SELECT value FROM batch),'{0,payload,score}','0'));RAISE EXCEPTION 'conflicting ID accepted';EXCEPTION WHEN raise_exception THEN IF SQLERRM<>'Conflicting event identity' THEN RAISE;END IF;END;
+ BEGIN PERFORM dev.ingest_events(jsonb_set((SELECT value FROM batch),'{0,learnerId}','"00000000000000000000000002"'));RAISE EXCEPTION 'other learner accepted';EXCEPTION WHEN insufficient_privilege THEN NULL;END;
+ BEGIN PERFORM dev.ingest_events(jsonb_set((SELECT value FROM batch),'{0,payload,audio}','[1,2,3]'));RAISE EXCEPTION 'audio accepted';EXCEPTION WHEN raise_exception THEN IF SQLERRM<>'Invalid event' THEN RAISE;END IF;END;
+END $$;
+SELECT dev.erase_learner('00000000000000000000000001');
+SELECT pg_temp.assert_true((SELECT count(*)=0 FROM dev.learners),'learner erased');
+SELECT pg_temp.assert_true((SELECT count(*)=0 FROM dev.events),'event history erased');
+SELECT pg_temp.assert_true((SELECT count(*)=1 FROM dev.erasure_targets),'erasure notice retained for bound device');
+SELECT dev.ingest_events(value) FROM batch;
+SELECT pg_temp.assert_true((SELECT count(*)=0 FROM dev.events),'stale upload cannot resurrect erased history');
+RESET ROLE;
+SELECT pg_temp.assert_true((SELECT count(*)=0 FROM dev.learners WHERE id='00000000000000000000000001'),'erasure deleted row');
+DO $$ BEGIN
+ BEGIN INSERT INTO dev.learners(id,org_id,display_name,age_band,minor) VALUES('00000000000000000000000001','20000000-0000-0000-0000-000000000001','Returned','adult',false);RAISE EXCEPTION 'resurrection allowed';EXCEPTION WHEN raise_exception THEN IF SQLERRM<>'Learner has been erased' THEN RAISE;END IF;END;
+END $$;
+ROLLBACK;

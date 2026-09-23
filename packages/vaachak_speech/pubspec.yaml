@@ -1,0 +1,12 @@
+name: vaachak_speech
+version: 0.1.0
+publish_to: none
+resolution: workspace
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+dependencies:
+  vaachak_engine: any
+  sherpa_onnx: 1.13.8
+  ffi: ^2.1.4
+dev_dependencies:
+  test: ^1.26.0

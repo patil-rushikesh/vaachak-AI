@@ -1,0 +1,17 @@
+project_id = "vaachak-ai"
+[api]
+enabled = true
+port = 54321
+schemas = ["dev", "qa", "prod"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+[db]
+port = 54322
+major_version = 16
+[auth]
+enabled = true
+site_url = "http://localhost:8080"
+enable_signup = false
+[auth.email]
+enable_signup = false
+enable_confirmations = false

@@ -1,0 +1,16 @@
+name: vaachak_content
+description: Content models, loaders and validation for VaachakAI content packs.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: '>=3.10.0 <4.0.0'
+
+dependencies:
+  vaachak_engine:
+    path: ../vaachak_engine
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.0

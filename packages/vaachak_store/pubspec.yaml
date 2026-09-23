@@ -1,0 +1,14 @@
+name: vaachak_store
+version: 0.1.0
+publish_to: none
+resolution: workspace
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+dependencies:
+  vaachak_engine: any
+  drift: 2.35.0
+  sqlite3: 3.6.0
+  cryptography: 2.9.0
+  crypto: 3.0.7
+dev_dependencies:
+  test: ^1.26.0

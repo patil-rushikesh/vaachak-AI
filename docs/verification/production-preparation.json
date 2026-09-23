@@ -1,0 +1,61 @@
+{
+  "productionReady": false,
+  "emailPasswordWidgetTests": 3,
+  "hostedSchemaParity": {
+    "qa": {
+      "objects": 360,
+      "fingerprint": "7c05004e2949bff86fe22ea0946dac48"
+    },
+    "prod": {
+      "objects": 360,
+      "fingerprint": "7c05004e2949bff86fe22ea0946dac48"
+    },
+    "matched": true
+  },
+  "localDdlParity": {
+    "identical": true,
+    "scope": "DDL, functions, constraints, policies, grants and indexes; excludes application data and shared Auth configuration",
+    "hashes": {
+      "qa": "f7d7947f239057c2a76891cc12af72642d24763706ef8ea71321f91575154f23",
+      "prod": "f7d7947f239057c2a76891cc12af72642d24763706ef8ea71321f91575154f23"
+    }
+  },
+  "contentAdded": {
+    "items": 8,
+    "source": "NASA Science Earth facts",
+    "reviewStatus": "approved",
+    "approval": "rushikesh-approval.json"
+  },
+  "wholeWorkspaceAnalysis": {
+    "passed": false,
+    "issues": 353,
+    "reason": "Current engine/content API differs from previously built application"
+  },
+  "hostedAuthConfiguration": {
+    "verified": true,
+    "publicSignup": false,
+    "confirmEmail": false,
+    "evidence": "hosted-auth-settings.json"
+  },
+  "limits": [
+    "Whole-workspace build and role regression not yet passing",
+    "Content coverage and educator review incomplete",
+    "Production signing, model distribution and physical-device acceptance remain unverified"
+  ],
+  "localSchemaBehaviorTests": {
+    "qa": [
+      "security.sql",
+      "phase3.sql"
+    ],
+    "prod": [
+      "security.sql",
+      "phase3.sql"
+    ],
+    "allPassed": true
+  },
+  "passwordAuthTargetedAnalysis": "passed",
+  "contentPipelineTests": {
+    "passed": true,
+    "count": 14
+  }
+}

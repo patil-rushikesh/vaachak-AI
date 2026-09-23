@@ -1,0 +1,1537 @@
+[
+  {
+    "id": "vocabulary.frequent_500",
+    "name": "Everyday words",
+    "skill": "vocabulary",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "prerequisites": [],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "vocabulary.people",
+    "name": "People and relationships",
+    "skill": "vocabulary",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "prerequisites": [
+      "vocabulary.frequent_500"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "vocabulary.places",
+    "name": "Places around us",
+    "skill": "vocabulary",
+    "difficulty": 1,
+    "cefr": "A1",
+    "prerequisites": [
+      "vocabulary.people"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "vocabulary.actions",
+    "name": "Action words",
+    "skill": "vocabulary",
+    "difficulty": 1,
+    "cefr": "A1",
+    "prerequisites": [
+      "vocabulary.places"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "vocabulary.describing",
+    "name": "Describing words",
+    "skill": "vocabulary",
+    "difficulty": 2,
+    "cefr": "A2",
+    "prerequisites": [
+      "vocabulary.actions"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "vocabulary.time",
+    "name": "Time and frequency",
+    "skill": "vocabulary",
+    "difficulty": 2,
+    "cefr": "A2",
+    "prerequisites": [
+      "vocabulary.describing"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "vocabulary.context",
+    "name": "Meaning in context",
+    "skill": "vocabulary",
+    "difficulty": 3,
+    "cefr": "B1",
+    "prerequisites": [
+      "vocabulary.time"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "vocabulary.collocations",
+    "name": "Words that go together",
+    "skill": "vocabulary",
+    "difficulty": 3,
+    "cefr": "B1",
+    "prerequisites": [
+      "vocabulary.context"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "vocabulary.word_families",
+    "name": "Word families",
+    "skill": "vocabulary",
+    "difficulty": 4,
+    "cefr": "B2",
+    "prerequisites": [
+      "vocabulary.collocations"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "vocabulary.academic",
+    "name": "Academic vocabulary",
+    "skill": "vocabulary",
+    "difficulty": 4,
+    "cefr": "B2",
+    "prerequisites": [
+      "vocabulary.word_families"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "grammar.simple_present_agreement",
+    "name": "Present-tense agreement",
+    "skill": "grammar",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "prerequisites": [
+      "vocabulary.frequent_500"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "grammar.articles",
+    "name": "A, an and the",
+    "skill": "grammar",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "prerequisites": [
+      "grammar.simple_present_agreement"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "grammar.pronouns",
+    "name": "Pronouns",
+    "skill": "grammar",
+    "difficulty": 1,
+    "cefr": "A1",
+    "prerequisites": [
+      "grammar.articles"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "grammar.plurals",
+    "name": "Singular and plural",
+    "skill": "grammar",
+    "difficulty": 1,
+    "cefr": "A1",
+    "prerequisites": [
+      "grammar.pronouns"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "grammar.prepositions",
+    "name": "Prepositions",
+    "skill": "grammar",
+    "difficulty": 2,
+    "cefr": "A2",
+    "prerequisites": [
+      "grammar.plurals"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "grammar.regular_past",
+    "name": "Regular past tense",
+    "skill": "grammar",
+    "difficulty": 2,
+    "cefr": "A2",
+    "prerequisites": [
+      "grammar.prepositions"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "grammar.irregular_past",
+    "name": "Irregular past tense",
+    "skill": "grammar",
+    "difficulty": 3,
+    "cefr": "B1",
+    "prerequisites": [
+      "grammar.regular_past"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "grammar.progressive",
+    "name": "Simple and continuous",
+    "skill": "grammar",
+    "difficulty": 3,
+    "cefr": "B1",
+    "prerequisites": [
+      "grammar.irregular_past"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "grammar.modals",
+    "name": "Can, should and must",
+    "skill": "grammar",
+    "difficulty": 4,
+    "cefr": "B2",
+    "prerequisites": [
+      "grammar.progressive"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "grammar.complex",
+    "name": "Conditionals and clauses",
+    "skill": "grammar",
+    "difficulty": 4,
+    "cefr": "B2",
+    "prerequisites": [
+      "grammar.modals"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "sentence.simple",
+    "name": "Simple statements",
+    "skill": "sentence",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "prerequisites": [
+      "grammar.simple_present_agreement",
+      "grammar.articles"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "sentence.questions",
+    "name": "Asking questions",
+    "skill": "sentence",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "prerequisites": [
+      "sentence.simple"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "sentence.negatives",
+    "name": "Negative sentences",
+    "skill": "sentence",
+    "difficulty": 1,
+    "cefr": "A1",
+    "prerequisites": [
+      "sentence.questions"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "sentence.descriptions",
+    "name": "Describing things",
+    "skill": "sentence",
+    "difficulty": 1,
+    "cefr": "A1",
+    "prerequisites": [
+      "sentence.negatives"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "sentence.past_narration",
+    "name": "Telling what happened",
+    "skill": "sentence",
+    "difficulty": 2,
+    "cefr": "A2",
+    "prerequisites": [
+      "sentence.descriptions",
+      "grammar.regular_past",
+      "grammar.irregular_past"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "sentence.future",
+    "name": "Talking about plans",
+    "skill": "sentence",
+    "difficulty": 2,
+    "cefr": "A2",
+    "prerequisites": [
+      "sentence.past_narration"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "sentence.joining",
+    "name": "Joining ideas",
+    "skill": "sentence",
+    "difficulty": 3,
+    "cefr": "B1",
+    "prerequisites": [
+      "sentence.future"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "sentence.ordering",
+    "name": "Word order",
+    "skill": "sentence",
+    "difficulty": 3,
+    "cefr": "B1",
+    "prerequisites": [
+      "sentence.joining"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "sentence.paragraphs",
+    "name": "Building a paragraph",
+    "skill": "sentence",
+    "difficulty": 4,
+    "cefr": "B2",
+    "prerequisites": [
+      "sentence.ordering"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "sentence.arguments",
+    "name": "Explaining a viewpoint",
+    "skill": "sentence",
+    "difficulty": 4,
+    "cefr": "B2",
+    "prerequisites": [
+      "sentence.paragraphs"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "reading.letters",
+    "name": "Letter\u2013sound connections",
+    "skill": "reading",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "prerequisites": [],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "reading.words",
+    "name": "Reading words",
+    "skill": "reading",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "prerequisites": [
+      "reading.letters"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "reading.phrases",
+    "name": "Reading phrases",
+    "skill": "reading",
+    "difficulty": 1,
+    "cefr": "A1",
+    "prerequisites": [
+      "reading.words"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "reading.a1",
+    "name": "Short sentences",
+    "skill": "reading",
+    "difficulty": 1,
+    "cefr": "A1",
+    "prerequisites": [
+      "reading.phrases"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "reading.a2",
+    "name": "Everyday passages",
+    "skill": "reading",
+    "difficulty": 2,
+    "cefr": "A2",
+    "prerequisites": [
+      "reading.a1",
+      "pronunciation.v_w"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "reading.punctuation",
+    "name": "Pause and expression",
+    "skill": "reading",
+    "difficulty": 2,
+    "cefr": "A2",
+    "prerequisites": [
+      "reading.a2"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "reading.detail",
+    "name": "Finding details",
+    "skill": "reading",
+    "difficulty": 3,
+    "cefr": "B1",
+    "prerequisites": [
+      "reading.punctuation"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "reading.inference",
+    "name": "Reading between the lines",
+    "skill": "reading",
+    "difficulty": 3,
+    "cefr": "B1",
+    "prerequisites": [
+      "reading.detail"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "reading.b1",
+    "name": "Longer passages",
+    "skill": "reading",
+    "difficulty": 4,
+    "cefr": "B2",
+    "prerequisites": [
+      "reading.inference"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "reading.b2",
+    "name": "Reading reports",
+    "skill": "reading",
+    "difficulty": 4,
+    "cefr": "B2",
+    "prerequisites": [
+      "reading.b1"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "pronunciation.v_w",
+    "name": "V and W sounds",
+    "skill": "pronunciation",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "prerequisites": [],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "pronunciation.th",
+    "name": "TH sounds",
+    "skill": "pronunciation",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "prerequisites": [
+      "pronunciation.v_w"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "pronunciation.vowels",
+    "name": "Short and long vowels",
+    "skill": "pronunciation",
+    "difficulty": 1,
+    "cefr": "A1",
+    "prerequisites": [
+      "pronunciation.th"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "pronunciation.final_consonants",
+    "name": "Word endings",
+    "skill": "pronunciation",
+    "difficulty": 1,
+    "cefr": "A1",
+    "prerequisites": [
+      "pronunciation.vowels"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "pronunciation.clusters",
+    "name": "Consonant clusters",
+    "skill": "pronunciation",
+    "difficulty": 2,
+    "cefr": "A2",
+    "prerequisites": [
+      "pronunciation.final_consonants"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "pronunciation.syllables",
+    "name": "Syllables",
+    "skill": "pronunciation",
+    "difficulty": 2,
+    "cefr": "A2",
+    "prerequisites": [
+      "pronunciation.clusters"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "pronunciation.word_stress",
+    "name": "Word stress",
+    "skill": "pronunciation",
+    "difficulty": 3,
+    "cefr": "B1",
+    "prerequisites": [
+      "pronunciation.syllables"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "pronunciation.sentence_stress",
+    "name": "Sentence stress",
+    "skill": "pronunciation",
+    "difficulty": 3,
+    "cefr": "B1",
+    "prerequisites": [
+      "pronunciation.word_stress"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "pronunciation.linking",
+    "name": "Connected speech",
+    "skill": "pronunciation",
+    "difficulty": 4,
+    "cefr": "B2",
+    "prerequisites": [
+      "pronunciation.sentence_stress"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "pronunciation.intonation",
+    "name": "Intonation",
+    "skill": "pronunciation",
+    "difficulty": 4,
+    "cefr": "B2",
+    "prerequisites": [
+      "pronunciation.linking"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "listening.sounds",
+    "name": "Recognising sounds",
+    "skill": "listening",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "prerequisites": [],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "listening.words",
+    "name": "Recognising words",
+    "skill": "listening",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "prerequisites": [
+      "listening.sounds"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "listening.instructions",
+    "name": "Following instructions",
+    "skill": "listening",
+    "difficulty": 1,
+    "cefr": "A1",
+    "prerequisites": [
+      "listening.words"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "listening.details",
+    "name": "Listening for details",
+    "skill": "listening",
+    "difficulty": 1,
+    "cefr": "A1",
+    "prerequisites": [
+      "listening.instructions"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "listening.sequence",
+    "name": "Following a sequence",
+    "skill": "listening",
+    "difficulty": 2,
+    "cefr": "A2",
+    "prerequisites": [
+      "listening.details"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "listening.gist",
+    "name": "Finding the main idea",
+    "skill": "listening",
+    "difficulty": 2,
+    "cefr": "A2",
+    "prerequisites": [
+      "listening.sequence"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "listening.questions",
+    "name": "Understanding questions",
+    "skill": "listening",
+    "difficulty": 3,
+    "cefr": "B1",
+    "prerequisites": [
+      "listening.gist"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "listening.conversation",
+    "name": "Following a conversation",
+    "skill": "listening",
+    "difficulty": 3,
+    "cefr": "B1",
+    "prerequisites": [
+      "listening.questions"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "listening.inference",
+    "name": "Understanding implied meaning",
+    "skill": "listening",
+    "difficulty": 4,
+    "cefr": "B2",
+    "prerequisites": [
+      "listening.conversation"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "listening.lectures",
+    "name": "Listening to explanations",
+    "skill": "listening",
+    "difficulty": 4,
+    "cefr": "B2",
+    "prerequisites": [
+      "listening.inference"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "speaking.greetings",
+    "name": "Greetings",
+    "skill": "speaking",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "prerequisites": [],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "speaking.introductions",
+    "name": "Introducing yourself",
+    "skill": "speaking",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "prerequisites": [
+      "speaking.greetings"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "speaking.picture",
+    "name": "Describing a picture",
+    "skill": "speaking",
+    "difficulty": 1,
+    "cefr": "A1",
+    "prerequisites": [
+      "speaking.introductions",
+      "sentence.simple"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "speaking.routine",
+    "name": "Talking about routines",
+    "skill": "speaking",
+    "difficulty": 1,
+    "cefr": "A1",
+    "prerequisites": [
+      "speaking.picture"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "speaking.past",
+    "name": "Sharing an experience",
+    "skill": "speaking",
+    "difficulty": 2,
+    "cefr": "A2",
+    "prerequisites": [
+      "speaking.routine"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "speaking.requests",
+    "name": "Making requests",
+    "skill": "speaking",
+    "difficulty": 2,
+    "cefr": "A2",
+    "prerequisites": [
+      "speaking.past"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "speaking.opinions",
+    "name": "Giving an opinion",
+    "skill": "speaking",
+    "difficulty": 3,
+    "cefr": "B1",
+    "prerequisites": [
+      "speaking.requests"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "speaking.conversation",
+    "name": "Taking turns",
+    "skill": "speaking",
+    "difficulty": 3,
+    "cefr": "B1",
+    "prerequisites": [
+      "speaking.opinions"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "speaking.presentation",
+    "name": "Presenting an idea",
+    "skill": "speaking",
+    "difficulty": 4,
+    "cefr": "B2",
+    "prerequisites": [
+      "speaking.conversation"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  },
+  {
+    "id": "speaking.discussion",
+    "name": "Supporting a viewpoint",
+    "skill": "speaking",
+    "difficulty": 4,
+    "cefr": "B2",
+    "prerequisites": [
+      "speaking.presentation"
+    ],
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "relevance": 1,
+    "bkt": {
+      "prior": 0.3,
+      "transition": 0.1,
+      "guess": 0.2,
+      "slip": 0.1
+    }
+  }
+]

@@ -1,0 +1,46 @@
+name: vaachak_app
+version: 0.1.0+1
+publish_to: none
+resolution: workspace
+environment:
+  sdk: '>=3.10.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_riverpod: 3.4.3
+  flutter_secure_storage: 11.2.0
+  path_provider: 2.1.6
+  in_app_update: 5.0.0
+  record: 7.1.1
+  supabase_flutter: 2.17.2
+  qr_flutter: 4.1.0
+  mobile_scanner: 7.4.2
+  file_picker: 13.1.0
+  share_plus: 13.3.0
+  cryptography: 2.9.0
+  crypto: 3.0.7
+  http: 1.6.0
+  pub_semver: 2.2.1
+  sherpa_onnx: 1.13.8
+  vaachak_engine: any
+  vaachak_content: any
+  vaachak_store: any
+  vaachak_speech: any
+  vaachak_explain: any
+  vaachak_sync: any
+  vaachak_packs: any
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: 6.0.0
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/skill_graph.json
+    - assets/grammar_rules.json
+    - assets/items.json
+    - assets/passages.json

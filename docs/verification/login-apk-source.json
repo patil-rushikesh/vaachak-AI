@@ -1,0 +1,60 @@
+{
+  "sourceWorkspace": "/Users/admin/genai/build/login-apk-workspace",
+  "recoveredEngineAndContent": [
+    {
+      "path": "packages/vaachak_content/lib/reading.dart",
+      "bytes": 2362,
+      "sha256": "265ae273447f50604a92250da800b97bc420e7cfe9d4c1c9eb35ed2e37454f4a"
+    },
+    {
+      "path": "packages/vaachak_content/lib/vaachak_content.dart",
+      "bytes": 5290,
+      "sha256": "41bc104d1e01b64bd92ef0e2c9a21008e9343c3775d0431f922fd4d76574e259"
+    },
+    {
+      "path": "packages/vaachak_engine/lib/src/alignment.dart",
+      "bytes": 7280,
+      "sha256": "db29f477d20318407d341054d00396ed4268b50d72700a3c7fff737a97b33702"
+    },
+    {
+      "path": "packages/vaachak_engine/lib/src/assessment.dart",
+      "bytes": 3685,
+      "sha256": "71c1e7a061b39f9d932eac5937414ad701f984ab2bce25f7f34503e74deb6dc8"
+    },
+    {
+      "path": "packages/vaachak_engine/lib/src/events.dart",
+      "bytes": 9050,
+      "sha256": "3504d25f95c0e76f5ccd56be847f8e38fd76190c7981228643f16c080877070e"
+    },
+    {
+      "path": "packages/vaachak_engine/lib/src/grammar.dart",
+      "bytes": 2570,
+      "sha256": "33c197b7266b7bfde1ebde59986fa64103c35eaf662b4c43500dfe3755c2c4e3"
+    },
+    {
+      "path": "packages/vaachak_engine/lib/src/learning.dart",
+      "bytes": 8917,
+      "sha256": "a98eb27835b221332d986397f722fcfb06d8b0b5601c8ff41a48b2cbbd202ba4"
+    },
+    {
+      "path": "packages/vaachak_engine/lib/src/progress.dart",
+      "bytes": 3286,
+      "sha256": "b020283e32d16348fdc473dd339665ad71823e1eb420bd9a4a802e09ff711817"
+    },
+    {
+      "path": "packages/vaachak_engine/lib/vaachak_engine.dart",
+      "bytes": 180,
+      "sha256": "091426cdb8949f34c86955520cc7db3eebce10dc3be7464a67de2fc1a14fcda7"
+    }
+  ],
+  "currentLoginAndContentFiles": {
+    "apps/vaachak_app/lib/password_sign_in.dart": "2c7475f53d4f5443a1eac038ab9e4910511cfe98f2450a9607a1b934df567ac0",
+    "apps/vaachak_app/lib/school_connection.dart": "f3d361a830d10196a38e9e08a437e03ccf31dcda235b348037d92c01e02b203c",
+    "apps/vaachak_app/lib/school_page.dart": "c4ff7ec43cb3821307bcf7cc749dbe7f21eaf7115e748a768dea76d5d1d217ef",
+    "apps/vaachak_app/lib/teacher.dart": "de179935b923d041f5fee0f1507c1158ce6a2a093b0cc17a13641a1c4cf7a233",
+    "apps/vaachak_app/assets/items.json": "b9dba261d30a71cf4925510eb4391bbbac2debb00fe1638e9be4870f5ea0f48f"
+  },
+  "mainWorkspaceEngineFilesModified": false,
+  "authMode": "email_password",
+  "requiresSchoolProvisionedAccount": true
+}

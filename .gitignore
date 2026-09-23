@@ -1,0 +1,25 @@
+.dart_tool/
+.packages
+build/
+.flutter-plugins*
+**/local.properties
+**/.gradle/
+**/key.properties
+*.jks
+*.keystore
+.env*
+!.env.example
+*.db*
+*.vbundle
+*.onnx
+*.task
+*.litertlm
+__pycache__/
+.venv/
+.DS_Store
+
+*.pem
+*.key
+
+# Synthetic legacy-encryption fixture (public test key, no learner data).
+!packages/vaachak_store/test/fixtures/sqlite3mc-v4.db.b64

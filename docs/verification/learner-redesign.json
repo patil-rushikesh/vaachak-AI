@@ -1,0 +1,28 @@
+{
+  "apk": "/Users/admin/genai/build/share/VaachakAI-testing-arm64-1790180071.apk",
+  "bytes": 66334314,
+  "sha256": "a5e8ece12119b230d3cb0c686ecd47599608bbb8d744e705ce3f99a75c8bddeb",
+  "applicationId": "ai.vaachak.vaachak_app.testing",
+  "environment": "dev",
+  "buildNumber": 1790180071,
+  "androidVersionCode": 1790182071,
+  "signing": "separate persistent private-testing key",
+  "appTestsPassed": 61,
+  "appTestsSkipped": 2,
+  "analysis": "passed: app lib and tests",
+  "signatureVerified": true,
+  "upgradeInstall": "passed",
+  "emulatorColdLaunchMs": 1028,
+  "uiPreview": "build/share/vaachak-redesign-preview.png",
+  "sourceArchive": "build/share/VaachakAI-redesign-source.zip",
+  "features": [
+    "learn/explore/progress navigation",
+    "original mascot and welcoming onboarding",
+    "daily goal from saved evidence",
+    "five-question practice limit",
+    "select then check answer",
+    "earned completion dialog",
+    "email/password sign-in retained"
+  ],
+  "scope": "Learner experience redesign on verified APK source; live account sign-in and production acceptance are not established by these tests"
+}

@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-09-23T14:47:55.663680+00:00",
+  "checks": {
+    "local_sql_and_12_pgtap_checks": "passed",
+    "desktop_postgrest_round_trip": "passed",
+    "android_postgrest_round_trip": "passed",
+    "android_teacher_approval_evidence_pin": "passed",
+    "android_learner_consent_join_sync_revoke_erase": "passed",
+    "android_native_qr_image_decoder_100_events_3_frames": "passed",
+    "android_authenticated_bundle_file_export_import": "passed",
+    "hosted_phase3_transactional_assertions": "passed",
+    "hosted_security_transactional_assertions": "passed",
+    "hosted_rls_all_29_tables_in_each_environment": "passed",
+    "hosted_six_anonymous_read_rpc_denials": "passed",
+    "static_analysis": "passed",
+    "hosted_email_otp": "pending_user_controlled_inbox",
+    "physical_camera_qr_scan": "requires_physical_devices",
+    "cross_phone_hotspot_transfer": "requires_two_physical_devices"
+  },
+  "syntheticHostedFixtures": "transactional rollback; no real learner data used",
+  "logs": [
+    "/tmp/phase3-reverification.log",
+    "/tmp/phase3-native-qr.log",
+    "/tmp/phase3-verification-analysis.log"
+  ],
+  "testSha256": {
+    "infra/supabase/tests/phase3.sql": "a4a25277513bc7044ab20256c4f5e3e7fd0cdc7cc088e1ce4ac3725ded74e54c",
+    "infra/supabase/tests/security.sql": "0937ae41de55f1e7ef3b53dc00c2419af6f3d5e4572b40992ec67bc248817c03",
+    "apps/vaachak_app/integration_test/phase3_qr_test.dart": "1961dc7a737eb8aafa28dbd89a6c0af1d213916c86c60cb509e60ac04aceaf47"
+  }
+}

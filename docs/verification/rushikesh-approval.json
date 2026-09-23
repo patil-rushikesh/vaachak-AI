@@ -1,0 +1,54 @@
+{
+  "approvedAt": "2026-09-23T15:39:36.806046+00:00",
+  "reviewer": "Rushikesh Patil",
+  "reviewerEmail": "prushikeh@gmail.com",
+  "authority": "User-provided content approval in this conversation; no independently verified professional credential asserted",
+  "scope": "Eight NASA Earth language exercises and hosted email/password settings; not a production readiness certification",
+  "items": [
+    {
+      "id": "earth.language.001",
+      "version": 1,
+      "sha256": "73ad4237ea89e42f4c2d9ef99445b788f21cb8eaeeccda44c1c15de158ff4017"
+    },
+    {
+      "id": "earth.language.002",
+      "version": 1,
+      "sha256": "8e21ba8caedff57136389f9ee83bdd9806ca6c085a1eabbce3231b652e9bc7ac"
+    },
+    {
+      "id": "earth.language.003",
+      "version": 1,
+      "sha256": "081449866df7953bcf7f9a89cb0a33d97a440d4e0a1920715cde0093b21c1383"
+    },
+    {
+      "id": "earth.language.004",
+      "version": 1,
+      "sha256": "af868fb77a39bdc6fafe984bb38acecba51556f476e1e12862002a56f0e9a993"
+    },
+    {
+      "id": "earth.language.005",
+      "version": 1,
+      "sha256": "4de69bd6b580ba65fb35023c7fb13a31392c2180bb02d279157de4a8fc5d4424"
+    },
+    {
+      "id": "earth.language.006",
+      "version": 1,
+      "sha256": "2b724b2260332f2ddb78ad6e367a945748aa06863b0baaa526bd6cc4eeac2e58"
+    },
+    {
+      "id": "earth.language.007",
+      "version": 1,
+      "sha256": "3676b9f6384df755dc2a04759e7f2e6d445aad867104dedd8873e42fc8c32033"
+    },
+    {
+      "id": "earth.language.008",
+      "version": 1,
+      "sha256": "92fbb7748a68bb73f6201b2dd2146cc2ee7a2d842f26fda04fcbf8197053576a"
+    }
+  ],
+  "auth": {
+    "project": "svteovpdzoqoemkosael",
+    "confirmEmail": false,
+    "publicSignup": false
+  }
+}

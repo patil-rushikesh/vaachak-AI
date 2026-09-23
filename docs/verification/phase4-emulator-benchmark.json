@@ -1,0 +1,17 @@
+{
+  "measuredAt": "2026-09-23T14:17:58.142527+00:00",
+  "model": "Android Slim SDK built for arm64",
+  "sdk": "30",
+  "emulator": true,
+  "coldStartMs": [
+    1808,
+    1341,
+    1245,
+    1156,
+    1131
+  ],
+  "medianColdStartMs": 1245,
+  "p95ColdStartMs": 1808,
+  "idlePssKb": 327564,
+  "scope": "Startup and idle process only; no speech, thermal, battery or physical-phone acceptance."
+}

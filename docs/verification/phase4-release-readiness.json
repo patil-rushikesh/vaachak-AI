@@ -1,0 +1,12 @@
+{
+  "readyForReleaseBuild": false,
+  "errors": [
+    "Production releases must select VAACHAK_ENV=prod",
+    "PACK_CATALOG_URL must be an HTTPS URL without embedded credentials",
+    "One to eight valid Ed25519 pack trust anchors are required",
+    "School privacy contact is required",
+    "Android release signing configuration is missing",
+    "Curriculum release approval has 1106 unresolved checks"
+  ],
+  "scope": "Configuration/content gate only. Play rollout, legal sign-off and physical-device acceptance remain separate."
+}

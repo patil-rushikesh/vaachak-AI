@@ -1,0 +1,565 @@
+[
+  {
+    "id": "core.item.0001",
+    "version": 1,
+    "nodeId": "vocabulary.frequent_500",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Choose the word for a place where we learn.",
+    "options": [
+      "school",
+      "spoon",
+      "cloud"
+    ],
+    "answer": 0,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "core.item.0002",
+    "version": 1,
+    "nodeId": "vocabulary.frequent_500",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Which word means the opposite of hot?",
+    "options": [
+      "cold",
+      "tall",
+      "fast"
+    ],
+    "answer": 0,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "core.item.0003",
+    "version": 1,
+    "nodeId": "vocabulary.frequent_500",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Choose the word for something we drink.",
+    "options": [
+      "water",
+      "stone",
+      "chair"
+    ],
+    "answer": 0,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "core.item.0004",
+    "version": 1,
+    "nodeId": "grammar.simple_present_agreement",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "She ___ to school every day.",
+    "options": [
+      "go",
+      "goes",
+      "going"
+    ],
+    "answer": 1,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "core.item.0005",
+    "version": 1,
+    "nodeId": "grammar.simple_present_agreement",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "They ___ football after school.",
+    "options": [
+      "plays",
+      "playing",
+      "play"
+    ],
+    "answer": 2,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "core.item.0006",
+    "version": 1,
+    "nodeId": "grammar.simple_present_agreement",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "He ___ a blue bag.",
+    "options": [
+      "has",
+      "have",
+      "having"
+    ],
+    "answer": 0,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "core.item.0007",
+    "version": 1,
+    "nodeId": "grammar.articles",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "I ate ___ apple.",
+    "options": [
+      "a",
+      "an",
+      "the a"
+    ],
+    "answer": 1,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "core.item.0008",
+    "version": 1,
+    "nodeId": "grammar.articles",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "She has ___ book.",
+    "options": [
+      "an",
+      "a",
+      "a an"
+    ],
+    "answer": 1,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "core.item.0009",
+    "version": 1,
+    "nodeId": "grammar.articles",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "___ sun rises in the east.",
+    "options": [
+      "A",
+      "An",
+      "The"
+    ],
+    "answer": 2,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "core.item.0010",
+    "version": 1,
+    "nodeId": "sentence.simple",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Choose the complete sentence.",
+    "options": [
+      "The bird sings.",
+      "Bird the.",
+      "Sings the."
+    ],
+    "answer": 0,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "core.item.0011",
+    "version": 1,
+    "nodeId": "sentence.simple",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Choose the correct word order.",
+    "options": [
+      "Riya reads a book.",
+      "Reads Riya book a.",
+      "A reads book Riya."
+    ],
+    "answer": 0,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "core.item.0012",
+    "version": 1,
+    "nodeId": "sentence.simple",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Choose the complete sentence.",
+    "options": [
+      "We are ready.",
+      "We ready are are.",
+      "Ready we."
+    ],
+    "answer": 0,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "core.item.0013",
+    "version": 1,
+    "nodeId": "reading.letters",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Which letter starts the word sun?",
+    "options": [
+      "s",
+      "m",
+      "p"
+    ],
+    "answer": 0,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "core.item.0014",
+    "version": 1,
+    "nodeId": "reading.letters",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Which word starts with the same sound as ball?",
+    "options": [
+      "book",
+      "cat",
+      "fish"
+    ],
+    "answer": 0,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "core.item.0015",
+    "version": 1,
+    "nodeId": "reading.letters",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Which word ends with t?",
+    "options": [
+      "cat",
+      "sun",
+      "dog"
+    ],
+    "answer": 0,
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "earth.language.001",
+    "version": 1,
+    "nodeId": "vocabulary.frequent_500",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "In “Earth is a planet,” which word names a thing?",
+    "options": [
+      "planet",
+      "is",
+      "a"
+    ],
+    "answer": 0,
+    "reviewStatus": "approved",
+    "source": {
+      "publisher": "NASA Science",
+      "title": "Facts About Earth",
+      "url": "https://science.nasa.gov/earth/facts/",
+      "accessedAt": "2026-09-23",
+      "usagePolicy": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "adaptation": "Original teaching prompts based on factual information; no third-party images, logos or quotations."
+    },
+    "reviewer": "Rushikesh Patil",
+    "reviewedAt": "2026-09-23T15:39:36.806046+00:00"
+  },
+  {
+    "id": "earth.language.002",
+    "version": 1,
+    "nodeId": "grammar.simple_present_agreement",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Complete the sentence: Earth ___ a planet.",
+    "options": [
+      "are",
+      "is",
+      "am"
+    ],
+    "answer": 1,
+    "reviewStatus": "approved",
+    "source": {
+      "publisher": "NASA Science",
+      "title": "Facts About Earth",
+      "url": "https://science.nasa.gov/earth/facts/",
+      "accessedAt": "2026-09-23",
+      "usagePolicy": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "adaptation": "Original teaching prompts based on factual information; no third-party images, logos or quotations."
+    },
+    "reviewer": "Rushikesh Patil",
+    "reviewedAt": "2026-09-23T15:39:36.806046+00:00"
+  },
+  {
+    "id": "earth.language.003",
+    "version": 1,
+    "nodeId": "sentence.simple",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Choose the complete sentence.",
+    "options": [
+      "Earth has one moon.",
+      "Earth one moon.",
+      "Has Earth one."
+    ],
+    "answer": 0,
+    "reviewStatus": "approved",
+    "source": {
+      "publisher": "NASA Science",
+      "title": "Facts About Earth",
+      "url": "https://science.nasa.gov/earth/facts/",
+      "accessedAt": "2026-09-23",
+      "usagePolicy": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "adaptation": "Original teaching prompts based on factual information; no third-party images, logos or quotations."
+    },
+    "reviewer": "Rushikesh Patil",
+    "reviewedAt": "2026-09-23T15:39:36.806046+00:00"
+  },
+  {
+    "id": "earth.language.004",
+    "version": 1,
+    "nodeId": "grammar.articles",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Complete the sentence: Earth has ___ moon.",
+    "options": [
+      "a",
+      "an",
+      "many"
+    ],
+    "answer": 0,
+    "reviewStatus": "approved",
+    "source": {
+      "publisher": "NASA Science",
+      "title": "Facts About Earth",
+      "url": "https://science.nasa.gov/earth/facts/",
+      "accessedAt": "2026-09-23",
+      "usagePolicy": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "adaptation": "Original teaching prompts based on factual information; no third-party images, logos or quotations."
+    },
+    "reviewer": "Rushikesh Patil",
+    "reviewedAt": "2026-09-23T15:39:36.806046+00:00"
+  },
+  {
+    "id": "earth.language.005",
+    "version": 1,
+    "nodeId": "vocabulary.frequent_500",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "In “Water covers much of Earth,” which word names a liquid?",
+    "options": [
+      "Earth",
+      "much",
+      "Water"
+    ],
+    "answer": 2,
+    "reviewStatus": "approved",
+    "source": {
+      "publisher": "NASA Science",
+      "title": "Facts About Earth",
+      "url": "https://science.nasa.gov/earth/facts/",
+      "accessedAt": "2026-09-23",
+      "usagePolicy": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "adaptation": "Original teaching prompts based on factual information; no third-party images, logos or quotations."
+    },
+    "reviewer": "Rushikesh Patil",
+    "reviewedAt": "2026-09-23T15:39:36.806046+00:00"
+  },
+  {
+    "id": "earth.language.006",
+    "version": 1,
+    "nodeId": "grammar.simple_present_agreement",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Complete the sentence: The oceans ___ large.",
+    "options": [
+      "is",
+      "are",
+      "am"
+    ],
+    "answer": 1,
+    "reviewStatus": "approved",
+    "source": {
+      "publisher": "NASA Science",
+      "title": "Facts About Earth",
+      "url": "https://science.nasa.gov/earth/facts/",
+      "accessedAt": "2026-09-23",
+      "usagePolicy": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "adaptation": "Original teaching prompts based on factual information; no third-party images, logos or quotations."
+    },
+    "reviewer": "Rushikesh Patil",
+    "reviewedAt": "2026-09-23T15:39:36.806046+00:00"
+  },
+  {
+    "id": "earth.language.007",
+    "version": 1,
+    "nodeId": "vocabulary.frequent_500",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Choose the noun in “The ocean is blue.”",
+    "options": [
+      "is",
+      "blue",
+      "ocean"
+    ],
+    "answer": 2,
+    "reviewStatus": "approved",
+    "source": {
+      "publisher": "NASA Science",
+      "title": "Facts About Earth",
+      "url": "https://science.nasa.gov/earth/facts/",
+      "accessedAt": "2026-09-23",
+      "usagePolicy": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "adaptation": "Original teaching prompts based on factual information; no third-party images, logos or quotations."
+    },
+    "reviewer": "Rushikesh Patil",
+    "reviewedAt": "2026-09-23T15:39:36.806046+00:00"
+  },
+  {
+    "id": "earth.language.008",
+    "version": 1,
+    "nodeId": "grammar.articles",
+    "type": "choice",
+    "difficulty": 0,
+    "cefr": "A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "prompt": "Complete the sentence: Earth moves around ___ Sun.",
+    "options": [
+      "the",
+      "an",
+      "many"
+    ],
+    "answer": 0,
+    "reviewStatus": "approved",
+    "source": {
+      "publisher": "NASA Science",
+      "title": "Facts About Earth",
+      "url": "https://science.nasa.gov/earth/facts/",
+      "accessedAt": "2026-09-23",
+      "usagePolicy": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "adaptation": "Original teaching prompts based on factual information; no third-party images, logos or quotations."
+    },
+    "reviewer": "Rushikesh Patil",
+    "reviewedAt": "2026-09-23T15:39:36.806046+00:00"
+  }
+]

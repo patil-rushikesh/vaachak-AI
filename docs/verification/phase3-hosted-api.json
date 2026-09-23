@@ -1,0 +1,47 @@
+{
+  "checkedAt": "2026-09-23T14:43:49.743947+00:00",
+  "checks": [
+    {
+      "schema": "dev",
+      "endpoint": "classes?select=id&limit=1",
+      "status": 401,
+      "errorCode": "42501",
+      "passed": true
+    },
+    {
+      "schema": "dev",
+      "endpoint": "rpc/register_device",
+      "status": 401,
+      "errorCode": "42501",
+      "passed": true
+    },
+    {
+      "schema": "qa",
+      "endpoint": "classes?select=id&limit=1",
+      "status": 401,
+      "errorCode": "42501",
+      "passed": true
+    },
+    {
+      "schema": "qa",
+      "endpoint": "rpc/register_device",
+      "status": 401,
+      "errorCode": "42501",
+      "passed": true
+    },
+    {
+      "schema": "prod",
+      "endpoint": "classes?select=id&limit=1",
+      "status": 401,
+      "errorCode": "42501",
+      "passed": true
+    },
+    {
+      "schema": "prod",
+      "endpoint": "rpc/register_device",
+      "status": 401,
+      "errorCode": "42501",
+      "passed": true
+    }
+  ]
+}

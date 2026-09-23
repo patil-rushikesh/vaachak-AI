@@ -1,0 +1,19 @@
+[
+  {
+    "id": "draft.passage.001",
+    "version": 1,
+    "nodeId": "reading.letters",
+    "title": "A walk to school",
+    "text": "Riya walks to school every morning. She carries a small blue bag. On the way, she meets her friend. They talk about the books they like to read.",
+    "difficulty": 0,
+    "cefr": "Pre-A1",
+    "ageBands": [
+      "child",
+      "student",
+      "adult"
+    ],
+    "targetWcpm": 60,
+    "assessmentModelIds": [],
+    "reviewStatus": "draft"
+  }
+]
