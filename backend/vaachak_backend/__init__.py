@@ -1,0 +1,1 @@
+"""Vachak AI backend prototype."""
