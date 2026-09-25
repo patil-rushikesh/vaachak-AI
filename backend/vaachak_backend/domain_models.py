@@ -108,3 +108,28 @@ class AssignmentRequest(Base):
     request_id: Mapped[str] = mapped_column(String(36), primary_key=True)
     request_hash: Mapped[str] = mapped_column(String(64))
     assignment_id: Mapped[str] = mapped_column(ForeignKey("assignments.id"), unique=True)
+
+
+class TeacherProfile(Base):
+    """Optional user-entered context, separate from existing account schema."""
+    __tablename__ = "teacher_profiles"
+    teacher_id: Mapped[str] = mapped_column(ForeignKey("teachers.id"), primary_key=True)
+    country: Mapped[str] = mapped_column(String(100), default="")
+    state_region: Mapped[str] = mapped_column(String(100), default="")
+    city: Mapped[str] = mapped_column(String(100), default="")
+    first_language: Mapped[str] = mapped_column(String(100), default="")
+    target_accent: Mapped[str] = mapped_column(String(100), default="")
+    entered_by: Mapped[str] = mapped_column(String(16))
+    updated_at: Mapped[str] = mapped_column(default=now)
+
+
+class StudentProfile(Base):
+    __tablename__ = "student_profiles"
+    student_id: Mapped[str] = mapped_column(ForeignKey("students.id"), primary_key=True)
+    country: Mapped[str] = mapped_column(String(100), default="")
+    state_region: Mapped[str] = mapped_column(String(100), default="")
+    city: Mapped[str] = mapped_column(String(100), default="")
+    first_language: Mapped[str] = mapped_column(String(100), default="")
+    target_accent: Mapped[str] = mapped_column(String(100), default="")
+    entered_by: Mapped[str] = mapped_column(String(16))
+    updated_at: Mapped[str] = mapped_column(default=now)

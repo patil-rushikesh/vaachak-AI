@@ -98,12 +98,20 @@ def main():
                         return response.json() if response.content else None
 
                     password = secrets.token_urlsafe(18)
+                    teacher_profile = {'country': 'Fixture country', 'state_region': 'Fixture region',
+                                       'city': 'Reference city', 'first_language': 'English', 'target_accent': 'Teacher-selected English'}
                     teacher = call('POST', '/auth/register', expected=201,
-                                   json={'email': 'http-check@example.test', 'password': password})['access_token']
+                                   json={'email': 'http-check@example.test', 'password': password,
+                                         'learning_profile': teacher_profile})['access_token']
+                    saved_profile = call('GET', '/teacher/profile', teacher)['learning_profile']
+                    assert all(saved_profile[key] == value for key, value in teacher_profile.items())
+                    assert saved_profile['provenance'] == 'self_reported'
                     room = call('POST', '/teacher/classrooms', teacher, 201,
                                 json={'school_name': 'HTTP verification fixture', 'name': 'Class 6', 'postal_code': '411001'})
                     student = call('POST', f'/teacher/classrooms/{room["id"]}/students', teacher, 201,
-                                   json={'display_name': 'Synthetic test student', 'login_name': 'http-check', 'password': password})
+                                   json={'display_name': 'Synthetic test student', 'login_name': 'http-check', 'password': password,
+                                         'learning_profile': {'country': 'Fixture country', 'city': 'Learner city', 'first_language': 'English'}})
+                    assert student['learning_profile']['provenance'] == 'teacher_entered'
                     definitions = [
                         {'title': 'Read a sentence', 'kind': 'read_aloud',
                          'expected_text': 'Okay, this is my house. I love reading books with my friends.',
@@ -123,6 +131,9 @@ def main():
                     normalized_reference = directory / 'recordings' / recording['id'] / 'reference.wav'
                     assert recording['normalized_sha256'] == hashlib.sha256(normalized_reference.read_bytes()).hexdigest()
                     reference = recording['measurements']
+                    assert reference['learning_context']['learning_profile']['city'] == 'Reference city'
+                    assert reference['learning_context']['recorded_at']
+                    call('PATCH', '/teacher/profile', teacher, json={'learning_profile': {'city': 'Updated reference city'}})
                     assert (reference['sample_rate'], reference['channels'], reference['sample_format']) == (16000, 1, 'PCM_S16LE')
                     assert reference['preservation']['original'] == 'byte_for_byte'
                     assert reference['preservation']['processing'] == 'resample_and_downmix_only'
@@ -140,6 +151,12 @@ def main():
                     assignment = call('POST', '/teacher/assignments', teacher, 201, json=assignment_body)
                     assert call('POST', '/teacher/assignments', teacher, 201, json=assignment_body)['id'] == assignment['id']
                     learner = call('POST', '/auth/login', json={'identifier': 'http-check', 'password': password, 'role': 'student'})['access_token']
+                    edited_profile = call('PATCH', '/student/profile', learner,
+                                          json={'learning_profile': {'city': '', 'target_accent': 'Clear classroom English'}})['learning_profile']
+                    assert edited_profile['country'] == 'Fixture country' and edited_profile['city'] == ''
+                    assert edited_profile['provenance'] == 'self_reported'
+                    assert call('GET', f'/teacher/students/{student["id"]}', teacher)['learning_profile']['target_accent'] == 'Clear classroom English'
+                    call('GET', '/teacher/profile', learner, 403)
                     detail = call('GET', f'/student/assignments/{assignment["id"]}', learner)
                     assert 'correct_option_id' not in json.dumps(detail)
                     assert 'accepted_answers' not in json.dumps(detail)
@@ -154,6 +171,7 @@ def main():
 
                     choice = submit('choice', 'a')
                     assert choice['score'] == 1
+                    assert choice['display_feedback']['headline']
                     matching = items['matching']['payload']
                     right = {card['text']: card['id'] for card in matching['right']}
                     answer = {card['id']: right[{'Hot': 'Cold', 'Early': 'Late'}[card['text']]] for card in matching['left']}
@@ -177,6 +195,14 @@ def main():
                     meaning, reading = poll(meaning), poll(reading)
                     assert meaning['status'] == 'needs_review' and meaning['score'] is None
                     assert reading['status'] in {'completed', 'needs_review'}
+                    assert reading['measurements']['learning_context']['learning_profile']['target_accent'] == 'Clear classroom English'
+                    assert reading['measurements']['learning_context']['learning_profile']['city'] == ''
+                    feedback = reading['display_feedback']
+                    assert feedback['headline'] and feedback['summary']
+                    dimensions = {dimension['key']: dimension for dimension in feedback['dimensions']}
+                    for key in ('pace', 'pauses', 'pitch', 'pronunciation'):
+                        assert dimensions[key]['score'] is None
+                    assert 'suggested_score' not in json.dumps(meaning['display_feedback'])
                     check_pitch(reading['result']['pitch'], require_available=bool(args.audio))
                     assert reading['result']['pronunciation'] == {'status': 'not_assessed', 'score': None}
                     assert reading['result']['emotion'] == {'status': 'not_assessed', 'score': None}
@@ -193,6 +219,8 @@ def main():
                     teacher_detail = call('GET', f'/teacher/students/{student["id"]}', teacher)
                     teacher_reading = next(attempt for attempt in teacher_detail['attempts'] if attempt['id'] == reading['id'])
                     assert teacher_reading['reference_audio_url'] == recording['playback_url']
+                    stored_reference = call('GET', f'/teacher/problems/{problems[0]["id"]}', teacher)['recordings'][0]
+                    assert stored_reference['measurements']['learning_context']['learning_profile']['city'] == 'Reference city'
                     automatic_reading = {'status': reading['status'], 'score': reading['score'], 'result': reading['result']}
                     automatic_meaning = {'status': meaning['status'], 'score': meaning['score'], 'result': meaning['result']}
                     for attempt in [meaning, reading]:
@@ -204,6 +232,8 @@ def main():
                     assert overview['counts']['attempts'] == 4
                     assert overview['counts']['completed_assignments'] == 1
                     assert overview['counts']['solved_problems'] == 4
+                    assert overview['progress']['current_practice_status'] == {
+                        'graded': 4, 'pending': 0, 'needs_review': 0, 'not_started': 0, 'total': 4}
                     # A learner enrolled later does not inherit the frozen recipient list.
                     call('POST', f'/teacher/classrooms/{room["id"]}/students', teacher, 201,
                          json={'display_name': 'Unassigned test student', 'login_name': 'unassigned-check', 'password': password})
@@ -216,7 +246,8 @@ def main():
                               'coverage': ['teacher/student auth', 'classroom provisioning', 'four exercise types', 'immutable assignments',
                                            'retry idempotency', 'private media', 'original waveform preservation', 'reference media metadata', 'experimental pitch contours',
                                            'word-aligned relative pitch comparison' if args.speech_model and args.audio else 'pitch evidence without grading',
-                                           'async polling', 'teacher reviews', 'progress', 'logout'],
+                                           'async polling', 'teacher reviews', 'progress', 'regional profiles and capture snapshots',
+                                           'plain-language feedback without invented voice grades', 'completion chart counts', 'logout'],
                               'speech_fixture': 'provided test audio' if args.audio else 'test tone; no speech validity claim',
                               'local_speech_enabled': bool(args.speech_model), 'local_meaning_enabled': bool(args.ollama_model),
                               'meaning_outcome': 'ai_suggestion_for_teacher' if meaning['result'].get('method') == 'ai_semantic_review' else 'teacher_review_fallback',

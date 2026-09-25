@@ -18,6 +18,14 @@ Local audio storage is explicitly approved; cloud migration can follow.
 10. Teacher-managed student password reset replaces the password and revokes existing student sessions while preserving assignments, recordings and learning history.
 11. Saved reading/meaning submissions enter a durable local database queue. One analysis worker resumes pending work after a process restart without requiring the learner to submit again.
 
+## Added profile and feedback requirements — 26 September 2026
+
+- Capture optional self-entered country, state/region, city, first language and desired accent when creating teacher/student accounts; allow later editing. Teacher-entered student data is labeled accordingly. Location describes supplied regional context, not a claim about a person's accent or where the server physically stores files.
+- Preserve the profile context attached to new recordings. Do not guess missing historical values from classroom postal PINs, IP addresses or voices.
+- Explain reading results in everyday language with a small number of useful practice tips. Keep uncertain recognition tentative and let teachers access the underlying evidence.
+- Use independent skill bars, practice completion composition and score histories. Do not invent calibrated pronunciation, pitch or pace scores or an overall “balanced” percentage.
+- Store target accent for future teacher-selected practice recommendations. Region-based recommendations, regional model training and automatic accent recognition are future work, not delivered by collecting profile fields.
+
 ## Architecture recommendation
 
 - Python/FastAPI service; PostgreSQL relational database. SQLite is the convenient local development/demo default.

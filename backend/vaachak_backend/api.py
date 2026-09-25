@@ -25,6 +25,7 @@ from sqlalchemy.orm import Session
 from .audio import InvalidAudio, MAX_BYTES, digest, normalize
 from .db import Analysis, LoginSession, Problem, Recording, StudentSession, Teacher, connect, new_id
 from .security import hash_password, token_hash, verify_password
+from .profile_service import LearningProfileInput, capture_learning_context, update_profile
 
 
 class TextInput(BaseModel):
@@ -48,6 +49,7 @@ class Registration(TextInput):
     model_config = ConfigDict(str_strip_whitespace=False, extra="forbid")
     email: str = Field(min_length=3, max_length=254)
     password: str = Field(min_length=12, max_length=256)
+    learning_profile: LearningProfileInput = Field(default_factory=LearningProfileInput)
 
 
 class ProblemInput(TextInput):
@@ -205,6 +207,7 @@ def create_app(database_url=None, data_dir=None, *, recover_jobs=True, analysis_
         session.add(teacher)
         try:
             session.flush()
+            update_profile(session, "teacher", teacher.id, body.learning_profile, entered_by="self")
             return issue_session(teacher, "teacher", session)
         except IntegrityError as exc:
             session.rollback()
@@ -314,6 +317,7 @@ def create_app(database_url=None, data_dir=None, *, recover_jobs=True, analysis_
             if size == 0:
                 raise HTTPException(422, "Audio file is empty")
             measurements = normalize(source, normalized)
+            measurements["learning_context"] = capture_learning_context(session, "teacher", teacher)
             from .prosody import analyze_pitch
             measurements["pitch"] = analyze_pitch(normalized)
             measurements["preservation"]["pitch_analysis"] = measurements["pitch"]["algorithm_version"]

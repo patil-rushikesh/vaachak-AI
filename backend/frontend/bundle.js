@@ -366,6 +366,137 @@
     };
   }
 
+  // insights.js
+  var escape = (value) => String(value != null ? value : "").replace(
+    /[&<>"']/g,
+    (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]
+  );
+  var list = (value) => Array.isArray(value) ? value : [];
+  var percentage = (value) => typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 1 ? `${Math.round(value * 100)}%` : "Not graded";
+  function assessedScore(attempt) {
+    const score = attempt == null ? void 0 : attempt.score;
+    return (attempt == null ? void 0 : attempt.status) === "completed" && typeof score === "number" && Number.isFinite(score) && score >= 0 && score <= 1 ? score : null;
+  }
+  function completionChart(status) {
+    const unavailable = '<div class="empty compact"><h3>Practice status is not available yet.</h3><p>Your assignment list still shows the practices you can work on. Refresh this page when progress information is available.</p></div>';
+    const keys = ["graded", "pending", "needs_review", "not_started"];
+    if (!status || ![...keys, "total"].every(
+      (key) => Number.isSafeInteger(status[key]) && status[key] >= 0
+    ))
+      return unavailable;
+    const total = status.total;
+    const segments = [
+      ["graded", "Feedback ready", "#537c52"],
+      ["pending", "Being checked", "#e6bd62"],
+      ["needs_review", "Needs attention", "#b791aa"],
+      ["not_started", "Not started", "#dfe6d8"]
+    ].map(([key, label, color]) => ({
+      key,
+      label,
+      color,
+      value: status[key]
+    }));
+    if (segments.reduce((sum, item) => sum + item.value, 0) !== total)
+      return unavailable;
+    const valid = total > 0;
+    let offset = 0;
+    const circles = valid ? segments.filter((item) => item.value > 0).map((item) => {
+      const amount = item.value / total * 100;
+      const circle = `<circle cx="85" cy="85" r="64" pathLength="100" fill="none" stroke="${item.color}" stroke-width="17" stroke-dasharray="${amount} ${100 - amount}" stroke-dashoffset="${-offset}" transform="rotate(-90 85 85)"/>`;
+      offset += amount;
+      return circle;
+    }).join("") : "";
+    return `<div class="completion-layout"><div class="completion-donut"><svg viewBox="0 0 170 170" role="img" aria-label="${valid ? escape(segments.map((item) => `${item.value} ${item.label.toLowerCase()}`).join(", ")) : "No assigned practices yet"}"><circle cx="85" cy="85" r="64" fill="none" stroke="#edf1e7" stroke-width="17"/>${circles}<text x="85" y="83" text-anchor="middle" class="donut-value">${valid ? `${segments[0].value}/${total}` : "\u2014"}</text><text x="85" y="104" text-anchor="middle" class="donut-label">${valid ? "feedback ready" : "no practices yet"}</text></svg></div><ul class="chart-legend">${segments.map((item) => `<li><span class="legend-dot" style="--legend-color:${item.color}"></span><span>${escape(item.label)}</span><strong>${valid ? `${item.value} \xB7 ${Math.round(item.value / total * 100)}%` : "\u2014"}</strong></li>`).join("")}</ul></div><p class="micro-copy">${valid ? "Each assigned practice appears once, using its latest attempt. The slices show practice status, not speaking abilities." : "Your chart will fill in when practices are assigned. Nothing is scored until you submit your work."}</p>`;
+  }
+  function trendPanel(attempts, id = "learning-trend") {
+    const kinds = [
+      ["read_aloud", "Reading"],
+      ["choice", "Word quizzes"],
+      ["matching", "Matching"],
+      ["meaning", "Meaning"]
+    ];
+    const present = kinds.filter(
+      ([kind]) => list(attempts).some((item) => item.kind === kind)
+    );
+    if (!present.length)
+      return '<div class="empty compact"><h3>Your learning story starts with a try.</h3><p>As you practise, a separate chart for each activity will show your recorded scores over time.</p></div>';
+    return `<div class="trend-panel" id="${escape(id)}"><div class="tabs trend-tabs" role="tablist" aria-label="Choose a practice type">${present.map(([kind, label], index) => `<button type="button" role="tab" aria-selected="${index === 0}" aria-controls="${escape(id)}-plot" id="${escape(id)}-${kind}" class="tab${index === 0 ? " active" : ""}" data-trend-kind="${kind}" tabindex="${index === 0 ? "0" : "-1"}">${label}</button>`).join("")}</div><div class="trend-body" id="${escape(id)}-plot" role="tabpanel"></div></div>`;
+  }
+  function bindTrend(container, attempts) {
+    container.querySelectorAll(".trend-panel").forEach((panel) => {
+      const buttons = [...panel.querySelectorAll("[data-trend-kind]")], body = panel.querySelector(".trend-body");
+      const select = (button) => {
+        buttons.forEach((item) => {
+          const selected = item === button;
+          item.classList.toggle("active", selected);
+          item.setAttribute("aria-selected", String(selected));
+          item.tabIndex = selected ? 0 : -1;
+        });
+        body.setAttribute("aria-labelledby", button.id);
+        const all = list(attempts).filter((item) => item.kind === button.dataset.trendKind).slice().sort(
+          (a, b) => String(a.created_at).localeCompare(String(b.created_at))
+        );
+        const items = all.slice(-20), graded = items.filter((item) => assessedScore(item) !== null), width = 650, height = 220, left = 40, right = 625, top = 25, bottom = 172;
+        const x = (index) => items.length === 1 ? (left + right) / 2 : left + index / (items.length - 1) * (right - left), y = (score) => bottom - Math.max(0, Math.min(1, score)) * (bottom - top);
+        let path = "", open = false;
+        const points = items.map((item, index) => {
+          var _a, _b;
+          const scored = assessedScore(item) !== null;
+          if (!scored) {
+            open = false;
+            return `<circle cx="${x(index)}" cy="${bottom + 13}" r="3" fill="#b79caf"><title>Attempt ${all.length - items.length + index + 1}: awaiting a grade</title></circle>`;
+          }
+          path += `${open ? "L" : "M"}${x(index)},${y(item.score)} `;
+          open = true;
+          const label = `Attempt ${all.length - items.length + index + 1}: ${percentage(item.score)}${item.reviewed_at || ((_a = item.result) == null ? void 0 : _a.teacher_review) ? " \xB7 teacher reviewed" : ""}`;
+          return item.reviewed_at || ((_b = item.result) == null ? void 0 : _b.teacher_review) ? `<path d="M${x(index)},${y(item.score) - 5} l5,5 -5,5 -5,-5 z" fill="#b791aa"><title>${escape(label)}</title></path>` : `<circle cx="${x(index)}" cy="${y(item.score)}" r="4" fill="#fff" stroke="#537c52" stroke-width="2"><title>${escape(label)}</title></circle>`;
+        }).join("");
+        const description = `${button.textContent}: ${graded.length} graded attempts, ${items.length - graded.length} ungraded among the latest ${items.length} attempts.`;
+        body.innerHTML = `<svg class="trend-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escape(description)}">${[0, 0.5, 1].map((score) => `<line x1="${left}" y1="${y(score)}" x2="${right}" y2="${y(score)}" stroke="#e3e9db"/><text x="${left - 10}" y="${y(score) + 4}" text-anchor="end" fill="#839576" font-size="10">${Math.round(score * 100)}%</text>`).join("")}<path d="${path}" fill="none" stroke="#537c52" stroke-width="2"/>${points}<text x="${left}" y="210" fill="#839576" font-size="10">Earlier attempts</text><text x="${right}" y="210" text-anchor="end" fill="#839576" font-size="10">Most recent</text></svg><p class="trend-markers">\u25CB Automatic feedback &nbsp; \u25C6 Teacher review</p><div class="trend-summary"><span>${graded.length} graded \xB7 ${items.length - graded.length} waiting or ungraded</span><strong>${graded.length ? `Latest score ${percentage(graded[graded.length - 1].score)}` : "No score yet"}</strong></div><p class="micro-copy">${button.dataset.trendKind === "read_aloud" ? "Reading shows automatic word-match scores or teacher-reviewed scores. " : ""}Each dot is one attempt in this activity type. Scores come from different practices.${all.length > 20 ? " Showing the latest 20 attempts." : ""}</p><details class="collapsible"><summary>Read the scores as a table</summary><div class="table-wrap"><table><thead><tr><th>Attempt</th><th>Practice</th><th>Score</th><th>Feedback</th></tr></thead><tbody>${items.map((item, index) => {
+          var _a;
+          return `<tr><td>${all.length - items.length + index + 1}</td><td>${escape(item.problem_title || "Practice")}</td><td>${percentage(assessedScore(item))}</td><td>${item.reviewed_at || ((_a = item.result) == null ? void 0 : _a.teacher_review) ? "Teacher review" : assessedScore(item) !== null ? "Automatic" : "Awaiting feedback"}</td></tr>`;
+        }).join("")}</tbody></table></div></details>`;
+      };
+      buttons.forEach((button, index) => {
+        button.onclick = () => select(button);
+        button.onkeydown = (event) => {
+          let next;
+          if (event.key === "ArrowRight") next = (index + 1) % buttons.length;
+          else if (event.key === "ArrowLeft")
+            next = (index - 1 + buttons.length) % buttons.length;
+          else if (event.key === "Home") next = 0;
+          else if (event.key === "End") next = buttons.length - 1;
+          else return;
+          event.preventDefault();
+          buttons[next].focus();
+          select(buttons[next]);
+        };
+      });
+      select(buttons[0]);
+    });
+  }
+  function simpleReadingFeedback(attempt) {
+    const display = attempt.display_feedback || {}, result = attempt.result || {};
+    const dimensions = list(display.dimensions), tips = list(display.next_steps).filter((item) => typeof item === "string").slice(0, 2);
+    const labels = [
+      ["word_match", "Words read"],
+      ["pace", "Reading pace"],
+      ["pauses", "Pauses"],
+      ["pitch", "Voice expression"]
+    ];
+    const cards = labels.map(([key, label]) => {
+      const dimension = dimensions.find((item) => item.key === key), value = (dimension == null ? void 0 : dimension.value_text) || {
+        word_match: "Waiting for feedback",
+        pace: "No comparison yet",
+        pauses: "No pause feedback yet",
+        pitch: "Not measured yet"
+      }[key];
+      return `<article class="feedback-dimension"><div class="dimension-label">${label}</div><strong>${escape(value)}</strong><p>${escape((dimension == null ? void 0 : dimension.detail) || "Try a clear recording and check back for feedback.")}</p>${(dimension == null ? void 0 : dimension.status) === "observed" ? '<span class="evidence-chip">Observation \xB7 not a grade</span>' : (dimension == null ? void 0 : dimension.status) === "needs_review" ? '<span class="evidence-chip">Teacher review needed</span>' : ""}</article>`;
+    }).join("");
+    const wordPractice = list(display.word_practice).slice(0, 12);
+    return `${tips.length ? `<div class="next-step-box"><span class="eyebrow">Your next small step</span>${tips.map((tip) => `<p>${escape(tip)}</p>`).join("")}</div>` : ""}<div class="feedback-dimensions">${cards}</div>${wordPractice.length ? `<section class="word-practice"><h3>A few words to revisit</h3><div class="word-chip-list">${wordPractice.map((item) => `<span class="word-chip"><strong>${escape(item.word)}</strong><small>${escape(item.reason || "Worth another listen")}</small></span>`).join("")}</div><p class="micro-copy">The recording may not have been heard clearly. These are words to check together, not confirmed pronunciation mistakes.</p></section>` : ""}<p class="feedback-footnote">Pronunciation is not separately graded. Voice expression describes pitch movement; it does not identify feelings.</p>`;
+  }
+
   // app.js
   var app = document.querySelector("#app");
   var modal = document.querySelector("#modal");
@@ -405,7 +536,7 @@
     meaning: "Meaning"
   })[kind] || kind || "Practice";
   var skillName = (skill) => ({
-    read_aloud: "Reading aloud",
+    read_aloud: "Words read",
     pronunciation: "Pronunciation",
     synonym: "Synonyms",
     antonym: "Antonyms",
@@ -524,11 +655,13 @@
       ["classrooms", "class", "My classrooms"],
       ["problems", "book", "Problem library"],
       ["assignments", "clipboard", "Assignments"],
-      ["progress", "chart", "Student progress"]
+      ["progress", "chart", "Student progress"],
+      ["profile", "leaf", "Learning profile"]
     ] : [
       ["overview", "grid", "My learning"],
       ["assignments", "clipboard", "My assignments"],
-      ["history", "chart", "My progress"]
+      ["history", "chart", "My progress"],
+      ["profile", "leaf", "Learning profile"]
     ];
     app.innerHTML = `<div class="app-shell"><div class="mobile-scrim"></div><aside class="sidebar">${brand()}<div class="nav-caption">${teacher ? "Teacher workspace" : "Student workspace"}</div><nav class="nav" aria-label="Main navigation">${nav.map(([path, symbol, name]) => `<a class="nav-link" href="#/${path}" data-nav="${path}">${icon(symbol)}<span>${name}</span></a>`).join("")}</nav><div class="sidebar-note"><div class="note-symbol">${icon("leaf", 21)}</div><h4>A little practice. A lot of growth.</h4><p>${teacher ? "Your voice guides their next step. Make every practice personal." : "Find your pace, try again, and let your voice grow."}</p></div><div class="sidebar-footer"><span class="avatar">${E(initials(user.display_name))}</span><div class="identity"><strong>${E(user.display_name)}</strong><span>${teacher ? "Teacher account" : "Student account"}</span></div><button class="icon-button" data-logout aria-label="Sign out" title="Sign out">${icon("logout", 17)}</button></div></aside><div class="main-wrap"><header class="topbar"><button class="icon-button mobile-toggle" aria-label="Open navigation">${icon("menu", 20)}</button><div class="topbar-path"><span>${teacher ? "Teacher workspace" : "My workspace"}</span><span>/</span><strong id="breadcrumb">Overview</strong></div><div class="topbar-date">${icon("leaf", 14)} A space to learn, one word at a time</div></header><main class="content" id="content" tabindex="-1"></main></div></div>`;
     app.querySelector("[data-logout]").onclick = () => {
@@ -629,7 +762,7 @@
   function renderAuth() {
     navigationCleanup();
     const signup = authMode === "signup", authVersion = ++authRenderVersion, role = authRole;
-    app.innerHTML = `<div class="auth-page"><section class="auth-story">${brand()}<div class="auth-story-main"><div class="eyebrow">Every voice has a beginning</div><h1>Small steps.<br>Stronger words.<br><em>Your voice.</em></h1><p>A thoughtful space for teachers to guide, and learners to discover the confidence to speak.</p><div class="auth-art">${art()}</div></div><div class="auth-story-footer">TEACHER-LED PRACTICE &nbsp; \xB7 &nbsp; MEANINGFUL FEEDBACK</div></section><main class="auth-main"><div class="auth-card"><div class="auth-mobile-brand">${brand()}</div><div class="eyebrow">Let's learn together</div><h2>${signup ? "Your teaching space awaits." : "Welcome to Vachak."}</h2><p>${signup ? "Create your teacher account to start a classroom." : "Sign in and take the next step in your learning journey."}</p>${signup ? "" : `<div class="role-toggle" aria-label="Account type"><button data-role="teacher" class="${authRole === "teacher" ? "active" : ""}" aria-pressed="${authRole === "teacher"}">${icon("book", 16)} I'm a teacher</button><button data-role="student" class="${authRole === "student" ? "active" : ""}" aria-pressed="${authRole === "student"}">${icon("users", 16)} I'm a student</button></div>`}<form id="auth-form"><div class="field"><label for="identifier">${signup || authRole === "teacher" ? "Email address" : "Student username"}</label><input id="identifier" name="identifier" type="${signup || authRole === "teacher" ? "email" : "text"}" autocomplete="username" placeholder="${signup || authRole === "teacher" ? "you@school.edu" : "Your teacher-provided username"}" required maxlength="254"></div><div class="field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="${signup ? "new-password" : "current-password"}" placeholder="${signup ? "At least 12 characters" : "Enter your password"}" minlength="${signup ? 12 : 1}" maxlength="256" required></div><div class="form-error" role="alert"></div><button type="submit" class="button button-primary auth-submit">${signup ? "Create teacher account" : "Sign in to your workspace"} ${icon("arrow", 16)}</button></form><div class="auth-bottom">${signup ? "Already have an account?" : "New here?"} <button class="text-button" data-auth-mode>${signup ? "Sign in" : "Create a teacher account"}</button></div><div class="auth-footnote">${icon("shield", 13)} Student accounts are created by their teacher. Ask your teacher for your username and password.</div></div></main></div>`;
+    app.innerHTML = `<div class="auth-page"><section class="auth-story">${brand()}<div class="auth-story-main"><div class="eyebrow">Every voice has a beginning</div><h1>Small steps.<br>Stronger words.<br><em>Your voice.</em></h1><p>A thoughtful space for teachers to guide, and learners to discover the confidence to speak.</p><div class="auth-art">${art()}</div></div><div class="auth-story-footer">TEACHER-LED PRACTICE &nbsp; \xB7 &nbsp; MEANINGFUL FEEDBACK</div></section><main class="auth-main"><div class="auth-card"><div class="auth-mobile-brand">${brand()}</div><div class="eyebrow">Let's learn together</div><h2>${signup ? "Your teaching space awaits." : "Welcome to Vachak."}</h2><p>${signup ? "Create your teacher account to start a classroom." : "Sign in and take the next step in your learning journey."}</p>${signup ? "" : `<div class="role-toggle" aria-label="Account type"><button data-role="teacher" class="${authRole === "teacher" ? "active" : ""}" aria-pressed="${authRole === "teacher"}">${icon("book", 16)} I'm a teacher</button><button data-role="student" class="${authRole === "student" ? "active" : ""}" aria-pressed="${authRole === "student"}">${icon("users", 16)} I'm a student</button></div>`}<form id="auth-form"><div class="field"><label for="identifier">${signup || authRole === "teacher" ? "Email address" : "Student username"}</label><input id="identifier" name="identifier" type="${signup || authRole === "teacher" ? "email" : "text"}" autocomplete="username" placeholder="${signup || authRole === "teacher" ? "you@school.edu" : "Your teacher-provided username"}" required maxlength="254"></div><div class="field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="${signup ? "new-password" : "current-password"}" placeholder="${signup ? "At least 12 characters" : "Enter your password"}" minlength="${signup ? 12 : 1}" maxlength="256" required></div>${signup ? optionalProfileInputs("registration-profile") : ""}<div class="form-error" role="alert"></div><button type="submit" class="button button-primary auth-submit">${signup ? "Create teacher account" : "Sign in to your workspace"} ${icon("arrow", 16)}</button></form><div class="auth-bottom">${signup ? "Already have an account?" : "New here?"} <button class="text-button" data-auth-mode>${signup ? "Sign in" : "Create a teacher account"}</button></div><div class="auth-footnote">${icon("shield", 13)} Student accounts are created by their teacher. Ask your teacher for your username and password.</div></div></main></div>`;
     app.querySelectorAll("[data-role]").forEach(
       (btn) => btn.onclick = () => {
         authRole = btn.dataset.role;
@@ -649,7 +782,11 @@
       try {
         const result = await api(signup ? "/auth/register" : "/auth/login", {
           method: "POST",
-          body: signup ? { email: data.get("identifier"), password: data.get("password") } : {
+          body: signup ? {
+            email: data.get("identifier"),
+            password: data.get("password"),
+            learning_profile: profileValues(form)
+          } : {
             identifier: data.get("identifier"),
             password: data.get("password"),
             role
@@ -669,6 +806,103 @@
         busy(form, false);
       }
     };
+  }
+  var profileFields = [
+    ["country", "Country", "e.g. India", "country-name"],
+    ["state_region", "State / region", "e.g. Karnataka", "address-level1"],
+    ["city", "City / town", "e.g. Bengaluru", "address-level2"],
+    ["first_language", "First language", "e.g. Kannada", "off"],
+    [
+      "target_accent",
+      "Accent you want to practice",
+      "e.g. Indian English, British English, or no preference",
+      "off"
+    ]
+  ];
+  function profileInputs(profile = {}, prefix = "learning-profile") {
+    return `<div class="form-grid profile-fields">${profileFields.map(([key, label, placeholder, autocomplete]) => `<div class="field${key === "target_accent" ? " full" : ""}"><label for="${prefix}-${key}">${label}</label><input id="${prefix}-${key}" name="profile_${key}" value="${E(profile[key] || "")}" maxlength="100" autocomplete="${autocomplete}" placeholder="${placeholder}"></div>`).join("")}</div><p class="micro-copy">All fields are optional. Enter an accent preference yourself; your location does not choose it. No device location is collected.</p>`;
+  }
+  function optionalProfileInputs(prefix) {
+    return `<details class="collapsible profile-optional"><summary>Language & region <span class="muted">(optional)</span></summary><p class="micro-copy" style="margin-bottom:16px">Add a little context for teaching. You can complete or change this later.</p>${profileInputs({}, prefix)}</details>`;
+  }
+  function profileValues(form) {
+    const data = new FormData(form);
+    return Object.fromEntries(
+      profileFields.map(([key]) => [
+        key,
+        String(data.get(`profile_${key}`) || "").trim()
+      ])
+    );
+  }
+  function profileSummary(profile = {}) {
+    const filled = profileFields.filter(([key]) => profile[key]);
+    return filled.length ? `<dl class="detail-list">${filled.map(([key, label]) => `<div><dt>${label}</dt><dd>${E(profile[key])}</dd></div>`).join("")}</dl><p class="micro-copy">${profile.entered_by === "teacher" ? "Entered by the teacher." : profile.entered_by === "self" ? "Self-reported." : "Optional learning context."} Accent preference is not inferred from region.</p>` : '<p class="muted small">No language or region details have been added. These are optional, and learning can continue without them.</p>';
+  }
+  async function learningProfile(ctx) {
+    const role = session().user.role;
+    const response = await api(`/${role}/profile`);
+    if (!ctx.live()) return;
+    const profile = response.learning_profile || {};
+    ctx.show(
+      heading(
+        "A little about your learning.",
+        "Share the details you want your learning space to know. Every field is optional.",
+        "",
+        "Learning profile"
+      ) + `<div class="two-column"><section class="panel"><h2>Language & region</h2><form id="learning-profile-form">${profileInputs(profile)}<div class="form-error" role="alert"></div><div class="form-actions"><button type="submit" class="button button-primary">Save profile</button></div></form></section><aside><section class="panel"><div class="card-symbol" style="margin-bottom:20px">${icon("leaf", 23)}</div><h2>Your voice belongs here.</h2><p class="muted small">People speak English in many valid ways. Your first language and region provide context; they are not a measure of your ability.</p><div class="notice"><p>An accent preference is something you choose. It is saved as guidance and does not change current scores.</p></div><p class="micro-copy" style="margin-top:18px">${profile.entered_by === "teacher" ? "Your teacher added the current details. You can update them here." : "You control these optional details. Leave a field blank to clear it."}</p></section></aside></div>`
+    );
+    const form = ctx.content.querySelector("form");
+    form.onsubmit = async (event) => {
+      event.preventDefault();
+      formError(form, "");
+      const body = { learning_profile: profileValues(form) };
+      busy(form, true, "Saving\u2026");
+      lockEditing(form, true);
+      try {
+        await api(`/${role}/profile`, { method: "PATCH", body });
+        if (ctx.live()) {
+          toast("Your learning profile has been saved.");
+          route();
+        }
+      } catch (error) {
+        if (ctx.live()) formError(form, error.message);
+      } finally {
+        busy(form, false);
+        lockEditing(form, false);
+      }
+    };
+  }
+  function editStudentProfile(ctx, student) {
+    openModal(
+      "Learning profile",
+      `Optional language and region details for ${student.display_name}.`,
+      `<form>${profileInputs(student.learning_profile || {}, "student-profile")}<div class="notice" style="margin-top:20px"><p>These details will be marked as teacher-entered and visible to this student. Accent preference is chosen, not inferred.</p></div><div class="form-error" role="alert"></div><div class="form-actions"><button type="submit" class="button button-primary">Save learning profile</button></div></form>`,
+      (el) => {
+        const form = el.querySelector("form");
+        form.onsubmit = async (event) => {
+          event.preventDefault();
+          formError(form, "");
+          const body = { learning_profile: profileValues(form) };
+          busy(form, true, "Saving\u2026");
+          lockEditing(form, true);
+          try {
+            await api(`/teacher/students/${student.id}/profile`, {
+              method: "PATCH",
+              body
+            });
+            if (!ctx.live() || !liveModalForm(form)) return;
+            modal.close();
+            toast("Student learning profile saved.");
+            route();
+          } catch (error) {
+            if (liveModalForm(form)) formError(form, error.message);
+          } finally {
+            busy(form, false);
+            lockEditing(form, false);
+          }
+        };
+      }
+    );
   }
   async function route() {
     var _a;
@@ -701,7 +935,8 @@
       students: "Student progress",
       practice: "Practice",
       attempts: "Your feedback",
-      history: "My progress"
+      history: "My progress",
+      profile: "Learning profile"
     };
     app.querySelector("#breadcrumb").textContent = names[section] || "Workspace";
     const content = app.querySelector("#content");
@@ -727,6 +962,7 @@
           id === "new" ? await createAssignment(ctx, sub) : id ? await teacherAssignment(ctx, id) : await teacherAssignments(ctx);
         else if (section === "students" && id) await studentDetail(ctx, id);
         else if (section === "progress") await teacherProgress(ctx);
+        else if (section === "profile") await learningProfile(ctx);
         else go("overview");
       } else {
         if (section === "overview") await studentOverview(ctx);
@@ -736,6 +972,7 @@
           await practice(ctx, id, sub);
         else if (section === "attempts" && id) await attemptResult(ctx, id);
         else if (section === "history") await studentHistory(ctx);
+        else if (section === "profile") await learningProfile(ctx);
         else go("overview");
       }
       if (ctx.live()) {
@@ -760,7 +997,7 @@
     );
   }
   async function teacherOverview(ctx) {
-    const [overview, list] = await Promise.all([
+    const [overview, list2] = await Promise.all([
       api("/teacher/overview"),
       api("/teacher/classrooms")
     ]);
@@ -772,7 +1009,7 @@
         "A little guidance today can make a big difference tomorrow.",
         linkButton("problems/new", "Create a practice", "primary", "plus"),
         "Your classroom, at a glance"
-      ) + `<section class="hero"><div class="hero-copy"><div class="eyebrow">Learning begins with a voice</div><h2>Help every student<br>find their confidence.</h2><p>Create a practice in your own voice, share it with your class, and follow their progress, one sentence at a time.</p>${linkButton("problems/new", "Make something to learn", "amber", "arrow")}</div><div class="hero-art">${art()}</div></section><div class="stats-grid">${stat("Your classrooms", c.classrooms, "class")}${stat("Students learning", c.students, "users")}${stat("Practices created", c.problems, "book")}${stat("Awaiting your review", c.needs_review, "message")}</div><div class="two-column"><section class="panel"><div class="panel-heading"><div><h2>My classrooms</h2><p>Small communities, growing together.</p></div><a class="text-button" href="#/classrooms">View all ${icon("arrow", 14)}</a></div>${A(list).length ? A(list).slice(0, 4).map(
+      ) + `<section class="hero"><div class="hero-copy"><div class="eyebrow">Learning begins with a voice</div><h2>Help every student<br>find their confidence.</h2><p>Create a practice in your own voice, share it with your class, and follow their progress, one sentence at a time.</p>${linkButton("problems/new", "Make something to learn", "amber", "arrow")}</div><div class="hero-art">${art()}</div></section><div class="stats-grid">${stat("Your classrooms", c.classrooms, "class")}${stat("Students learning", c.students, "users")}${stat("Practices created", c.problems, "book")}${stat("Awaiting your review", c.needs_review, "message")}</div><div class="two-column"><section class="panel"><div class="panel-heading"><div><h2>My classrooms</h2><p>Small communities, growing together.</p></div><a class="text-button" href="#/classrooms">View all ${icon("arrow", 14)}</a></div>${A(list2).length ? A(list2).slice(0, 4).map(
         (cls) => `<a class="activity-item" href="#/classrooms/${E(cls.id)}"><span class="activity-icon">${icon("class", 18)}</span><div class="activity-body"><strong>${E(cls.name)}</strong><p>${E(cls.school_name)}</p></div><span class="badge">${E(cls.student_count || 0)} students</span></a>`
       ).join("") : empty(
         "A classroom of possibilities",
@@ -794,7 +1031,7 @@
       );
   }
   async function classrooms(ctx) {
-    const list = await api("/teacher/classrooms");
+    const list2 = await api("/teacher/classrooms");
     if (!ctx.live()) return;
     ctx.show(
       heading(
@@ -802,7 +1039,7 @@
         "Bring your students together by school, class and postal PIN.",
         '<button class="button button-primary" id="new-classroom">' + icon("plus", 15) + " New classroom</button>",
         "Room to grow"
-      ) + (A(list).length ? `<div class="card-grid">${list.map((cls) => `<a class="class-card" href="#/classrooms/${E(cls.id)}"><div class="card-top"><span class="card-symbol">${icon("class", 23)}</span><span class="badge">${E(cls.student_count || 0)} students</span></div><h3>${E(cls.name)}</h3><p>${E(cls.school_name)}<br>Postal PIN ${E(cls.postal_code)}</p><div class="card-bottom"><span>Open classroom</span>${icon("arrow", 16)}</div></a>`).join("")}</div>` : `<section class="panel">${empty("Your first classroom starts here", "Organize your students by school and class. Each classroom has a separate join code for identification.", '<button class="button button-primary" data-new-class>Set up a classroom</button>', false, "class")}</section>`)
+      ) + (A(list2).length ? `<div class="card-grid">${list2.map((cls) => `<a class="class-card" href="#/classrooms/${E(cls.id)}"><div class="card-top"><span class="card-symbol">${icon("class", 23)}</span><span class="badge">${E(cls.student_count || 0)} students</span></div><h3>${E(cls.name)}</h3><p>${E(cls.school_name)}<br>Postal PIN ${E(cls.postal_code)}</p><div class="card-bottom"><span>Open classroom</span>${icon("arrow", 16)}</div></a>`).join("")}</div>` : `<section class="panel">${empty("Your first classroom starts here", "Organize your students by school and class. Each classroom has a separate join code for identification.", '<button class="button button-primary" data-new-class>Set up a classroom</button>', false, "class")}</section>`)
     );
     ctx.content.querySelectorAll("#new-classroom,[data-new-class]").forEach((btn) => btn.onclick = createClassroomModal);
   }
@@ -850,7 +1087,7 @@
       (btn) => btn.onclick = () => openModal(
         "Welcome a new learner",
         "Create their account and share the sign-in details with them.",
-        `<form><div class="form-grid"><div class="field full"><label for="student-name">Student's full name</label><input id="student-name" name="display_name" required maxlength="100" autocomplete="off" placeholder="e.g. Aarav Sharma"></div><div class="field full"><label for="student-login">Unique student username</label><input id="student-login" name="login_name" required minlength="3" maxlength="80" autocomplete="off" placeholder="e.g. aarav.class6"><small>Use letters, numbers, dots, underscores or hyphens.</small></div><div class="field full"><label for="student-password">Initial password</label><input id="student-password" name="password" type="password" required minlength="8" maxlength="256" autocomplete="new-password" placeholder="At least 8 characters"><small>Share this securely. The password cannot be retrieved later.</small></div></div><div class="form-error" role="alert"></div><div class="form-actions"><button type="submit" class="button button-primary">Add student</button></div></form>`,
+        `<form><div class="form-grid"><div class="field full"><label for="student-name">Student's full name</label><input id="student-name" name="display_name" required maxlength="100" autocomplete="off" placeholder="e.g. Aarav Sharma"></div><div class="field full"><label for="student-login">Unique student username</label><input id="student-login" name="login_name" required minlength="3" maxlength="80" autocomplete="off" placeholder="e.g. aarav.class6"><small>Use letters, numbers, dots, underscores or hyphens.</small></div><div class="field full"><label for="student-password">Initial password</label><input id="student-password" name="password" type="password" required minlength="8" maxlength="256" autocomplete="new-password" placeholder="At least 8 characters"><small>Share this securely. The password cannot be retrieved later.</small></div></div>${optionalProfileInputs("new-student-profile")}<div class="form-error" role="alert"></div><div class="form-actions"><button type="submit" class="button button-primary">Add student</button></div></form>`,
         (el) => {
           el.querySelector("form").onsubmit = async (event) => {
             event.preventDefault();
@@ -860,7 +1097,12 @@
             try {
               await api(`/teacher/classrooms/${id}/students`, {
                 method: "POST",
-                body: Object.fromEntries(new FormData(form))
+                body: {
+                  display_name: form.querySelector("[name=display_name]").value,
+                  login_name: form.querySelector("[name=login_name]").value,
+                  password: form.querySelector("[name=password]").value,
+                  learning_profile: profileValues(form)
+                }
               });
               if (!ctx.live() || !liveModalForm(form)) return;
               modal.close();
@@ -881,7 +1123,7 @@
     return `<a class="problem-card" href="#/problems/${E(problem.id)}"><div class="card-top"><span class="card-symbol">${icon(kindIcon(problem.kind), 22)}</span>${badge(problem.kind)}</div><h3>${E(problem.title)}</h3><p>${E((problem.expected_text || "").slice(0, 130))}${((_a = problem.expected_text) == null ? void 0 : _a.length) > 130 ? "\u2026" : ""}</p><div class="card-bottom"><span class="id-label">${shortId(problem.id)}</span><span>Open practice ${icon("arrow", 12)}</span></div></a>`;
   }
   async function problems(ctx) {
-    const list = A(await api("/teacher/problems"));
+    const list2 = A(await api("/teacher/problems"));
     if (!ctx.live()) return;
     ctx.show(
       heading(
@@ -895,10 +1137,10 @@
     const results = ctx.content.querySelector("#problem-results"), search = ctx.content.querySelector("#problem-search");
     const render = () => {
       const query = search.value.trim().toLowerCase();
-      const found = list.filter(
+      const found = list2.filter(
         (p) => (filter === "all" || p.kind === filter) && `${p.title} ${p.id}`.toLowerCase().includes(query)
       );
-      results.innerHTML = found.length ? `<div class="card-grid">${found.map(problemCard).join("")}</div>` : `<section class="panel">${empty(list.length ? "No practices found" : "Start with a single sentence", list.length ? "Try a different search or choose another practice type." : "Record your voice, build a word quiz, match ideas or explore meaning.", list.length ? "" : linkButton("problems/new", "Create your first practice", "primary", "plus"))}</section>`;
+      results.innerHTML = found.length ? `<div class="card-grid">${found.map(problemCard).join("")}</div>` : `<section class="panel">${empty(list2.length ? "No practices found" : "Start with a single sentence", list2.length ? "Try a different search or choose another practice type." : "Record your voice, build a word quiz, match ideas or explore meaning.", list2.length ? "" : linkButton("problems/new", "Create your first practice", "primary", "plus"))}</section>`;
     };
     ctx.content.querySelectorAll("[data-kind]").forEach(
       (btn) => btn.onclick = () => {
@@ -1143,7 +1385,7 @@
     return `<a class="assignment-card" href="#/assignments/${E(item.id)}"><div class="card-top"><span class="card-symbol">${icon("clipboard", 22)}</span>${student ? `<span class="badge ${completed === total && total ? "green" : "amber"}">${completed === total && total ? "Completed" : completed ? "In progress" : "Ready to start"}</span>` : `<span class="badge">${E(item.student_count || 0)} students</span>`}</div><h3>${E(item.title)}</h3><p>${E(student ? item.teacher_name || "Assigned by your teacher" : item.target_label || "Your classroom")}</p>${student ? `<div class="progress-caption"><span>${completed} of ${total} completed</span><span>${Math.round(ratio)}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${ratio}%"></div></div>` : ""}<div class="card-bottom"><span>${total} ${total === 1 ? "practice" : "practices"} \xB7 ${date(item.created_at)}</span>${icon("arrow", 16)}</div></a>`;
   }
   async function teacherAssignments(ctx) {
-    const list = A(await api("/teacher/assignments"));
+    const list2 = A(await api("/teacher/assignments"));
     if (!ctx.live()) return;
     ctx.show(
       heading(
@@ -1151,7 +1393,7 @@
         "Share a practice with your classroom or focus on an individual learner.",
         linkButton("assignments/new", "New assignment", "primary", "plus"),
         "A little direction goes a long way"
-      ) + (list.length ? `<div class="card-grid">${list.map((item) => assignmentCard(item)).join("")}</div>` : `<section class="panel">${empty("A practice is better when shared", "Choose one or more practices from your library and send them to your students.", linkButton("assignments/new", "Create an assignment", "primary", "plus"), false, "clipboard")}</section>`)
+      ) + (list2.length ? `<div class="card-grid">${list2.map((item) => assignmentCard(item)).join("")}</div>` : `<section class="panel">${empty("A practice is better when shared", "Choose one or more practices from your library and send them to your students.", linkButton("assignments/new", "Create an assignment", "primary", "plus"), false, "clipboard")}</section>`)
     );
   }
   async function createAssignment(ctx, defaultProblemId = null) {
@@ -1317,11 +1559,11 @@
     };
   }
   function attemptCard(attempt, review = false) {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f, _g;
     const display = (_a = attempt.answer_display) != null ? _a : attempt.answer;
     const textAnswer = typeof display === "string" ? display : null;
     const pairAnswer = Array.isArray(display) ? display : null;
-    return `<article class="attempt-card"><div class="attempt-heading"><div><h3>${E(attempt.problem_title || "Practice attempt")}${review && attempt.student_name ? ` <span class="muted">\xB7 ${E(attempt.student_name)}</span>` : ""}</h3><p>${kindName(attempt.kind)} \xB7 ${date(attempt.created_at)} \xB7 Attempt ${shortId(attempt.id)}</p></div><div class="button-row">${statusBadge(attempt.status)}<span class="activity-score">${pct(attempt.score)}</span></div></div>${textAnswer ? `<div class="attempt-answer"><strong>Submitted answer:</strong> ${E(textAnswer)}</div>` : ""}${pairAnswer ? `<div class="table-wrap"><table><thead><tr><th>Item</th><th>Student's match</th></tr></thead><tbody>${pairAnswer.map((pair) => `<tr><td>${E(pair.left)}</td><td>${E(pair.right)}</td></tr>`).join("")}</tbody></table></div>` : ""}${attempt.reference_audio_url ? `<p class="micro-copy" style="margin-bottom:8px">Teacher's reference</p>${audioPlayer(attempt.reference_audio_url, "Teacher reference recording")}` : ""}${attempt.audio_url ? `<p class="micro-copy" style="margin-bottom:8px">Student's recording</p>${audioPlayer(attempt.audio_url, "Student practice recording")}` : ""}${attempt.feedback ? `<p class="attempt-feedback">${E(attempt.feedback)}</p>` : ""}${((_b = attempt.result) == null ? void 0 : _b.transcript) ? `<p class="micro-copy"><strong>Heard:</strong> ${E(attempt.result.transcript)}</p>` : ""}${review && typeof ((_c = attempt.result) == null ? void 0 : _c.suggested_score) === "number" && !((_d = attempt.result) == null ? void 0 : _d.teacher_review) ? `<div class="notice amber" style="margin-top:14px">${icon("message", 16)}<p><strong>Unverified AI suggestion: ${pct(attempt.result.suggested_score)}</strong><br>${E(attempt.result.explanation || "Use your own judgment before choosing a score. This suggestion is hidden from students.")}</p></div>` : ""}${review && attempt.kind === "read_aloud" && attempt.result ? `<details class="collapsible"><summary>Explore experimental reading and voice evidence</summary>${readingMetrics(attempt.result, attempt.status)}</details>` : ""}${review ? `<div class="attempt-actions"><button class="text-button" data-review="${E(attempt.id)}" data-score="${(_e = attempt.score) != null ? _e : ""}" data-feedback="${E(attempt.feedback || "")}">${icon("message", 14)} ${attempt.status === "needs_review" ? "Give feedback" : "Review attempt"}</button></div>` : `<div class="attempt-actions"><a class="text-button" href="#/attempts/${E(attempt.id)}">Open feedback ${icon("arrow", 14)}</a></div>`}</article>`;
+    return `<article class="attempt-card"><div class="attempt-heading"><div><h3>${E(attempt.problem_title || "Practice attempt")}${review && attempt.student_name ? ` <span class="muted">\xB7 ${E(attempt.student_name)}</span>` : ""}</h3><p>${kindName(attempt.kind)} \xB7 ${date(attempt.created_at)} \xB7 Attempt ${shortId(attempt.id)}</p></div><div class="button-row">${statusBadge(attempt.status)}<span class="activity-score">${pct(attempt.score)}</span></div></div>${textAnswer ? `<div class="attempt-answer"><strong>Submitted answer:</strong> ${E(textAnswer)}</div>` : ""}${pairAnswer ? `<div class="table-wrap"><table><thead><tr><th>Item</th><th>Student's match</th></tr></thead><tbody>${pairAnswer.map((pair) => `<tr><td>${E(pair.left)}</td><td>${E(pair.right)}</td></tr>`).join("")}</tbody></table></div>` : ""}${attempt.reference_audio_url ? `<p class="micro-copy" style="margin-bottom:8px">Teacher's reference</p>${audioPlayer(attempt.reference_audio_url, "Teacher reference recording")}` : ""}${attempt.audio_url ? `<p class="micro-copy" style="margin-bottom:8px">Student's recording</p>${audioPlayer(attempt.audio_url, "Student practice recording")}` : ""}${((_b = attempt.result) == null ? void 0 : _b.teacher_review) ? `<div class="teacher-guidance"><span class="eyebrow">Teacher feedback</span><p>${E(attempt.feedback || attempt.result.teacher_review.feedback)}</p></div>` : attempt.feedback || ((_c = attempt.display_feedback) == null ? void 0 : _c.summary) ? `<p class="attempt-feedback">${E(((_d = attempt.display_feedback) == null ? void 0 : _d.summary) || attempt.feedback)}</p>` : ""}${review && typeof ((_e = attempt.result) == null ? void 0 : _e.suggested_score) === "number" && !((_f = attempt.result) == null ? void 0 : _f.teacher_review) ? `<div class="notice amber" style="margin-top:14px">${icon("message", 16)}<p><strong>Unverified AI suggestion: ${pct(attempt.result.suggested_score)}</strong><br>${E(attempt.result.explanation || "Use your own judgment before choosing a score. This suggestion is hidden from students.")}</p></div>` : ""}${review && attempt.kind === "read_aloud" && attempt.status !== "pending" ? `<details class="collapsible reading-guidance" open><summary>Reading guidance</summary>${simpleReadingFeedback(attempt)}<details class="collapsible technical-evidence"><summary>Detailed analysis <span class="muted">(optional)</span></summary>${readingMetrics(attempt.result, attempt.status)}</details></details>` : ""}${review ? `<div class="attempt-actions"><button class="text-button" data-review="${E(attempt.id)}" data-score="${(_g = attempt.score) != null ? _g : ""}" data-feedback="${E(attempt.feedback || "")}">${icon("message", 14)} ${attempt.status === "needs_review" ? "Give feedback" : "Review attempt"}</button></div>` : `<div class="attempt-actions"><a class="text-button" href="#/attempts/${E(attempt.id)}">Open feedback ${icon("arrow", 14)}</a></div>`}</article>`;
   }
   function bindReviews(container) {
     container.querySelectorAll("[data-review]").forEach(
@@ -1390,18 +1632,22 @@
   }
   function skillProgress(progress) {
     const skills = A(progress == null ? void 0 : progress.skills);
-    return skills.length ? skills.map(
-      (skill) => `<div class="skill-row"><div class="skill-row-header"><span>${E(skillName(skill.skill))}</span><strong>${pct(skill.average_score)}</strong></div><div class="progress-track"><div class="progress-fill" style="width:${typeof skill.average_score === "number" ? Math.max(0, Math.min(100, skill.average_score * 100)) : 0}%"></div></div><small>${Number(skill.attempt_count || 0)} submitted ${Number(skill.attempt_count || 0) === 1 ? "practice" : "practices"}</small></div>`
-    ).join("") : empty(
-      "Progress takes practice",
-      "Assessed attempts will show which skills are growing and which need extra care.",
-      "",
-      true,
-      "chart"
-    );
+    if (!skills.length)
+      return empty(
+        "Your skills will take shape here",
+        "Complete a practice to see feedback for that skill. A missing score means it has not been graded, not that you scored zero.",
+        "",
+        true,
+        "chart"
+      );
+    return skills.map((skill) => {
+      const scored = typeof skill.average_score === "number" && Number.isFinite(skill.average_score);
+      const count = typeof skill.submitted_problems === "number" ? `${skill.submitted_problems} ${skill.submitted_problems === 1 ? "practice" : "practices"} \xB7 ` : "";
+      return `<div class="skill-row"><div class="skill-row-header"><span>${E(skillName(skill.skill))}</span><strong>${scored ? pct(skill.average_score) : "Not graded yet"}</strong></div>${scored ? `<div class="progress-track" role="img" aria-label="${E(skillName(skill.skill))}: ${pct(skill.average_score)}"><div class="progress-fill" style="width:${Math.max(0, Math.min(100, skill.average_score * 100))}%"></div></div>` : '<div class="ungraded-bar">Waiting for feedback</div>'}<small>${count}${Number(skill.attempt_count || 0)} ${Number(skill.attempt_count || 0) === 1 ? "attempt" : "attempts"}</small></div>`;
+    }).join("") + '<p class="micro-copy skill-note">Each bar is a separate skill score. Pace, pitch and pronunciation do not have percentage grades.</p>';
   }
   async function studentDetail(ctx, id) {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f;
     const student = await api(`/teacher/students/${id}`);
     if (!ctx.live()) return;
     const c = student.counts || {}, attempts = A(student.attempts), review = attempts.filter((item) => item.status === "needs_review");
@@ -1445,6 +1691,15 @@
         };
       }
     );
+    const historyHeading = [
+      ...ctx.content.querySelectorAll(".section-heading")
+    ].find((element) => element.textContent.includes("Practice history"));
+    historyHeading.insertAdjacentHTML(
+      "beforebegin",
+      `<section class="panel student-profile-panel"><div class="panel-heading"><h2>Learning profile</h2><button class="text-button" id="edit-student-profile">Edit details ${icon("arrow", 14)}</button></div>${profileSummary(student.learning_profile || {})}</section><div class="insight-grid"><section class="panel"><div class="panel-heading"><div><h2>Current practice status</h2><p>One slice for each assigned practice.</p></div></div>${completionChart((_f = student.progress) == null ? void 0 : _f.current_practice_status)}</section><section class="panel"><div class="panel-heading"><div><h2>Practice scores over time</h2><p>Compare one activity type at a time.</p></div></div>${trendPanel(attempts, "student-learning-trend")}</section></div>`
+    );
+    ctx.content.querySelector("#edit-student-profile").onclick = () => editStudentProfile(ctx, student);
+    bindTrend(ctx.content, attempts);
   }
   async function teacherProgress(ctx) {
     const classes = A(await api("/teacher/classrooms"));
@@ -1477,13 +1732,13 @@
       };
   }
   async function studentOverview(ctx) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     const [overview, assignments] = await Promise.all([
       api("/student/overview"),
       api("/student/assignments")
     ]);
     if (!ctx.live()) return;
-    const c = overview.counts || {}, name = (((_a = overview.student) == null ? void 0 : _a.display_name) || session().user.display_name).split(" ")[0], list = A(assignments), next = list.find(
+    const c = overview.counts || {}, name = (((_a = overview.student) == null ? void 0 : _a.display_name) || session().user.display_name).split(" ")[0], list2 = A(assignments), next = list2.find(
       (item) => (item.completed_count || 0) < item.problem_count
     );
     ctx.show(
@@ -1492,11 +1747,16 @@
         overview.classroom ? `${overview.classroom.name} \xB7 ${overview.classroom.school_name}` : "Your own space to practice, explore and find your voice.",
         "",
         "One step at a time"
-      ) + `<section class="hero"><div class="hero-copy"><div class="eyebrow">Your voice is worth hearing</div><h2>Every try is a step<br>towards confidence.</h2><p>Listen to your teacher, give it a go, and learn something new about what you can do.</p>${linkButton(next ? `assignments/${next.id}` : "assignments", next ? "Continue your learning" : "Explore your assignments", "amber", "arrow")}</div><div class="hero-art">${art()}</div></section><div class="stats-grid">${stat("Your assignments", c.assignments, "clipboard")}${stat("Practices submitted", (_b = c.submitted_problems) != null ? _b : c.completed_problems, "book")}${stat("Times you tried", c.attempts, "mic")}${stat("Average assessed score", pct((_c = overview.progress) == null ? void 0 : _c.average_score), "chart")}</div><div class="section-heading"><h2>Ready for your next step?</h2><a class="text-button" href="#/assignments">All assignments ${icon("arrow", 14)}</a></div>${list.length ? `<div class="card-grid">${list.slice(0, 3).map((item) => assignmentCard(item, true)).join("")}</div>` : `<section class="panel">${empty("Something good is on its way", "Your teacher will share assignments here. Come back when your first practice is ready.", "", true, "leaf")}</section>`}<div class="section-heading"><h2>Little signs of progress</h2></div><div class="two-column"><section class="panel"><div class="panel-heading"><h3>Growing skills</h3>${icon("chart", 18)}</div>${skillProgress(overview.progress)}</section><section class="panel"><div class="panel-heading"><h3>Your latest feedback</h3>${icon("message", 18)}</div>${activity(overview.recent_feedback, false)}</section></div>`
+      ) + `<section class="hero"><div class="hero-copy"><div class="eyebrow">Your voice is worth hearing</div><h2>Every try is a step<br>towards confidence.</h2><p>Listen to your teacher, give it a go, and learn something new about what you can do.</p>${linkButton(next ? `assignments/${next.id}` : "assignments", next ? "Continue your learning" : "Explore your assignments", "amber", "arrow")}</div><div class="hero-art">${art()}</div></section><div class="stats-grid">${stat("Your assignments", c.assignments, "clipboard")}${stat("Practices submitted", (_b = c.submitted_problems) != null ? _b : c.completed_problems, "book")}${stat("Times you tried", c.attempts, "mic")}${stat("Average assessed score", pct((_c = overview.progress) == null ? void 0 : _c.average_score), "chart")}</div><div class="section-heading"><h2>Ready for your next step?</h2><a class="text-button" href="#/assignments">All assignments ${icon("arrow", 14)}</a></div>${list2.length ? `<div class="card-grid">${list2.slice(0, 3).map((item) => assignmentCard(item, true)).join("")}</div>` : `<section class="panel">${empty("Something good is on its way", "Your teacher will share assignments here. Come back when your first practice is ready.", "", true, "leaf")}</section>`}<div class="section-heading"><h2>Little signs of progress</h2></div><div class="two-column"><section class="panel"><div class="panel-heading"><h3>Growing skills</h3>${icon("chart", 18)}</div>${skillProgress(overview.progress)}</section><section class="panel"><div class="panel-heading"><h3>Your latest feedback</h3>${icon("message", 18)}</div>${activity(overview.recent_feedback, false)}</section></div>`
+    );
+    const nextSection = ctx.content.querySelector(".section-heading");
+    nextSection.insertAdjacentHTML(
+      "beforebegin",
+      `<section class="panel overview-completion"><div class="panel-heading"><div><h2>Your practice at a glance</h2><p>See what is ready, waiting and still to try.</p></div><a class="text-button" href="#/history">Explore your progress ${icon("arrow", 14)}</a></div>${completionChart((_d = overview.progress) == null ? void 0 : _d.current_practice_status)}</section>`
     );
   }
   async function studentAssignments(ctx) {
-    const list = A(await api("/student/assignments"));
+    const list2 = A(await api("/student/assignments"));
     if (!ctx.live()) return;
     ctx.show(
       heading(
@@ -1504,7 +1764,7 @@
         "Your teacher has chosen these challenges for you. Take them at your own pace.",
         "",
         "My assignments"
-      ) + (list.length ? `<div class="card-grid">${list.map((item) => assignmentCard(item, true)).join("")}</div>` : `<section class="panel">${empty("Your next adventure is on its way", "Your teacher has not assigned any practices yet. When they do, you will find them right here.", "", false, "clipboard")}</section>`)
+      ) + (list2.length ? `<div class="card-grid">${list2.map((item) => assignmentCard(item, true)).join("")}</div>` : `<section class="panel">${empty("Your next adventure is on its way", "Your teacher has not assigned any practices yet. When they do, you will find them right here.", "", false, "clipboard")}</section>`)
     );
   }
   function latestAttempt(problem) {
@@ -1746,7 +2006,7 @@
     )}</div><p class="micro-copy">The line shows how your voice rises and falls. This is practice guidance, not a grade.</p><details class="collapsible"><summary>About this analysis</summary><p class="micro-copy">${E(pitch.interpretation || "This contour describes pitch movement within the recording. Different voices naturally have different pitch ranges.")}</p></details>${points.length ? `<details class="collapsible"><summary>Compare expression word by word</summary><p class="micro-copy">Each voice is centered on its own median. These measurements describe contour differences; they are not accuracy or emotion grades.</p><div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>Word</th><th>Student</th><th>Reference</th><th>Difference</th></tr></thead><tbody>${points.map((point) => `<tr><td>${E(point.word)}</td><td>${Number(point.student_semitones).toFixed(1)} st</td><td>${Number(point.reference_semitones).toFixed(1)} st</td><td>${Number(point.difference_semitones).toFixed(1)} st</td></tr>`).join("")}</tbody></table></div><p class="micro-copy">${E(comparison.interpretation || "Word alignment and pitch estimation can make mistakes. Use listening and teacher judgment alongside these measurements.")}</p></details>` : ""}`;
   }
   async function attemptResult(ctx, id) {
-    var _a, _b, _c, _d, _e;
+    var _a, _b;
     let context = null;
     try {
       context = JSON.parse(
@@ -1757,10 +2017,13 @@
     const attempt = await api(`/student/attempts/${id}`);
     if (!ctx.live()) return;
     const isReading = (attempt.kind || (context == null ? void 0 : context.kind)) === "read_aloud" || ((_a = attempt.result) == null ? void 0 : _a.pitch), completed = attempt.status === "completed" && typeof attempt.score === "number", pending = attempt.status === "pending";
-    const title = pending ? "Your practice is being heard." : attempt.status === "needs_review" ? "Your teacher will take a look." : attempt.status === "failed" ? "Your attempt has been saved." : completed && attempt.score >= 0.85 ? "A thoughtful step forward." : completed && attempt.score >= 0.5 ? "You\u2019re building understanding." : "Every try teaches you something.";
-    const subtitle = pending ? "Your recording or answer is saved. We are preparing your feedback." : attempt.status === "needs_review" ? "This practice needs a teacher\u2019s judgment before a score is given." : attempt.status === "failed" ? "Automatic analysis could not finish. Your teacher can still review your saved attempt." : isReading ? "This is a word-match estimate to support practice. Your teacher can review it." : "Keep the feedback in mind and carry it into your next practice.";
+    const display = attempt.display_feedback || {};
+    const title = display.headline || (pending ? "Your practice is being heard." : attempt.status === "needs_review" ? "Your teacher will take a look." : attempt.status === "failed" ? "Your attempt has been saved." : completed && attempt.score >= 0.85 ? "A thoughtful step forward." : "Every try teaches you something.");
+    const subtitle = display.summary || (pending ? "Your answer is saved. We are preparing your feedback." : attempt.status === "needs_review" ? "Your teacher will help check this attempt before a score is given." : attempt.status === "failed" ? "Your recording is saved. Automatic feedback was unavailable; your teacher can still help." : isReading ? "Listen again, notice one small thing, and give the sentence another try." : "Keep the feedback in mind as you try the next practice.");
+    const teacherReview = (_b = attempt.result) == null ? void 0 : _b.teacher_review;
+    const textTips = !isReading ? A(display.next_steps).slice(0, 2) : [];
     ctx.show(
-      `<div class="practice-content"><a class="back-link" href="#/${context ? `assignments/${E(context.assignmentId)}` : "assignments"}">${icon("back", 14)} Back to assignments</a><section class="panel"><div class="result-hero"><div class="score-orb">${pending ? '<span class="spinner"></span>' : completed ? `<strong>${pct(attempt.score)}</strong><span>${((_b = attempt.result) == null ? void 0 : _b.teacher_review) ? "Teacher score" : isReading ? "Word match" : "Practice score"}</span>` : icon(attempt.status === "needs_review" ? "message" : "leaf", 34)}</div>${statusBadge(attempt.status)}<h2 style="margin-top:18px">${title}</h2><p>${subtitle}</p></div>${attempt.problem_title || (context == null ? void 0 : context.title) ? `<p class="eyebrow" style="text-align:center">${E(attempt.problem_title || context.title)}</p>` : ""}${attempt.feedback ? `<div class="feedback-box">${E(attempt.feedback)}</div>` : ""}${attempt.audio_url ? `<div class="section-heading"><h3>Your recording</h3></div>${audioPlayer(attempt.audio_url, "Your submitted recording")}` : ""}${isReading && !pending ? readingMetrics(attempt.result, attempt.status) : ""}${!isReading && completed && !((_c = attempt.result) == null ? void 0 : _c.teacher_review) && ((_d = attempt.result) == null ? void 0 : _d.classification) ? `<div class="notice" style="margin-top:20px">${icon("leaf", 16)}<p>${E({ correct: "Your answer captures the expected idea.", partial: "Your answer shows part of the idea. Explore the feedback to develop it further.", incorrect: "Try revisiting the question and your teacher\u2019s guidance." }[attempt.result.classification] || "")}</p></div>` : ""}${((_e = attempt.result) == null ? void 0 : _e.teacher_review) ? '<p class="micro-copy">This feedback includes a teacher review.</p>' : ""}<div id="poll-note" class="micro-copy" style="text-align:center"></div><div class="form-actions" style="justify-content:center;flex-wrap:wrap">${context ? linkButton(`practice/${context.assignmentId}/${context.itemId}`, "Try this practice again", "secondary") : linkButton("history", "My progress", "secondary")}${(context == null ? void 0 : context.nextId) ? linkButton(`practice/${context.assignmentId}/${context.nextId}`, "Next practice", "primary", "arrow") : linkButton(context ? `assignments/${context.assignmentId}` : "assignments", "Back to my learning", "primary", "arrow")}</div></section></div>`
+      `<div class="practice-content feedback-page"><a class="back-link" href="#/${context ? `assignments/${E(context.assignmentId)}` : "assignments"}">${icon("back", 14)} Back to assignments</a><section class="panel"><div class="result-hero"><div class="score-orb">${pending ? '<span class="spinner"></span>' : completed ? `<strong>${pct(attempt.score)}</strong><span>${teacherReview ? "Teacher score" : isReading ? "Word match" : "Practice score"}</span>` : icon(attempt.status === "needs_review" ? "message" : "leaf", 34)}</div>${statusBadge(attempt.status)}<h2 style="margin-top:18px">${E(title)}</h2><p>${E(subtitle)}</p></div>${attempt.problem_title || (context == null ? void 0 : context.title) ? `<p class="eyebrow" style="text-align:center">${E(attempt.problem_title || context.title)}</p>` : ""}${teacherReview ? `<div class="teacher-guidance"><span class="eyebrow">A note from your teacher</span><p>${E(attempt.feedback || teacherReview.feedback)}</p></div>` : ""}${isReading && !pending ? simpleReadingFeedback(attempt) : ""}${textTips.length ? `<div class="next-step-box"><span class="eyebrow">Your next small step</span>${textTips.map((tip) => `<p>${E(tip)}</p>`).join("")}</div>` : ""}${attempt.audio_url ? `<div class="section-heading"><h3>Listen and try together</h3></div><div class="listen-grid">${attempt.reference_audio_url ? `<div class="listening-card"><span class="dimension-label">Your teacher's example</span>${audioPlayer(attempt.reference_audio_url, "Teacher reference recording")}</div>` : ""}<div class="listening-card"><span class="dimension-label">Your recording</span>${audioPlayer(attempt.audio_url, "Your submitted recording")}</div></div>` : ""}${isReading && !pending ? `<details class="collapsible technical-evidence"><summary>Detailed analysis <span class="muted">(optional)</span></summary><p class="micro-copy">These measurements support listening and teacher judgment. They are not a separate pronunciation or emotion assessment.</p>${readingMetrics(attempt.result, attempt.status)}</details>` : ""}${!isReading && !display.summary && attempt.feedback && !teacherReview ? `<div class="feedback-box">${E(attempt.feedback)}</div>` : ""}<div id="poll-note" class="micro-copy" style="text-align:center"></div><div class="form-actions" style="justify-content:center;flex-wrap:wrap">${context ? linkButton(`practice/${context.assignmentId}/${context.itemId}`, "Try this practice again", "secondary") : linkButton("history", "My progress", "secondary")}${(context == null ? void 0 : context.nextId) ? linkButton(`practice/${context.assignmentId}/${context.nextId}`, "Next practice", "primary", "arrow") : linkButton(context ? `assignments/${context.assignmentId}` : "assignments", "Back to my learning", "primary", "arrow")}</div></section></div>`
     );
     if (["failed", "needs_review"].includes(attempt.status) && !attempt.reviewed_at && ["read_aloud", "meaning"].includes(attempt.kind || (context == null ? void 0 : context.kind))) {
       const actions = ctx.content.querySelector(".form-actions");
@@ -1811,13 +2074,13 @@
     }
   }
   async function studentHistory(ctx) {
-    var _a, _b;
-    const [overview, list] = await Promise.all([
+    var _a, _b, _c;
+    const [overview, list2] = await Promise.all([
       api("/student/overview"),
       api("/student/assignments")
     ]);
     const details = await Promise.all(
-      A(list).map((item) => api(`/student/assignments/${item.id}`))
+      A(list2).map((item) => api(`/student/assignments/${item.id}`))
     );
     if (!ctx.live()) return;
     const attempts = details.flatMap(
@@ -1851,6 +2114,12 @@
         "My progress"
       ) + `<div class="stats-grid">${stat("Times you tried", c.attempts, "mic")}${stat("Practices submitted", (_a = c.submitted_problems) != null ? _a : c.completed_problems, "book")}${stat("Assignments completed", c.completed_assignments, "checkcircle")}${stat("Average assessed score", pct((_b = overview.progress) == null ? void 0 : _b.average_score), "chart")}</div><section class="panel"><div class="panel-heading"><h2>Your growing skills</h2>${icon("leaf", 20)}</div>${skillProgress(overview.progress)}</section><div class="section-heading"><h2>Your practice story</h2><span class="badge">${attempts.length} attempts</span></div>${attempts.length ? attempts.map((item) => attemptCard(item)).join("") : `<section class="panel">${empty("Your first step is waiting", "Try a practice from your teacher, then come back here to see what you learned.", linkButton("assignments", "Find a practice", "primary", "arrow"), false, "leaf")}</section>`}`
     );
+    const skillsPanel = ctx.content.querySelector(".panel");
+    skillsPanel.insertAdjacentHTML(
+      "beforebegin",
+      `<div class="insight-grid"><section class="panel"><div class="panel-heading"><div><h2>Current practice status</h2><p>Every assigned practice has its own place.</p></div></div>${completionChart((_c = overview.progress) == null ? void 0 : _c.current_practice_status)}</section><section class="panel"><div class="panel-heading"><div><h2>Practice scores over time</h2><p>Choose an activity to follow its scores.</p></div></div>${trendPanel(attempts, "my-learning-trend")}</section></div>`
+    );
+    bindTrend(ctx.content, attempts);
   }
   window.addEventListener("hashchange", route);
   window.addEventListener("session-expired", () => {

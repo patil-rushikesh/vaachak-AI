@@ -27,6 +27,7 @@ from .domain_models import (
     Classroom, ProblemContent, Student,
 )
 from .security import hash_password
+from .profile_service import (LearningProfileInput, ProfileUpdateInput, capture_learning_context, profile_view, update_profile)
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +76,7 @@ class StudentInput(StrictInput):
     login_name: str = Field(min_length=3, max_length=80)
     # Password whitespace is meaningful, unlike display fields.
     password: str = Field(min_length=8, max_length=256)
+    learning_profile: LearningProfileInput = Field(default_factory=LearningProfileInput)
 
     @field_validator("login_name")
     @classmethod
@@ -193,9 +195,10 @@ def _hash(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
 
 
-def _student_view(student):
+def _student_view(student, session):
     return {"id": student.id, "display_name": student.display_name, "login_name": student.login_name,
-            "classroom_id": student.classroom_id, "created_at": student.created_at}
+            "classroom_id": student.classroom_id, "created_at": student.created_at,
+            "learning_profile": profile_view(session, "student", student.id)}
 
 
 def _recording_view(recording):
@@ -260,12 +263,16 @@ def _attempt_view(attempt, session, teacher=False):
         right = {card["id"]: card["text"] for card in item.snapshot["matching_public"]["right"]}
         answer_display = [{"left": left.get(key, "Unknown card"), "right": right.get(value, "Unknown card")}
                           for key, value in attempt.answer.items()]
+    from .feedback_service import learner_feedback
+    display_feedback = learner_feedback(item.snapshot["kind"], result, attempt.score, attempt.status)
     return {"id": attempt.id, "assignment_id": attempt.assignment_id, "problem_id": attempt.item_id,
             "source_problem_id": item.problem_id, "problem_title": item.snapshot["title"],
             "kind": item.snapshot["kind"], "student_id": attempt.student_id,
             "student_name": student.display_name, "status": attempt.status, "score": attempt.score,
-            "feedback": attempt.feedback, "result": result, "answer": attempt.answer, "answer_display": answer_display,
-            "reference_audio_url": f"/recordings/{item.recording_id}/audio" if teacher and item.recording_id else None,
+            "feedback": attempt.feedback, "result": result, "display_feedback": display_feedback,
+            "answer": attempt.answer, "answer_display": answer_display,
+            "reference_audio_url": (f"/recordings/{item.recording_id}/audio" if teacher else f"/student/reference-recordings/{item.recording_id}/audio")
+            if item.recording_id else None,
             "created_at": attempt.created_at, "analyzed_at": attempt.analyzed_at,
             "reviewed_at": attempt.reviewed_at,
             "audio_url": f"/attempts/{attempt.id}/audio" if attempt.original_sha256 else None,
@@ -307,6 +314,7 @@ def _progress(attempts, session):
             "reviewed_problems": sum(a.status == "completed" for a in latest.values()),
             "pending_problems": sum(a.status == "pending" for a in latest.values()),
             "failed_problems": sum(a.status == "failed" for a in latest.values()),
+            "needs_review_problems": sum(a.status == "needs_review" for a in latest.values()),
             "solved_problems": sum(a.score >= .7 for a in assessed),
             "mastery_threshold": .7, "scored_problems": len(scores), "skills": skills,
             "weaknesses": [item for item in skills if item["average_score"] is not None and item["average_score"] < .7]}
@@ -440,6 +448,34 @@ def install_domain_routes(app, ctx):
             # the durable single worker before accepting requests.
             background_tasks.add_task(_run_analysis, factory, directory, identifier)
 
+    @app.get("/teacher/profile")
+    def teacher_profile(teacher=Depends(current_teacher), session: Session = Depends(db)):
+        return {"learning_profile": profile_view(session, "teacher", _identity(teacher))}
+
+    @app.patch("/teacher/profile")
+    def update_teacher_profile(body: ProfileUpdateInput, teacher=Depends(current_teacher), session: Session = Depends(db)):
+        profile = update_profile(session, "teacher", _identity(teacher), body.learning_profile, entered_by="self")
+        session.commit()
+        return {"learning_profile": profile}
+
+    @app.get("/student/profile")
+    def student_profile(student=Depends(current_student), session: Session = Depends(db)):
+        return {"learning_profile": profile_view(session, "student", _identity(student))}
+
+    @app.patch("/student/profile")
+    def update_student_profile(body: ProfileUpdateInput, student=Depends(current_student), session: Session = Depends(db)):
+        profile = update_profile(session, "student", _identity(student), body.learning_profile, entered_by="self")
+        session.commit()
+        return {"learning_profile": profile}
+
+    @app.patch("/teacher/students/{student_id}/profile")
+    def update_owned_student_profile(student_id: UUID, body: ProfileUpdateInput,
+                                     teacher=Depends(current_teacher), session: Session = Depends(db)):
+        student = _owned(Student, student_id, teacher, session, "Student")
+        profile = update_profile(session, "student", student.id, body.learning_profile, entered_by="teacher")
+        session.commit()
+        return {"learning_profile": profile}
+
     @app.get("/teacher/classrooms")
     def classrooms(teacher=Depends(current_teacher), session: Session = Depends(db)):
         return [_classroom_view(row, session) for row in session.scalars(select(Classroom).where(
@@ -460,7 +496,7 @@ def install_domain_routes(app, ctx):
     def classroom_detail(classroom_id: UUID, teacher=Depends(current_teacher), session: Session = Depends(db)):
         classroom = _owned(Classroom, classroom_id, teacher, session, "Classroom")
         value = _classroom_view(classroom, session)
-        value["students"] = [_student_view(student) for student in session.scalars(select(Student).where(
+        value["students"] = [_student_view(student, session) for student in session.scalars(select(Student).where(
             Student.classroom_id == classroom.id).order_by(Student.display_name, Student.id))]
         return value
 
@@ -471,11 +507,13 @@ def install_domain_routes(app, ctx):
                           login_name=body.login_name, password_hash=hash_password(body.password))
         session.add(student)
         try:
+            session.flush()
+            update_profile(session, "student", student.id, body.learning_profile, entered_by="teacher")
             session.commit()
         except IntegrityError:
             session.rollback()
             raise HTTPException(409, "That student login name is already in use; choose another")
-        return _student_view(student)
+        return _student_view(student, session)
 
     @app.patch("/teacher/students/{student_id}/password", status_code=204)
     def reset_student_password(student_id: UUID, body: StudentPasswordInput,
@@ -575,7 +613,7 @@ def install_domain_routes(app, ctx):
                 AssignmentRecipient.assignment_id == assignment.id).order_by(Student.display_name)):
             attempts = _attempts(student.id, session, assignment.id)
             progress = _progress(attempts, session)
-            value["recipients"].append({**_student_view(student), "completed_count": progress["reviewed_problems"], "submitted_count": progress["submitted_problems"],
+            value["recipients"].append({**_student_view(student, session), "completed_count": progress["reviewed_problems"], "submitted_count": progress["submitted_problems"],
                                         "problem_count": value["problem_count"], "attempt_count": len(attempts),
                                         "average_score": progress["average_score"],
                                         "attempts": [_attempt_view(a, session, teacher=True) for a in attempts]})
@@ -585,12 +623,18 @@ def install_domain_routes(app, ctx):
         attempts = _attempts(student.id, session)
         count = session.scalar(select(func.count()).select_from(AssignmentRecipient).where(AssignmentRecipient.student_id == student.id))
         progress = _progress(attempts, session)
-        completed_assignments = 0
+        completed_assignments, total_items = 0, 0
         for assignment_id in session.scalars(select(AssignmentRecipient.assignment_id).where(AssignmentRecipient.student_id == student.id)):
             item_count = session.scalar(select(func.count()).select_from(AssignmentItem).where(AssignmentItem.assignment_id == assignment_id))
+            total_items += item_count
             assignment_progress = _progress([a for a in attempts if a.assignment_id == assignment_id], session)
             completed_assignments += int(item_count > 0 and assignment_progress["reviewed_problems"] == item_count)
-        return {"student": _student_view(student), "classroom": _classroom_view(session.get(Classroom, student.classroom_id), session),
+        progress["current_practice_status"] = {
+            "graded": progress["reviewed_problems"], "pending": progress["pending_problems"],
+            "needs_review": progress["needs_review_problems"] + progress["failed_problems"],
+            "not_started": total_items - progress["submitted_problems"], "total": total_items,
+        }
+        return {"student": _student_view(student, session), "classroom": _classroom_view(session.get(Classroom, student.classroom_id), session),
                 "counts": {"assignments": count, "attempts": len(attempts), "completed_problems": progress["completed_problems"],
                            "submitted_problems": progress["submitted_problems"], "solved_problems": progress["solved_problems"],
                            "completed_assignments": completed_assignments,
@@ -600,7 +644,7 @@ def install_domain_routes(app, ctx):
     @app.get("/teacher/students/{student_id}")
     def student_detail(student_id: UUID, teacher=Depends(current_teacher), session: Session = Depends(db)):
         student = _owned(Student, student_id, teacher, session, "Student")
-        value = {**_student_view(student), **student_summary(student, session, teacher=True)}
+        value = {**_student_view(student, session), **student_summary(student, session, teacher=True)}
         value["attempts"] = [_attempt_view(a, session, teacher=True) for a in _attempts(student.id, session)]
         value["assignments"] = student_assignment_list(student.id, session)
         return value
@@ -774,6 +818,7 @@ def install_domain_routes(app, ctx):
             if existing:
                 return _attempt_view(existing, session)
             measurements = normalize(source, normalized)
+            measurements["learning_context"] = capture_learning_context(session, "student", student)
             source.chmod(0o600)
             normalized.chmod(0o600)
             attempt = Attempt(id=identifier, assignment_id=str(assignment_id), item_id=item.id, student_id=student,

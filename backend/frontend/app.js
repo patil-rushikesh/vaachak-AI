@@ -1,5 +1,11 @@
 import { api, session, saveSession } from "./api.js?v=demo3";
 import { createAudioScope, mountRecorder } from "./audio.js?v=demo3";
+import {
+  completionChart,
+  trendPanel,
+  bindTrend,
+  simpleReadingFeedback,
+} from "./insights.js";
 
 const app = document.querySelector("#app");
 const modal = document.querySelector("#modal");
@@ -55,7 +61,7 @@ const kindName = (kind) =>
   "Practice";
 const skillName = (skill) =>
   ({
-    read_aloud: "Reading aloud",
+    read_aloud: "Words read",
     pronunciation: "Pronunciation",
     synonym: "Synonyms",
     antonym: "Antonyms",
@@ -196,11 +202,13 @@ function shell() {
         ["problems", "book", "Problem library"],
         ["assignments", "clipboard", "Assignments"],
         ["progress", "chart", "Student progress"],
+        ["profile", "leaf", "Learning profile"],
       ]
     : [
         ["overview", "grid", "My learning"],
         ["assignments", "clipboard", "My assignments"],
         ["history", "chart", "My progress"],
+        ["profile", "leaf", "Learning profile"],
       ];
   app.innerHTML = `<div class="app-shell"><div class="mobile-scrim"></div><aside class="sidebar">${brand()}<div class="nav-caption">${teacher ? "Teacher workspace" : "Student workspace"}</div><nav class="nav" aria-label="Main navigation">${nav.map(([path, symbol, name]) => `<a class="nav-link" href="#/${path}" data-nav="${path}">${icon(symbol)}<span>${name}</span></a>`).join("")}</nav><div class="sidebar-note"><div class="note-symbol">${icon("leaf", 21)}</div><h4>A little practice. A lot of growth.</h4><p>${teacher ? "Your voice guides their next step. Make every practice personal." : "Find your pace, try again, and let your voice grow."}</p></div><div class="sidebar-footer"><span class="avatar">${E(initials(user.display_name))}</span><div class="identity"><strong>${E(user.display_name)}</strong><span>${teacher ? "Teacher account" : "Student account"}</span></div><button class="icon-button" data-logout aria-label="Sign out" title="Sign out">${icon("logout", 17)}</button></div></aside><div class="main-wrap"><header class="topbar"><button class="icon-button mobile-toggle" aria-label="Open navigation">${icon("menu", 20)}</button><div class="topbar-path"><span>${teacher ? "Teacher workspace" : "My workspace"}</span><span>/</span><strong id="breadcrumb">Overview</strong></div><div class="topbar-date">${icon("leaf", 14)} A space to learn, one word at a time</div></header><main class="content" id="content" tabindex="-1"></main></div></div>`;
   app.querySelector("[data-logout]").onclick = () => {
@@ -308,7 +316,7 @@ function renderAuth() {
   const signup = authMode === "signup",
     authVersion = ++authRenderVersion,
     role = authRole;
-  app.innerHTML = `<div class="auth-page"><section class="auth-story">${brand()}<div class="auth-story-main"><div class="eyebrow">Every voice has a beginning</div><h1>Small steps.<br>Stronger words.<br><em>Your voice.</em></h1><p>A thoughtful space for teachers to guide, and learners to discover the confidence to speak.</p><div class="auth-art">${art()}</div></div><div class="auth-story-footer">TEACHER-LED PRACTICE &nbsp; · &nbsp; MEANINGFUL FEEDBACK</div></section><main class="auth-main"><div class="auth-card"><div class="auth-mobile-brand">${brand()}</div><div class="eyebrow">Let's learn together</div><h2>${signup ? "Your teaching space awaits." : "Welcome to Vachak."}</h2><p>${signup ? "Create your teacher account to start a classroom." : "Sign in and take the next step in your learning journey."}</p>${signup ? "" : `<div class="role-toggle" aria-label="Account type"><button data-role="teacher" class="${authRole === "teacher" ? "active" : ""}" aria-pressed="${authRole === "teacher"}">${icon("book", 16)} I'm a teacher</button><button data-role="student" class="${authRole === "student" ? "active" : ""}" aria-pressed="${authRole === "student"}">${icon("users", 16)} I'm a student</button></div>`}<form id="auth-form"><div class="field"><label for="identifier">${signup || authRole === "teacher" ? "Email address" : "Student username"}</label><input id="identifier" name="identifier" type="${signup || authRole === "teacher" ? "email" : "text"}" autocomplete="username" placeholder="${signup || authRole === "teacher" ? "you@school.edu" : "Your teacher-provided username"}" required maxlength="254"></div><div class="field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="${signup ? "new-password" : "current-password"}" placeholder="${signup ? "At least 12 characters" : "Enter your password"}" minlength="${signup ? 12 : 1}" maxlength="256" required></div><div class="form-error" role="alert"></div><button type="submit" class="button button-primary auth-submit">${signup ? "Create teacher account" : "Sign in to your workspace"} ${icon("arrow", 16)}</button></form><div class="auth-bottom">${signup ? "Already have an account?" : "New here?"} <button class="text-button" data-auth-mode>${signup ? "Sign in" : "Create a teacher account"}</button></div><div class="auth-footnote">${icon("shield", 13)} Student accounts are created by their teacher. Ask your teacher for your username and password.</div></div></main></div>`;
+  app.innerHTML = `<div class="auth-page"><section class="auth-story">${brand()}<div class="auth-story-main"><div class="eyebrow">Every voice has a beginning</div><h1>Small steps.<br>Stronger words.<br><em>Your voice.</em></h1><p>A thoughtful space for teachers to guide, and learners to discover the confidence to speak.</p><div class="auth-art">${art()}</div></div><div class="auth-story-footer">TEACHER-LED PRACTICE &nbsp; · &nbsp; MEANINGFUL FEEDBACK</div></section><main class="auth-main"><div class="auth-card"><div class="auth-mobile-brand">${brand()}</div><div class="eyebrow">Let's learn together</div><h2>${signup ? "Your teaching space awaits." : "Welcome to Vachak."}</h2><p>${signup ? "Create your teacher account to start a classroom." : "Sign in and take the next step in your learning journey."}</p>${signup ? "" : `<div class="role-toggle" aria-label="Account type"><button data-role="teacher" class="${authRole === "teacher" ? "active" : ""}" aria-pressed="${authRole === "teacher"}">${icon("book", 16)} I'm a teacher</button><button data-role="student" class="${authRole === "student" ? "active" : ""}" aria-pressed="${authRole === "student"}">${icon("users", 16)} I'm a student</button></div>`}<form id="auth-form"><div class="field"><label for="identifier">${signup || authRole === "teacher" ? "Email address" : "Student username"}</label><input id="identifier" name="identifier" type="${signup || authRole === "teacher" ? "email" : "text"}" autocomplete="username" placeholder="${signup || authRole === "teacher" ? "you@school.edu" : "Your teacher-provided username"}" required maxlength="254"></div><div class="field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="${signup ? "new-password" : "current-password"}" placeholder="${signup ? "At least 12 characters" : "Enter your password"}" minlength="${signup ? 12 : 1}" maxlength="256" required></div>${signup ? optionalProfileInputs("registration-profile") : ""}<div class="form-error" role="alert"></div><button type="submit" class="button button-primary auth-submit">${signup ? "Create teacher account" : "Sign in to your workspace"} ${icon("arrow", 16)}</button></form><div class="auth-bottom">${signup ? "Already have an account?" : "New here?"} <button class="text-button" data-auth-mode>${signup ? "Sign in" : "Create a teacher account"}</button></div><div class="auth-footnote">${icon("shield", 13)} Student accounts are created by their teacher. Ask your teacher for your username and password.</div></div></main></div>`;
   app.querySelectorAll("[data-role]").forEach(
     (btn) =>
       (btn.onclick = () => {
@@ -331,7 +339,11 @@ function renderAuth() {
       const result = await api(signup ? "/auth/register" : "/auth/login", {
         method: "POST",
         body: signup
-          ? { email: data.get("identifier"), password: data.get("password") }
+          ? {
+              email: data.get("identifier"),
+              password: data.get("password"),
+              learning_profile: profileValues(form),
+            }
           : {
               identifier: data.get("identifier"),
               password: data.get("password"),
@@ -352,6 +364,107 @@ function renderAuth() {
       busy(form, false);
     }
   };
+}
+
+const profileFields = [
+  ["country", "Country", "e.g. India", "country-name"],
+  ["state_region", "State / region", "e.g. Karnataka", "address-level1"],
+  ["city", "City / town", "e.g. Bengaluru", "address-level2"],
+  ["first_language", "First language", "e.g. Kannada", "off"],
+  [
+    "target_accent",
+    "Accent you want to practice",
+    "e.g. Indian English, British English, or no preference",
+    "off",
+  ],
+];
+function profileInputs(profile = {}, prefix = "learning-profile") {
+  return `<div class="form-grid profile-fields">${profileFields.map(([key, label, placeholder, autocomplete]) => `<div class="field${key === "target_accent" ? " full" : ""}"><label for="${prefix}-${key}">${label}</label><input id="${prefix}-${key}" name="profile_${key}" value="${E(profile[key] || "")}" maxlength="100" autocomplete="${autocomplete}" placeholder="${placeholder}"></div>`).join("")}</div><p class="micro-copy">All fields are optional. Enter an accent preference yourself; your location does not choose it. No device location is collected.</p>`;
+}
+function optionalProfileInputs(prefix) {
+  return `<details class="collapsible profile-optional"><summary>Language & region <span class="muted">(optional)</span></summary><p class="micro-copy" style="margin-bottom:16px">Add a little context for teaching. You can complete or change this later.</p>${profileInputs({}, prefix)}</details>`;
+}
+function profileValues(form) {
+  const data = new FormData(form);
+  return Object.fromEntries(
+    profileFields.map(([key]) => [
+      key,
+      String(data.get(`profile_${key}`) || "").trim(),
+    ]),
+  );
+}
+function profileSummary(profile = {}) {
+  const filled = profileFields.filter(([key]) => profile[key]);
+  return filled.length
+    ? `<dl class="detail-list">${filled.map(([key, label]) => `<div><dt>${label}</dt><dd>${E(profile[key])}</dd></div>`).join("")}</dl><p class="micro-copy">${profile.entered_by === "teacher" ? "Entered by the teacher." : profile.entered_by === "self" ? "Self-reported." : "Optional learning context."} Accent preference is not inferred from region.</p>`
+    : '<p class="muted small">No language or region details have been added. These are optional, and learning can continue without them.</p>';
+}
+async function learningProfile(ctx) {
+  const role = session().user.role;
+  const response = await api(`/${role}/profile`);
+  if (!ctx.live()) return;
+  const profile = response.learning_profile || {};
+  ctx.show(
+    heading(
+      "A little about your learning.",
+      "Share the details you want your learning space to know. Every field is optional.",
+      "",
+      "Learning profile",
+    ) +
+      `<div class="two-column"><section class="panel"><h2>Language & region</h2><form id="learning-profile-form">${profileInputs(profile)}<div class="form-error" role="alert"></div><div class="form-actions"><button type="submit" class="button button-primary">Save profile</button></div></form></section><aside><section class="panel"><div class="card-symbol" style="margin-bottom:20px">${icon("leaf", 23)}</div><h2>Your voice belongs here.</h2><p class="muted small">People speak English in many valid ways. Your first language and region provide context; they are not a measure of your ability.</p><div class="notice"><p>An accent preference is something you choose. It is saved as guidance and does not change current scores.</p></div><p class="micro-copy" style="margin-top:18px">${profile.entered_by === "teacher" ? "Your teacher added the current details. You can update them here." : "You control these optional details. Leave a field blank to clear it."}</p></section></aside></div>`,
+  );
+  const form = ctx.content.querySelector("form");
+  form.onsubmit = async (event) => {
+    event.preventDefault();
+    formError(form, "");
+    const body = { learning_profile: profileValues(form) };
+    busy(form, true, "Saving…");
+    lockEditing(form, true);
+    try {
+      await api(`/${role}/profile`, { method: "PATCH", body });
+      if (ctx.live()) {
+        toast("Your learning profile has been saved.");
+        route();
+      }
+    } catch (error) {
+      if (ctx.live()) formError(form, error.message);
+    } finally {
+      busy(form, false);
+      lockEditing(form, false);
+    }
+  };
+}
+function editStudentProfile(ctx, student) {
+  openModal(
+    "Learning profile",
+    `Optional language and region details for ${student.display_name}.`,
+    `<form>${profileInputs(student.learning_profile || {}, "student-profile")}<div class="notice" style="margin-top:20px"><p>These details will be marked as teacher-entered and visible to this student. Accent preference is chosen, not inferred.</p></div><div class="form-error" role="alert"></div><div class="form-actions"><button type="submit" class="button button-primary">Save learning profile</button></div></form>`,
+    (el) => {
+      const form = el.querySelector("form");
+      form.onsubmit = async (event) => {
+        event.preventDefault();
+        formError(form, "");
+        const body = { learning_profile: profileValues(form) };
+        busy(form, true, "Saving…");
+        lockEditing(form, true);
+        try {
+          await api(`/teacher/students/${student.id}/profile`, {
+            method: "PATCH",
+            body,
+          });
+          if (!ctx.live() || !liveModalForm(form)) return;
+          modal.close();
+          toast("Student learning profile saved.");
+          route();
+        } catch (error) {
+          if (liveModalForm(form)) formError(form, error.message);
+        } finally {
+          busy(form, false);
+          lockEditing(form, false);
+        }
+      };
+    },
+  );
 }
 
 async function route() {
@@ -395,6 +508,7 @@ async function route() {
     practice: "Practice",
     attempts: "Your feedback",
     history: "My progress",
+    profile: "Learning profile",
   };
   app.querySelector("#breadcrumb").textContent = names[section] || "Workspace";
   const content = app.querySelector("#content");
@@ -429,6 +543,7 @@ async function route() {
             : await teacherAssignments(ctx);
       else if (section === "students" && id) await studentDetail(ctx, id);
       else if (section === "progress") await teacherProgress(ctx);
+      else if (section === "profile") await learningProfile(ctx);
       else go("overview");
     } else {
       if (section === "overview") await studentOverview(ctx);
@@ -438,6 +553,7 @@ async function route() {
         await practice(ctx, id, sub);
       else if (section === "attempts" && id) await attemptResult(ctx, id);
       else if (section === "history") await studentHistory(ctx);
+      else if (section === "profile") await learningProfile(ctx);
       else go("overview");
     }
     if (ctx.live()) {
@@ -586,7 +702,7 @@ async function classroomDetail(ctx, id) {
         openModal(
           "Welcome a new learner",
           "Create their account and share the sign-in details with them.",
-          `<form><div class="form-grid"><div class="field full"><label for="student-name">Student's full name</label><input id="student-name" name="display_name" required maxlength="100" autocomplete="off" placeholder="e.g. Aarav Sharma"></div><div class="field full"><label for="student-login">Unique student username</label><input id="student-login" name="login_name" required minlength="3" maxlength="80" autocomplete="off" placeholder="e.g. aarav.class6"><small>Use letters, numbers, dots, underscores or hyphens.</small></div><div class="field full"><label for="student-password">Initial password</label><input id="student-password" name="password" type="password" required minlength="8" maxlength="256" autocomplete="new-password" placeholder="At least 8 characters"><small>Share this securely. The password cannot be retrieved later.</small></div></div><div class="form-error" role="alert"></div><div class="form-actions"><button type="submit" class="button button-primary">Add student</button></div></form>`,
+          `<form><div class="form-grid"><div class="field full"><label for="student-name">Student's full name</label><input id="student-name" name="display_name" required maxlength="100" autocomplete="off" placeholder="e.g. Aarav Sharma"></div><div class="field full"><label for="student-login">Unique student username</label><input id="student-login" name="login_name" required minlength="3" maxlength="80" autocomplete="off" placeholder="e.g. aarav.class6"><small>Use letters, numbers, dots, underscores or hyphens.</small></div><div class="field full"><label for="student-password">Initial password</label><input id="student-password" name="password" type="password" required minlength="8" maxlength="256" autocomplete="new-password" placeholder="At least 8 characters"><small>Share this securely. The password cannot be retrieved later.</small></div></div>${optionalProfileInputs("new-student-profile")}<div class="form-error" role="alert"></div><div class="form-actions"><button type="submit" class="button button-primary">Add student</button></div></form>`,
           (el) => {
             el.querySelector("form").onsubmit = async (event) => {
               event.preventDefault();
@@ -596,7 +712,13 @@ async function classroomDetail(ctx, id) {
               try {
                 await api(`/teacher/classrooms/${id}/students`, {
                   method: "POST",
-                  body: Object.fromEntries(new FormData(form)),
+                  body: {
+                    display_name: form.querySelector("[name=display_name]")
+                      .value,
+                    login_name: form.querySelector("[name=login_name]").value,
+                    password: form.querySelector("[name=password]").value,
+                    learning_profile: profileValues(form),
+                  },
                 });
                 if (!ctx.live() || !liveModalForm(form)) return;
                 modal.close();
@@ -1151,7 +1273,7 @@ function attemptCard(attempt, review = false) {
   const display = attempt.answer_display ?? attempt.answer;
   const textAnswer = typeof display === "string" ? display : null;
   const pairAnswer = Array.isArray(display) ? display : null;
-  return `<article class="attempt-card"><div class="attempt-heading"><div><h3>${E(attempt.problem_title || "Practice attempt")}${review && attempt.student_name ? ` <span class="muted">· ${E(attempt.student_name)}</span>` : ""}</h3><p>${kindName(attempt.kind)} · ${date(attempt.created_at)} · Attempt ${shortId(attempt.id)}</p></div><div class="button-row">${statusBadge(attempt.status)}<span class="activity-score">${pct(attempt.score)}</span></div></div>${textAnswer ? `<div class="attempt-answer"><strong>Submitted answer:</strong> ${E(textAnswer)}</div>` : ""}${pairAnswer ? `<div class="table-wrap"><table><thead><tr><th>Item</th><th>Student's match</th></tr></thead><tbody>${pairAnswer.map((pair) => `<tr><td>${E(pair.left)}</td><td>${E(pair.right)}</td></tr>`).join("")}</tbody></table></div>` : ""}${attempt.reference_audio_url ? `<p class="micro-copy" style="margin-bottom:8px">Teacher's reference</p>${audioPlayer(attempt.reference_audio_url, "Teacher reference recording")}` : ""}${attempt.audio_url ? `<p class="micro-copy" style="margin-bottom:8px">Student's recording</p>${audioPlayer(attempt.audio_url, "Student practice recording")}` : ""}${attempt.feedback ? `<p class="attempt-feedback">${E(attempt.feedback)}</p>` : ""}${attempt.result?.transcript ? `<p class="micro-copy"><strong>Heard:</strong> ${E(attempt.result.transcript)}</p>` : ""}${review && typeof attempt.result?.suggested_score === "number" && !attempt.result?.teacher_review ? `<div class="notice amber" style="margin-top:14px">${icon("message", 16)}<p><strong>Unverified AI suggestion: ${pct(attempt.result.suggested_score)}</strong><br>${E(attempt.result.explanation || "Use your own judgment before choosing a score. This suggestion is hidden from students.")}</p></div>` : ""}${review && attempt.kind === "read_aloud" && attempt.result ? `<details class="collapsible"><summary>Explore experimental reading and voice evidence</summary>${readingMetrics(attempt.result, attempt.status)}</details>` : ""}${review ? `<div class="attempt-actions"><button class="text-button" data-review="${E(attempt.id)}" data-score="${attempt.score ?? ""}" data-feedback="${E(attempt.feedback || "")}">${icon("message", 14)} ${attempt.status === "needs_review" ? "Give feedback" : "Review attempt"}</button></div>` : `<div class="attempt-actions"><a class="text-button" href="#/attempts/${E(attempt.id)}">Open feedback ${icon("arrow", 14)}</a></div>`}</article>`;
+  return `<article class="attempt-card"><div class="attempt-heading"><div><h3>${E(attempt.problem_title || "Practice attempt")}${review && attempt.student_name ? ` <span class="muted">· ${E(attempt.student_name)}</span>` : ""}</h3><p>${kindName(attempt.kind)} · ${date(attempt.created_at)} · Attempt ${shortId(attempt.id)}</p></div><div class="button-row">${statusBadge(attempt.status)}<span class="activity-score">${pct(attempt.score)}</span></div></div>${textAnswer ? `<div class="attempt-answer"><strong>Submitted answer:</strong> ${E(textAnswer)}</div>` : ""}${pairAnswer ? `<div class="table-wrap"><table><thead><tr><th>Item</th><th>Student's match</th></tr></thead><tbody>${pairAnswer.map((pair) => `<tr><td>${E(pair.left)}</td><td>${E(pair.right)}</td></tr>`).join("")}</tbody></table></div>` : ""}${attempt.reference_audio_url ? `<p class="micro-copy" style="margin-bottom:8px">Teacher's reference</p>${audioPlayer(attempt.reference_audio_url, "Teacher reference recording")}` : ""}${attempt.audio_url ? `<p class="micro-copy" style="margin-bottom:8px">Student's recording</p>${audioPlayer(attempt.audio_url, "Student practice recording")}` : ""}${attempt.result?.teacher_review ? `<div class="teacher-guidance"><span class="eyebrow">Teacher feedback</span><p>${E(attempt.feedback || attempt.result.teacher_review.feedback)}</p></div>` : attempt.feedback || attempt.display_feedback?.summary ? `<p class="attempt-feedback">${E(attempt.display_feedback?.summary || attempt.feedback)}</p>` : ""}${review && typeof attempt.result?.suggested_score === "number" && !attempt.result?.teacher_review ? `<div class="notice amber" style="margin-top:14px">${icon("message", 16)}<p><strong>Unverified AI suggestion: ${pct(attempt.result.suggested_score)}</strong><br>${E(attempt.result.explanation || "Use your own judgment before choosing a score. This suggestion is hidden from students.")}</p></div>` : ""}${review && attempt.kind === "read_aloud" && attempt.status !== "pending" ? `<details class="collapsible reading-guidance" open><summary>Reading guidance</summary>${simpleReadingFeedback(attempt)}<details class="collapsible technical-evidence"><summary>Detailed analysis <span class="muted">(optional)</span></summary>${readingMetrics(attempt.result, attempt.status)}</details></details>` : ""}${review ? `<div class="attempt-actions"><button class="text-button" data-review="${E(attempt.id)}" data-score="${attempt.score ?? ""}" data-feedback="${E(attempt.feedback || "")}">${icon("message", 14)} ${attempt.status === "needs_review" ? "Give feedback" : "Review attempt"}</button></div>` : `<div class="attempt-actions"><a class="text-button" href="#/attempts/${E(attempt.id)}">Open feedback ${icon("arrow", 14)}</a></div>`}</article>`;
 }
 function bindReviews(container) {
   container.querySelectorAll("[data-review]").forEach(
@@ -1229,21 +1351,31 @@ async function teacherAssignment(ctx, id) {
 }
 function skillProgress(progress) {
   const skills = A(progress?.skills);
-  return skills.length
-    ? skills
-        .map(
-          (skill) =>
-            `<div class="skill-row"><div class="skill-row-header"><span>${E(skillName(skill.skill))}</span><strong>${pct(skill.average_score)}</strong></div><div class="progress-track"><div class="progress-fill" style="width:${typeof skill.average_score === "number" ? Math.max(0, Math.min(100, skill.average_score * 100)) : 0}%"></div></div><small>${Number(skill.attempt_count || 0)} submitted ${Number(skill.attempt_count || 0) === 1 ? "practice" : "practices"}</small></div>`,
-        )
-        .join("")
-    : empty(
-        "Progress takes practice",
-        "Assessed attempts will show which skills are growing and which need extra care.",
-        "",
-        true,
-        "chart",
-      );
+  if (!skills.length)
+    return empty(
+      "Your skills will take shape here",
+      "Complete a practice to see feedback for that skill. A missing score means it has not been graded, not that you scored zero.",
+      "",
+      true,
+      "chart",
+    );
+  return (
+    skills
+      .map((skill) => {
+        const scored =
+          typeof skill.average_score === "number" &&
+          Number.isFinite(skill.average_score);
+        const count =
+          typeof skill.submitted_problems === "number"
+            ? `${skill.submitted_problems} ${skill.submitted_problems === 1 ? "practice" : "practices"} · `
+            : "";
+        return `<div class="skill-row"><div class="skill-row-header"><span>${E(skillName(skill.skill))}</span><strong>${scored ? pct(skill.average_score) : "Not graded yet"}</strong></div>${scored ? `<div class="progress-track" role="img" aria-label="${E(skillName(skill.skill))}: ${pct(skill.average_score)}"><div class="progress-fill" style="width:${Math.max(0, Math.min(100, skill.average_score * 100))}%"></div></div>` : '<div class="ungraded-bar">Waiting for feedback</div>'}<small>${count}${Number(skill.attempt_count || 0)} ${Number(skill.attempt_count || 0) === 1 ? "attempt" : "attempts"}</small></div>`;
+      })
+      .join("") +
+    '<p class="micro-copy skill-note">Each bar is a separate skill score. Pace, pitch and pronunciation do not have percentage grades.</p>'
+  );
 }
+
 async function studentDetail(ctx, id) {
   const student = await api(`/teacher/students/${id}`);
   if (!ctx.live()) return;
@@ -1299,6 +1431,16 @@ async function studentDetail(ctx, id) {
         };
       },
     );
+  const historyHeading = [
+    ...ctx.content.querySelectorAll(".section-heading"),
+  ].find((element) => element.textContent.includes("Practice history"));
+  historyHeading.insertAdjacentHTML(
+    "beforebegin",
+    `<section class="panel student-profile-panel"><div class="panel-heading"><h2>Learning profile</h2><button class="text-button" id="edit-student-profile">Edit details ${icon("arrow", 14)}</button></div>${profileSummary(student.learning_profile || {})}</section><div class="insight-grid"><section class="panel"><div class="panel-heading"><div><h2>Current practice status</h2><p>One slice for each assigned practice.</p></div></div>${completionChart(student.progress?.current_practice_status)}</section><section class="panel"><div class="panel-heading"><div><h2>Practice scores over time</h2><p>Compare one activity type at a time.</p></div></div>${trendPanel(attempts, "student-learning-trend")}</section></div>`,
+  );
+  ctx.content.querySelector("#edit-student-profile").onclick = () =>
+    editStudentProfile(ctx, student);
+  bindTrend(ctx.content, attempts);
 }
 async function teacherProgress(ctx) {
   const classes = A(await api("/teacher/classrooms"));
@@ -1363,6 +1505,11 @@ async function studentOverview(ctx) {
               .join("")}</div>`
           : `<section class="panel">${empty("Something good is on its way", "Your teacher will share assignments here. Come back when your first practice is ready.", "", true, "leaf")}</section>`
       }<div class="section-heading"><h2>Little signs of progress</h2></div><div class="two-column"><section class="panel"><div class="panel-heading"><h3>Growing skills</h3>${icon("chart", 18)}</div>${skillProgress(overview.progress)}</section><section class="panel"><div class="panel-heading"><h3>Your latest feedback</h3>${icon("message", 18)}</div>${activity(overview.recent_feedback, false)}</section></div>`,
+  );
+  const nextSection = ctx.content.querySelector(".section-heading");
+  nextSection.insertAdjacentHTML(
+    "beforebegin",
+    `<section class="panel overview-completion"><div class="panel-heading"><div><h2>Your practice at a glance</h2><p>See what is ready, waiting and still to try.</p></div><a class="text-button" href="#/history">Explore your progress ${icon("arrow", 14)}</a></div>${completionChart(overview.progress?.current_practice_status)}</section>`,
   );
 }
 async function studentAssignments(ctx) {
@@ -1678,28 +1825,33 @@ async function attemptResult(ctx, id) {
     completed =
       attempt.status === "completed" && typeof attempt.score === "number",
     pending = attempt.status === "pending";
-  const title = pending
-    ? "Your practice is being heard."
-    : attempt.status === "needs_review"
-      ? "Your teacher will take a look."
-      : attempt.status === "failed"
-        ? "Your attempt has been saved."
-        : completed && attempt.score >= 0.85
-          ? "A thoughtful step forward."
-          : completed && attempt.score >= 0.5
-            ? "You’re building understanding."
-            : "Every try teaches you something.";
-  const subtitle = pending
-    ? "Your recording or answer is saved. We are preparing your feedback."
-    : attempt.status === "needs_review"
-      ? "This practice needs a teacher’s judgment before a score is given."
-      : attempt.status === "failed"
-        ? "Automatic analysis could not finish. Your teacher can still review your saved attempt."
-        : isReading
-          ? "This is a word-match estimate to support practice. Your teacher can review it."
-          : "Keep the feedback in mind and carry it into your next practice.";
+  const display = attempt.display_feedback || {};
+  const title =
+    display.headline ||
+    (pending
+      ? "Your practice is being heard."
+      : attempt.status === "needs_review"
+        ? "Your teacher will take a look."
+        : attempt.status === "failed"
+          ? "Your attempt has been saved."
+          : completed && attempt.score >= 0.85
+            ? "A thoughtful step forward."
+            : "Every try teaches you something.");
+  const subtitle =
+    display.summary ||
+    (pending
+      ? "Your answer is saved. We are preparing your feedback."
+      : attempt.status === "needs_review"
+        ? "Your teacher will help check this attempt before a score is given."
+        : attempt.status === "failed"
+          ? "Your recording is saved. Automatic feedback was unavailable; your teacher can still help."
+          : isReading
+            ? "Listen again, notice one small thing, and give the sentence another try."
+            : "Keep the feedback in mind as you try the next practice.");
+  const teacherReview = attempt.result?.teacher_review;
+  const textTips = !isReading ? A(display.next_steps).slice(0, 2) : [];
   ctx.show(
-    `<div class="practice-content"><a class="back-link" href="#/${context ? `assignments/${E(context.assignmentId)}` : "assignments"}">${icon("back", 14)} Back to assignments</a><section class="panel"><div class="result-hero"><div class="score-orb">${pending ? '<span class="spinner"></span>' : completed ? `<strong>${pct(attempt.score)}</strong><span>${attempt.result?.teacher_review ? "Teacher score" : isReading ? "Word match" : "Practice score"}</span>` : icon(attempt.status === "needs_review" ? "message" : "leaf", 34)}</div>${statusBadge(attempt.status)}<h2 style="margin-top:18px">${title}</h2><p>${subtitle}</p></div>${attempt.problem_title || context?.title ? `<p class="eyebrow" style="text-align:center">${E(attempt.problem_title || context.title)}</p>` : ""}${attempt.feedback ? `<div class="feedback-box">${E(attempt.feedback)}</div>` : ""}${attempt.audio_url ? `<div class="section-heading"><h3>Your recording</h3></div>${audioPlayer(attempt.audio_url, "Your submitted recording")}` : ""}${isReading && !pending ? readingMetrics(attempt.result, attempt.status) : ""}${!isReading && completed && !attempt.result?.teacher_review && attempt.result?.classification ? `<div class="notice" style="margin-top:20px">${icon("leaf", 16)}<p>${E({ correct: "Your answer captures the expected idea.", partial: "Your answer shows part of the idea. Explore the feedback to develop it further.", incorrect: "Try revisiting the question and your teacher’s guidance." }[attempt.result.classification] || "")}</p></div>` : ""}${attempt.result?.teacher_review ? '<p class="micro-copy">This feedback includes a teacher review.</p>' : ""}<div id="poll-note" class="micro-copy" style="text-align:center"></div><div class="form-actions" style="justify-content:center;flex-wrap:wrap">${context ? linkButton(`practice/${context.assignmentId}/${context.itemId}`, "Try this practice again", "secondary") : linkButton("history", "My progress", "secondary")}${context?.nextId ? linkButton(`practice/${context.assignmentId}/${context.nextId}`, "Next practice", "primary", "arrow") : linkButton(context ? `assignments/${context.assignmentId}` : "assignments", "Back to my learning", "primary", "arrow")}</div></section></div>`,
+    `<div class="practice-content feedback-page"><a class="back-link" href="#/${context ? `assignments/${E(context.assignmentId)}` : "assignments"}">${icon("back", 14)} Back to assignments</a><section class="panel"><div class="result-hero"><div class="score-orb">${pending ? '<span class="spinner"></span>' : completed ? `<strong>${pct(attempt.score)}</strong><span>${teacherReview ? "Teacher score" : isReading ? "Word match" : "Practice score"}</span>` : icon(attempt.status === "needs_review" ? "message" : "leaf", 34)}</div>${statusBadge(attempt.status)}<h2 style="margin-top:18px">${E(title)}</h2><p>${E(subtitle)}</p></div>${attempt.problem_title || context?.title ? `<p class="eyebrow" style="text-align:center">${E(attempt.problem_title || context.title)}</p>` : ""}${teacherReview ? `<div class="teacher-guidance"><span class="eyebrow">A note from your teacher</span><p>${E(attempt.feedback || teacherReview.feedback)}</p></div>` : ""}${isReading && !pending ? simpleReadingFeedback(attempt) : ""}${textTips.length ? `<div class="next-step-box"><span class="eyebrow">Your next small step</span>${textTips.map((tip) => `<p>${E(tip)}</p>`).join("")}</div>` : ""}${attempt.audio_url ? `<div class="section-heading"><h3>Listen and try together</h3></div><div class="listen-grid">${attempt.reference_audio_url ? `<div class="listening-card"><span class="dimension-label">Your teacher's example</span>${audioPlayer(attempt.reference_audio_url, "Teacher reference recording")}</div>` : ""}<div class="listening-card"><span class="dimension-label">Your recording</span>${audioPlayer(attempt.audio_url, "Your submitted recording")}</div></div>` : ""}${isReading && !pending ? `<details class="collapsible technical-evidence"><summary>Detailed analysis <span class="muted">(optional)</span></summary><p class="micro-copy">These measurements support listening and teacher judgment. They are not a separate pronunciation or emotion assessment.</p>${readingMetrics(attempt.result, attempt.status)}</details>` : ""}${!isReading && !display.summary && attempt.feedback && !teacherReview ? `<div class="feedback-box">${E(attempt.feedback)}</div>` : ""}<div id="poll-note" class="micro-copy" style="text-align:center"></div><div class="form-actions" style="justify-content:center;flex-wrap:wrap">${context ? linkButton(`practice/${context.assignmentId}/${context.itemId}`, "Try this practice again", "secondary") : linkButton("history", "My progress", "secondary")}${context?.nextId ? linkButton(`practice/${context.assignmentId}/${context.nextId}`, "Next practice", "primary", "arrow") : linkButton(context ? `assignments/${context.assignmentId}` : "assignments", "Back to my learning", "primary", "arrow")}</div></section></div>`,
   );
   if (
     ["failed", "needs_review"].includes(attempt.status) &&
@@ -1798,6 +1950,12 @@ async function studentHistory(ctx) {
     ) +
       `<div class="stats-grid">${stat("Times you tried", c.attempts, "mic")}${stat("Practices submitted", c.submitted_problems ?? c.completed_problems, "book")}${stat("Assignments completed", c.completed_assignments, "checkcircle")}${stat("Average assessed score", pct(overview.progress?.average_score), "chart")}</div><section class="panel"><div class="panel-heading"><h2>Your growing skills</h2>${icon("leaf", 20)}</div>${skillProgress(overview.progress)}</section><div class="section-heading"><h2>Your practice story</h2><span class="badge">${attempts.length} attempts</span></div>${attempts.length ? attempts.map((item) => attemptCard(item)).join("") : `<section class="panel">${empty("Your first step is waiting", "Try a practice from your teacher, then come back here to see what you learned.", linkButton("assignments", "Find a practice", "primary", "arrow"), false, "leaf")}</section>`}`,
   );
+  const skillsPanel = ctx.content.querySelector(".panel");
+  skillsPanel.insertAdjacentHTML(
+    "beforebegin",
+    `<div class="insight-grid"><section class="panel"><div class="panel-heading"><div><h2>Current practice status</h2><p>Every assigned practice has its own place.</p></div></div>${completionChart(overview.progress?.current_practice_status)}</section><section class="panel"><div class="panel-heading"><div><h2>Practice scores over time</h2><p>Choose an activity to follow its scores.</p></div></div>${trendPanel(attempts, "my-learning-trend")}</section></div>`,
+  );
+  bindTrend(ctx.content, attempts);
 }
 
 window.addEventListener("hashchange", route);

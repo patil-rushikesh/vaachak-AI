@@ -1,6 +1,6 @@
 # Vachak backend integration guide
 
-Base URL for this machine: `http://127.0.0.1:8000`. The implemented teacher/student web interface is at `/`; interactive request documentation is at `/docs`, and OpenAPI at `/openapi.json`. The API also works independently of the interface. Final browser acceptance testing is in progress.
+Base URL for this machine: `http://127.0.0.1:8000`. The implemented teacher/student web interface is at `/`; interactive request documentation is at `/docs`, and OpenAPI at `/openapi.json`. The API also works independently of the interface. See README verification notes for the exercised workflows and remaining limits.
 
 ## Authentication
 
@@ -9,6 +9,20 @@ Base URL for this machine: `http://127.0.0.1:8000`. The implemented teacher/stud
 3. Save `access_token` securely on the client. Send `Authorization: Bearer TOKEN` on private requests. Tokens expire after 8 hours; `/auth/me` returns the identity/role, and `POST /auth/logout` revokes the token.
 
 Teachers can access only their own students/content; students can access only their assigned work and own attempts. Knowledge of an ID, postal PIN or classroom join code grants no access. Student self-enrollment is not implemented.
+
+## Regional learning profiles
+
+Teacher registration and student provisioning optionally accept a `learning_profile` object containing any of `country`, `state_region`, `city`, `first_language` and `target_accent`. Each is a trimmed string of at most 100 characters. Omitted fields are blank on creation. Profiles are learning context supplied by people; the app does not infer accent from region or use it to adjust grades.
+
+| Operation | Route | Body / response |
+| --- | --- | --- |
+| Teacher's own profile | `GET /teacher/profile`, `PATCH /teacher/profile` | PATCH `{learning_profile:{...fields to change...}}` |
+| Student's own profile | `GET /student/profile`, `PATCH /student/profile` | Same shape; self only |
+| Teacher edits owned student | `PATCH /teacher/students/{id}/profile` | Same shape; ownership enforced |
+
+Profile responses have `{learning_profile:{country,state_region,city,first_language,target_accent,provenance,entered_by,updated_at}}`. `provenance` is `self_reported`, `teacher_entered` or `not_provided`; `entered_by` is `self`, `teacher` or null. Metadata describes the latest editor, not an inferred accent or verified residence. PATCH preserves omitted fields; an explicit empty string clears a value. Existing accounts without profiles remain valid and return blank fields. Student identity/detail/roster responses include their learning profile for authorized viewers.
+
+New audio measurements include `learning_context: {learning_profile:{...},recorded_at:ISO}`. This captures the profile at upload time (`recorded_at` timestamps the saved context, not the original audio recording); editing a profile never changes existing recordings. Unknown historical profile context remains unknown. Adding profiles does not train a regional model or enable accent-specific scoring.
 
 ## Teacher creates and assigns practice
 
@@ -89,6 +103,8 @@ Choice uses the answer key. Matching awards the fraction of correct pairs. Exact
 
 Reading scores are **experimental transcript word-match estimates**, with pace and comparable pause evidence. Experimental pitch contours are separate evidence and never alter the score. No pronunciation, pitch, emotion or language-proficiency grade is produced. A teacher review can replace the displayed practice score; preserve the distinction between that judgment and the original automatic measurements.
 
+Attempt responses include `display_feedback: {headline,summary,next_steps,dimensions,word_practice}`. Each dimension has `key`, `label`, `status`, `value_text`, `detail` and nullable `score`. Use this for the simple UI; keep the unchanged `result` as detailed evidence. Pace, pauses, pitch and pronunciation always have null scores. A teacher score is separate from a reliable automatic word-match score; uncertain ASR must not become reliable merely because a teacher reviewed the attempt. `display_feedback` never exposes private AI meaning suggestions to students.
+
 ### Pitch evidence contract
 
 New teacher reference uploads include `recording.measurements.pitch`; student analysis includes `attempt.result.pitch`. Older reference recordings can be analyzed during student/reference comparison. Pitch extraction uses a custom NumPy YIN-style estimator (`algorithm_version: "yin-cmndf-v1"`), not librosa pYIN. [The pYIN documentation](https://librosa.org/doc/0.11.0/generated/librosa.pyin.html) is a research reference for the separation of fundamental frequency, voicing and confidence.
@@ -111,6 +127,8 @@ Relative semitones are measured around each recording's own median, so naturally
 Plot each frame's actual timestamp and break the line at unvoiced/null values. Do not interpolate speech pitch across silence. Periodic music/noise, breathy or irregular voices, octave errors and frequencies outside the supported range can affect evidence. The system does not infer mood or emotion. Raw audio is retained unchanged for future reanalysis.
 
 `submitted_problems` counts distinct assignment items with any saved attempt. The latest attempt governs each item's current status. `completed_count`/`completed_problems`/`reviewed_problems` count items whose latest attempt is completed; `solved_problems` requires a completed score of at least 0.7. `attempts` includes retries with new UUIDs, but repeated requests with the same UUID count once. `completed_assignments` requires every item to be completed. Averages exclude unassessed items; no attempts means unassessed, not zero ability. Scores across exercise kinds are practice summaries, not a calibrated common ability scale.
+
+Student summary progress includes `current_practice_status: {graded,pending,needs_review,not_started,total}` for a completion donut. These mutually exclusive buckets use the latest attempt per assigned item. `needs_review` includes failed analysis, so label it **Needs attention**. Items without attempts are `not_started`; retries do not inflate `total`. Separate skill scores and per-kind attempt histories should not be combined into slices of a supposed overall proficiency pie.
 
 ## Files and failure handling
 

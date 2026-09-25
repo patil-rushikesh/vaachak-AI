@@ -9,7 +9,7 @@ Open two fresh tabs at the address above: one teacher and one student. Sessions 
 | Account | Credential fields | Purpose |
 | --- | --- | --- |
 | Teacher | `teacher_email`, `teacher_password` | Create, assign and review work |
-| Aarav (demo) | `student_login`, `student_password` | Clean account for live submissions |
+| Aarav (demo) | `student_login`, `student_password` | Account for further live submissions (may already contain your test attempts) |
 | Mira (presentation demo) | `presentation_student_login`, `presentation_student_password` | Completed evidence if time or microphone access is limited |
 
 Keep these files ready in the upload picker:
@@ -18,6 +18,12 @@ Keep these files ready in the upload picker:
 - Student attempt: `/Users/admin/genai/backend/data/demo-fixtures/synthetic-student.wav`
 
 Both are **synthetic demonstration recordings**, not recordings of a real learner. The reference sentence is: “Okay, this is my house. I love reading books with my friends.”
+
+## New profile and visual feedback features
+
+Open **Learning profile** to enter country, state/region, city, first language and an accent to practice. These fields are optional and can also be entered during teacher registration or student creation. Teachers can edit a student's profile from that student's progress screen. Use clearly fictional values if demonstrating with the demo accounts. Region is supplied context, not an automatically detected accent or a grading factor. New recordings preserve the profile at upload time; existing recordings keep their original context.
+
+Feedback now leads with a short explanation and next steps. Reading cards keep word matching, pace, pauses and voice expression separate; the full measurements can still be expanded. Progress uses a completion donut, separate skill bars and score histories. Unassessed pronunciation and experimental pitch are not shown as accuracy percentages.
 
 ## Walkthrough
 
