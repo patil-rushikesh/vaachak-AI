@@ -14,3 +14,6 @@ for environment in ('dev', 'qa', 'prod'):
 
 phase3 = (Path(__file__).parent / 'templates/phase3.sql').read_text()
 (Path(__file__).parent / 'migrations/202609230002_phase3.sql').write_text('\n'.join(phase3.replace('__ENV__', e) for e in ('dev', 'qa', 'prod')) + "\nNOTIFY pgrst, 'reload schema';\n")
+
+phase5 = (Path(__file__).parent / 'templates/phase5.sql').read_text()
+(Path(__file__).parent / 'migrations/202610070003_phase5.sql').write_text('\n'.join(phase5.replace('__ENV__', e) for e in ('dev', 'qa', 'prod')) + "\nNOTIFY pgrst, 'reload schema';\n")

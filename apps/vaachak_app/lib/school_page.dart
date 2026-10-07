@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'lesson_recordings.dart';
+import 'practice_assignments_page.dart';
+import 'school_connection.dart';
 import 'school_providers.dart';
 import 'school_transfer_page.dart';
 import 'session.dart';
@@ -150,6 +153,23 @@ class _SchoolPageState extends ConsumerState<SchoolPage> {
                     OutlinedButton(
                       onPressed: busy ? null : () => act(coordinator.run),
                       child: const Text('Sync now'),
+                    ),
+                    FilledButton.tonal(
+                      onPressed: busy
+                          ? null
+                          : () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => PracticeAssignmentsPage(
+                                  service: LessonRecordingService(
+                                    connection.client,
+                                    connection.api,
+                                    SchoolConnection.environment,
+                                  ),
+                                ),
+                              ),
+                            ),
+                      child: const Text('Practice from your teacher'),
                     ),
                     OutlinedButton(
                       onPressed: busy
