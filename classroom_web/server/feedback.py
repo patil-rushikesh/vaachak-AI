@@ -20,6 +20,12 @@ import skills
 
 DATA = Path(__file__).parent / "data"
 
+# G1 fair feedback: result provenance and the honest-uncertainty threshold.
+FEEDBACK_VERSION = "1.0"
+NORMALIZATION_VERSION = "1.1"   # 1.1: word-boundary reconciliation (every day / everyday)
+UNCERTAIN_READ_ACCURACY = 35    # a read below this is a mishearing/wrong sentence, not a grade
+BASIS = {"read": "word_accuracy", "build": "exact_match", "free": "rubric"}
+
 # Extra English rules for common errors. Same shape as the repo's grammar_rules.json.
 EXTRA_RULES = [
     {"id": "how_is_you", "nodeId": "grammar.verbs", "pattern": r"\bhow is (you|they|we)\b",
@@ -139,6 +145,12 @@ def compare_reading(target: str, spoken: str) -> tuple[list[WordResult], list[st
             extras += s[b0:b1]
         else:  # replace: pair words in order, leftovers are missed or extra
             tw, sw = t[a0:a1], s[b0:b1]
+            # The recogniser may split or join words ("every day" <-> "everyday",
+            # "log in" <-> "login"). If the block is the same letters, only segmented
+            # differently, it is the right reading, not a learner mistake.
+            if "".join(tw) == "".join(sw):
+                results += [WordResult(w, w, "correct") for w in tw]
+                continue
             for i, w in enumerate(tw):
                 if i < len(sw):
                     ratio = difflib.SequenceMatcher(a=w, b=sw[i]).ratio()
@@ -208,7 +220,19 @@ def analyse(kind: str, target: str | None, transcript: str, answer: str | None =
                             "why": skills.practice_hint(c), "sound_only": True})
     if not tips and score >= 90:
         tips.append("Clear and correct. Try the next one.")
-    return {"score": score, "accuracy": accuracy, "words": words, "extra_words": extras, "grammar": grammar, "tips": tips}
+
+    # G1: an explicit unscored state for audio we could not fairly grade, instead of an
+    # invented low number, plus the basis of the grade and provenance versions.
+    evaluation_status, uncertainty_reasons = "scored", []
+    if kind == "read" and accuracy is not None and accuracy < UNCERTAIN_READ_ACCURACY:
+        evaluation_status, uncertainty_reasons = "unscored", ["low_match"]
+    elif kind == "free" and len(tokens(transcript)) == 0:
+        evaluation_status, uncertainty_reasons = "unscored", ["no_speech"]
+    return {"score": score, "accuracy": accuracy, "words": words, "extra_words": extras,
+            "grammar": grammar, "tips": tips,
+            "evaluation_status": evaluation_status, "uncertainty_reasons": uncertainty_reasons,
+            "basis": BASIS.get(kind, "rubric"),
+            "feedback_version": FEEDBACK_VERSION, "normalization_version": NORMALIZATION_VERSION}
 
 
 # --- Optional server-side speech-to-text -------------------------------------------------

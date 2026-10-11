@@ -98,3 +98,39 @@ def test_unknown_skill_names_still_land_somewhere_usable():
     assert skills.normalise("grammar.articles") == "SYN.ARTICLE"
     assert skills.normalise("verb agreement") == "MORPH.AGREEMENT"
     assert skills.normalise("SYN.ARTICLE") == "SYN.ARTICLE"
+
+
+# ----------------------------------------------------------------------------- G1 fair feedback
+import pytest as _pytest  # noqa: E402
+
+
+@_pytest.mark.parametrize("target,heard", [
+    ("I study every day.", "i study everyday"),
+    ("Please log in to the site.", "please login to the site"),
+    ("It is a login page.", "it is a log in page"),
+])
+def test_word_boundary_differences_are_not_penalised(target, heard):
+    """A reading transcribed with a different word split is correct, not a learner mistake."""
+    r = f.analyse("read", target, heard)
+    assert r["score"] == 100, [(w["target"], w["status"]) for w in r["words"]]
+    assert all(w["status"] == "correct" for w in r["words"])
+
+
+def test_genuine_misreadings_are_still_caught():
+    r = f.analyse("read", "Think about three things", "sink about free things")
+    assert r["score"] < 80
+    assert any(w["status"] in ("wrong", "close") for w in r["words"])
+
+
+def test_uncertain_audio_is_marked_unscored_not_zero():
+    bad = f.analyse("read", "The quick brown fox jumps.", "zzz")
+    assert bad["evaluation_status"] == "unscored" and "low_match" in bad["uncertainty_reasons"]
+    empty = f.analyse("free", None, "")
+    assert empty["evaluation_status"] == "unscored" and "no_speech" in empty["uncertainty_reasons"]
+
+
+def test_good_answers_stay_scored_with_a_labelled_basis():
+    r = f.analyse("read", "I like tea.", "I like tea")
+    assert r["evaluation_status"] == "scored" and r["basis"] == "word_accuracy"
+    assert f.analyse("build", None, "She goes to school.", "she goes to school")["basis"] == "exact_match"
+    assert f.analyse("free", None, "I play cricket after school.")["basis"] == "rubric"

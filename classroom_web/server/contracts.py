@@ -77,6 +77,12 @@ class Attempt(Response):
     disputed: bool
     has_audio: bool
     rubric_version: str
+    # G1 fair feedback (optional; present on fresh evaluations)
+    evaluation_status: str = "scored"
+    uncertainty_reasons: list[str] = []
+    basis: str | None = None
+    feedback_version: str | None = None
+    normalization_version: str | None = None
 
 
 class History(Response):
