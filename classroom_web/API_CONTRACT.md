@@ -322,6 +322,24 @@ Max **8 MB** per attempt. React Native records `.m4a` (`audio/mp4`) on both plat
   "target": "The train is late." }
 ```
 
+Every attempt response also carries G1 fair-feedback fields:
+
+```jsonc
+"evaluation_status": "scored",        // or "unscored" when the audio could not be fairly graded
+"uncertainty_reasons": [],            // e.g. ["low_match"] (wrong sentence/mishearing), ["no_speech"]
+"basis": "word_accuracy",             // how it was graded: word_accuracy | exact_match | rubric | objective
+"feedback_version": "1.0",
+"normalization_version": "1.1"        // 1.1 = word-boundary reconciliation
+```
+
+- **`evaluation_status: "unscored"`** means do **not** treat the score as a grade or advance skill
+  evidence from it — show the learner the uncertainty message and let them retry. `score` may still
+  be present for display but is not authoritative.
+- **`basis`** tells the UI how to frame the result (read = word-by-word accuracy, build/objective =
+  exact match, free = rubric). Label it so a learner understands what was judged.
+- Word-boundary differences (`every day` vs `everyday`, `log in` vs `login`) are **not** mistakes:
+  they score as correct. Genuine mispronunciations still flag.
+
 Field notes:
 
 - `words[].status` is `correct` | `close` | `wrong` | `missed`. Render as a word-by-word mark-up.
