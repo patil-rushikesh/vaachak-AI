@@ -409,7 +409,7 @@
             {
               "key": "file",
               "type": "file",
-              "src": "/Users/admin/rushikesh/Projects/gen-ai-main-project/vaachak-AI/postman/fixtures/silence.wav",
+              "src": "fixtures/silence.wav",
               "contentType": "audio/wav"
             }
           ]
@@ -688,7 +688,7 @@
             {
               "key": "audio",
               "type": "file",
-              "src": "/Users/admin/rushikesh/Projects/gen-ai-main-project/vaachak-AI/postman/fixtures/silence.wav",
+              "src": "fixtures/silence.wav",
               "contentType": "audio/wav"
             },
             {
@@ -2207,7 +2207,1092 @@
       ]
     },
     {
-      "name": "61 POST /api/classes/{{class_id}}/attention/actions",
+      "name": "61 GET /api/me/learning-profile",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/me/learning-profile",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "62 PUT /api/me/learning-profile",
+      "request": {
+        "method": "PUT",
+        "url": "{{base_url}}/api/me/learning-profile",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"goal\": \"everyday\", \"difficulty\": \"starter\", \"weekly_goal\": 3, \"analytics\": false}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "63 GET /api/me/review-queue",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/me/review-queue",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "64 POST /api/me/practice-sessions",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/me/practice-sessions",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"client_uuid\": \"{{run_id}}\", \"mode\": \"mixed\", \"count\": 3}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "if (pm.response.code === 200) { const data=pm.response.json();",
+              "pm.collectionVariables.set(\"session_id\", String(data.id));",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "65 GET /api/me/practice-sessions",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/me/practice-sessions",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "66 GET /api/me/practice-sessions/{{session_id}}",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/me/practice-sessions/{{session_id}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "67 PATCH /api/me/practice-sessions/{{session_id}}",
+      "request": {
+        "method": "PATCH",
+        "url": "{{base_url}}/api/me/practice-sessions/{{session_id}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"revision\": 1, \"item_index\": 0, \"text\": \"A saved practice answer\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "68 GET /api/practice-download",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/practice-download",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "69 POST /api/events",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/events",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\": \"{{run_id}}\", \"name\": \"practice_started\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "70 POST /api/feedback-reports",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/feedback-reports",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"category\": \"suggestion\", \"message\": \"Synthetic smoke test\", \"helpful\": true}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "71 POST /api/conversations",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/conversations",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\": \"{{run_id}}\", \"scenario\": \"everyday\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "if (pm.response.code === 200) { const data=pm.response.json();",
+              "pm.collectionVariables.set(\"conversation_id\", String(data.id));",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "72 GET /api/conversations/{{conversation_id}}",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/conversations/{{conversation_id}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "73 POST /api/conversations/{{conversation_id}}/turns",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/conversations/{{conversation_id}}/turns",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\": \"{{run_id}}\", \"revision\": 1, \"text\": \"Hello, I am learning English.\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "74 PUT /api/teacher/drafts/{{run_id}}",
+      "request": {
+        "method": "PUT",
+        "url": "{{base_url}}/api/teacher/drafts/{{run_id}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{teacher_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"revision\": 0, \"payload\": {\"title\": \"Smoke draft\"}}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "75 GET /api/teacher/drafts",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/teacher/drafts",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{teacher_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "76 DELETE /api/teacher/drafts/{{run_id}}",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/teacher/drafts/{{run_id}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{teacher_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "77 GET /api/teacher/archives",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/teacher/archives",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{teacher_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "78 POST /api/ai/jobs",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/ai/jobs",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{teacher_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"client_uuid\": \"{{run_id}}\", \"topic\": \"Greetings\", \"count\": 1, \"kinds\": [\"read\"], \"level\": \"A1\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "if (pm.response.code === 200) { const data=pm.response.json();",
+              "pm.collectionVariables.set(\"job_id\", String(data.id));",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "79 GET /api/ai/jobs",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/ai/jobs",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{teacher_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "80 GET /api/ai/jobs/{{job_id}}",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/ai/jobs/{{job_id}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{teacher_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "81 POST /api/teacher/knowledge",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/teacher/knowledge",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{teacher_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"skill_code\": \"MORPH.AGREEMENT\", \"title\": \"Smoke agreement note\", \"body\": \"Use she goes in the simple present.\", \"visibility\": \"public\", \"client_uuid\": \"{{run_id}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "if (pm.response.code === 200) { const data=pm.response.json();",
+              "pm.collectionVariables.set(\"knowledge_id\", String(data.id));",
+              "pm.collectionVariables.set(\"knowledge_version\", String(data.version));",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "82 GET /api/teacher/knowledge",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/teacher/knowledge",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{teacher_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "83 PUT /api/teacher/knowledge/{{knowledge_id}}",
+      "request": {
+        "method": "PUT",
+        "url": "{{base_url}}/api/teacher/knowledge/{{knowledge_id}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{teacher_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"skill_code\": \"MORPH.AGREEMENT\", \"title\": \"Updated smoke note\", \"body\": \"Use she goes in the simple present.\", \"visibility\": \"public\", \"client_uuid\": \"{{run_id}}\", \"version\": \"{{knowledge_version}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "if (pm.response.code === 200) { const data=pm.response.json();",
+              "pm.collectionVariables.set(\"knowledge_version\", String(data.version));",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "84 POST /api/teacher/knowledge/{{knowledge_id}}/review",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/teacher/knowledge/{{knowledge_id}}/review",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{teacher_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"version\": \"{{knowledge_version}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "if (pm.response.code === 200) { const data=pm.response.json();",
+              "pm.collectionVariables.set(\"knowledge_version\", String(data.version));",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "85 POST /api/teacher/knowledge/{{knowledge_id}}/publish",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/teacher/knowledge/{{knowledge_id}}/publish",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{teacher_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"version\": \"{{knowledge_version}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "if (pm.response.code === 200) { const data=pm.response.json();",
+              "pm.collectionVariables.set(\"knowledge_version\", String(data.version));",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "86 POST /api/teacher/knowledge/{{knowledge_id}}/withdraw",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/teacher/knowledge/{{knowledge_id}}/withdraw",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{teacher_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"version\": \"{{knowledge_version}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "if (pm.response.code === 200) { const data=pm.response.json();",
+              "pm.collectionVariables.set(\"knowledge_version\", String(data.version));",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "87 Transcription configuration/failure boundary (synthetic silence)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/transcriptions",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "client_uuid",
+              "value": "{{run_id}}",
+              "type": "text"
+            },
+            {
+              "key": "audio",
+              "type": "file",
+              "src": "fixtures/silence.wav",
+              "contentType": "audio/wav"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Speech succeeds or returns an explicit unavailable/empty-speech error\", () => pm.expect([200, 422, 502, 503]).to.include(pm.response.code));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "88 GET /api/transcriptions/{{run_id}}",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/transcriptions/{{run_id}}",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Only saved usable transcripts can be retrieved\", () => pm.expect([200, 404]).to.include(pm.response.code));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "89 POST /api/auth/password-reset-request",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/auth/password-reset-request",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\": \"nonexistent-{{run_id}}@example.invalid\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Recovery acknowledges the request or explicitly reports missing SMTP\", () => pm.expect([200, 503]).to.include(pm.response.code));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "90 POST /api/classes/{{class_id}}/attention/actions",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/api/classes/{{class_id}}/attention/actions",
@@ -2250,7 +3335,7 @@
       ]
     },
     {
-      "name": "62 GET /api/classes/{{class_id}}/attention/actions",
+      "name": "91 GET /api/classes/{{class_id}}/attention/actions",
       "request": {
         "method": "GET",
         "url": "{{base_url}}/api/classes/{{class_id}}/attention/actions",
@@ -2279,7 +3364,7 @@
       ]
     },
     {
-      "name": "63 PATCH /api/assignments/{{assignment_id}}",
+      "name": "92 PATCH /api/assignments/{{assignment_id}}",
       "request": {
         "method": "PATCH",
         "url": "{{base_url}}/api/assignments/{{assignment_id}}",
@@ -2322,7 +3407,7 @@
       ]
     },
     {
-      "name": "64 PATCH /api/classes/{{class_id}}/archive",
+      "name": "93 PATCH /api/classes/{{class_id}}/archive",
       "request": {
         "method": "PATCH",
         "url": "{{base_url}}/api/classes/{{class_id}}/archive",
@@ -2365,7 +3450,7 @@
       ]
     },
     {
-      "name": "65 PATCH /api/classes/{{class_id}}/archive",
+      "name": "94 PATCH /api/classes/{{class_id}}/archive",
       "request": {
         "method": "PATCH",
         "url": "{{base_url}}/api/classes/{{class_id}}/archive",
@@ -2408,7 +3493,7 @@
       ]
     },
     {
-      "name": "66 PATCH /api/courses/{{course_id}}/archive",
+      "name": "95 PATCH /api/courses/{{course_id}}/archive",
       "request": {
         "method": "PATCH",
         "url": "{{base_url}}/api/courses/{{course_id}}/archive",
@@ -2451,7 +3536,7 @@
       ]
     },
     {
-      "name": "67 PATCH /api/courses/{{course_id}}/archive",
+      "name": "96 PATCH /api/courses/{{course_id}}/archive",
       "request": {
         "method": "PATCH",
         "url": "{{base_url}}/api/courses/{{course_id}}/archive",
@@ -2494,7 +3579,7 @@
       ]
     },
     {
-      "name": "68 PATCH /api/lessons/{{lesson_id}}/archive",
+      "name": "97 PATCH /api/lessons/{{lesson_id}}/archive",
       "request": {
         "method": "PATCH",
         "url": "{{base_url}}/api/lessons/{{lesson_id}}/archive",
@@ -2537,7 +3622,7 @@
       ]
     },
     {
-      "name": "69 PATCH /api/lessons/{{lesson_id}}/archive",
+      "name": "98 PATCH /api/lessons/{{lesson_id}}/archive",
       "request": {
         "method": "PATCH",
         "url": "{{base_url}}/api/lessons/{{lesson_id}}/archive",
@@ -2580,7 +3665,7 @@
       ]
     },
     {
-      "name": "70 PATCH /api/assignments/{{assignment_id}}/archive",
+      "name": "99 PATCH /api/assignments/{{assignment_id}}/archive",
       "request": {
         "method": "PATCH",
         "url": "{{base_url}}/api/assignments/{{assignment_id}}/archive",
@@ -2623,7 +3708,7 @@
       ]
     },
     {
-      "name": "71 PATCH /api/assignments/{{assignment_id}}/archive",
+      "name": "100 PATCH /api/assignments/{{assignment_id}}/archive",
       "request": {
         "method": "PATCH",
         "url": "{{base_url}}/api/assignments/{{assignment_id}}/archive",
@@ -2666,7 +3751,7 @@
       ]
     },
     {
-      "name": "72 DELETE /api/recordings/{{rec_id}}",
+      "name": "101 DELETE /api/recordings/{{rec_id}}",
       "request": {
         "method": "DELETE",
         "url": "{{base_url}}/api/recordings/{{rec_id}}",
@@ -2695,7 +3780,7 @@
       ]
     },
     {
-      "name": "73 POST /api/auth/reset-password",
+      "name": "102 POST /api/auth/reset-password",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/api/auth/reset-password",
@@ -2731,7 +3816,7 @@
       ]
     },
     {
-      "name": "74 DELETE /api/courses/{{course_id}}/enroll",
+      "name": "103 DELETE /api/courses/{{course_id}}/enroll",
       "request": {
         "method": "DELETE",
         "url": "{{base_url}}/api/courses/{{course_id}}/enroll",
@@ -2760,7 +3845,7 @@
       ]
     },
     {
-      "name": "75 DELETE /api/classes/{{class_id}}/courses/{{course_id}}",
+      "name": "104 DELETE /api/classes/{{class_id}}/courses/{{course_id}}",
       "request": {
         "method": "DELETE",
         "url": "{{base_url}}/api/classes/{{class_id}}/courses/{{course_id}}",
@@ -2789,7 +3874,7 @@
       ]
     },
     {
-      "name": "76 DELETE /api/lessons/{{lesson_id}}",
+      "name": "105 DELETE /api/lessons/{{lesson_id}}",
       "request": {
         "method": "DELETE",
         "url": "{{base_url}}/api/lessons/{{lesson_id}}",
@@ -2818,7 +3903,7 @@
       ]
     },
     {
-      "name": "77 DELETE /api/units/{{unit_id}}",
+      "name": "106 DELETE /api/units/{{unit_id}}",
       "request": {
         "method": "DELETE",
         "url": "{{base_url}}/api/units/{{unit_id}}",
@@ -2847,7 +3932,7 @@
       ]
     },
     {
-      "name": "78 DELETE /api/courses/{{course_id}}",
+      "name": "107 DELETE /api/courses/{{course_id}}",
       "request": {
         "method": "DELETE",
         "url": "{{base_url}}/api/courses/{{course_id}}",
@@ -2876,7 +3961,7 @@
       ]
     },
     {
-      "name": "79 DELETE /api/assignments/{{assignment_id}}",
+      "name": "108 DELETE /api/assignments/{{assignment_id}}",
       "request": {
         "method": "DELETE",
         "url": "{{base_url}}/api/assignments/{{assignment_id}}",
@@ -2905,7 +3990,7 @@
       ]
     },
     {
-      "name": "80 DELETE /api/classes/{{class_id}}/students/{{student_id}}",
+      "name": "109 DELETE /api/classes/{{class_id}}/students/{{student_id}}",
       "request": {
         "method": "DELETE",
         "url": "{{base_url}}/api/classes/{{class_id}}/students/{{student_id}}",
@@ -2934,7 +4019,7 @@
       ]
     },
     {
-      "name": "81 POST /api/auth/logout",
+      "name": "110 POST /api/auth/logout",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/api/auth/logout",
@@ -2963,7 +4048,7 @@
       ]
     },
     {
-      "name": "82 Logged-out token rejected",
+      "name": "111 Logged-out token rejected",
       "request": {
         "method": "GET",
         "url": "{{base_url}}/api/me",
@@ -2992,7 +4077,7 @@
       ]
     },
     {
-      "name": "83 POST /api/auth/login",
+      "name": "112 POST /api/auth/login",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/api/auth/login",
@@ -3031,7 +4116,7 @@
       ]
     },
     {
-      "name": "84 POST /api/me/password",
+      "name": "113 POST /api/me/password",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/api/me/password",
@@ -3074,7 +4159,7 @@
       ]
     },
     {
-      "name": "85 Password change revoked sessions",
+      "name": "114 Password change revoked sessions",
       "request": {
         "method": "GET",
         "url": "{{base_url}}/api/me",
@@ -3103,7 +4188,7 @@
       ]
     },
     {
-      "name": "86 POST /api/auth/login",
+      "name": "115 POST /api/auth/login",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/api/auth/login",
@@ -3142,7 +4227,7 @@
       ]
     },
     {
-      "name": "87 DELETE /api/me",
+      "name": "116 DELETE /api/me",
       "request": {
         "method": "DELETE",
         "url": "{{base_url}}/api/me",
@@ -3185,7 +4270,7 @@
       ]
     },
     {
-      "name": "88 POST /api/auth/logout",
+      "name": "117 POST /api/auth/logout",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/api/auth/logout",

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:test/test.dart';
 import 'package:vaachak_content/vaachak_content.dart';
 
@@ -10,15 +11,17 @@ void main() {
       asset('grammar_rules'),
       asset('items'),
     );
-    expect(bank.items.length, 15);
+    expect(bank.items.length, (jsonDecode(asset('items')) as List).length);
+    expect(bank.items, isNotEmpty);
     expect(bank.releaseIssues(), isNotEmpty);
-    expect(
-      bank.forNode(
-        'vocabulary.frequent_500',
-        bank.graph.nodes.values.first.ages.first,
-      ),
-      isEmpty,
+    final available = bank.forNode(
+      'vocabulary.frequent_500',
+      bank.graph.nodes.values.first.ages.first,
     );
+    // Reviewed additions may be available while the full seed bank still has
+    // draft content. Unreviewed items must never enter learner practice.
+    expect(available, isNotEmpty);
+    expect(available.every((item) => item.approved), isTrue);
   });
   Map<String, dynamic> question() => {
     'id': 'test',

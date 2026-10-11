@@ -1531,3 +1531,6 @@ app.include_router(generation_jobs.router)
 import observability
 
 observability.install(app)
+import deployment
+
+deployment.install(app)

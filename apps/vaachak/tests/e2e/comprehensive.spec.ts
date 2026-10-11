@@ -601,7 +601,12 @@ test("teacher course assignment, unassignment, course and lesson archive restore
   await page.getByRole("tab", { name: "Library", exact: true }).click();
   await page.getByRole("button", { name: new RegExp(c.title) }).click();
   await button(page, "Edit lesson").click();
+  const deleted = page.waitForResponse(
+    (response) => response.url().endsWith(`/api/lessons/${lesson.id}`) &&
+      response.request().method() === "DELETE",
+  );
   await confirm(page, "Delete unused lesson");
+  expect((await deleted).ok()).toBeTruthy();
   expect(
     (
       await request.get(`/api/lessons/${lesson.id}`, { headers: c.headers })
@@ -631,6 +636,7 @@ test("personal starting check saves a draft, resumes, completes and starts anoth
   );
   await button(page, "Try a starting check").click();
   const data = await (await response).json();
+  await expect(button(page, "Check my answer")).toBeVisible();
   const radios = page.getByRole("radio");
   if (await radios.count()) {
     await radios.first().click();

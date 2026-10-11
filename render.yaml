@@ -1,0 +1,33 @@
+# One paid service owns the SQLite database, audio, and draft worker.
+# Do not add instances or a separate Render worker against this disk.
+services:
+  - type: web
+    name: vaachak-api
+    runtime: docker
+    branch: main
+    region: singapore
+    plan: 0.5c-512mb
+    numInstances: 1
+    dockerfilePath: ./deploy/backend/Dockerfile
+    dockerContext: .
+    autoDeployTrigger: checksPass
+    healthCheckPath: /api/ready
+    disk:
+      name: vaachak-data
+      mountPath: /data
+      sizeGB: 5
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: VAACHAK_ENV
+        value: production
+      - key: VAACHAK_DATA
+        value: /data
+      - key: VAACHAK_RUN_WORKER
+        value: "1"
+      - key: VAACHAK_TEACHER_INVITE
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false
+      - key: VAACHAK_CORS_ORIGINS
+        sync: false

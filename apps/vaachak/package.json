@@ -27,9 +27,11 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",
+    "react-native-reanimated": "4.5.1",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0",
-    "react-native-web": "^0.21.2"
+    "react-native-web": "^0.21.2",
+    "react-native-worklets": "0.10.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.64.0",
@@ -41,6 +43,7 @@
     "vitest": "^4.1.11"
   },
   "scripts": {
+    "postinstall": "node scripts/patch-query-string.mjs",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
@@ -49,10 +52,14 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "build:web": "expo export --platform web",
+    "build:release:web": "node scripts/build-release-web.mjs",
     "build:all": "expo export --platform all",
     "dev:web": "node scripts/dev-web.mjs",
     "api:check": "node scripts/check-api.mjs",
     "lint": "expo lint"
+  },
+  "overrides": {
+    "decode-uri-component": "0.5.0"
   },
   "private": true
 }

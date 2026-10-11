@@ -4,7 +4,7 @@ from pathlib import Path
 root = Path(__file__).resolve().parents[2]
 template = (Path(__file__).parent / 'templates/environment.sql').read_text()
 header = 'CREATE SCHEMA IF NOT EXISTS extensions;\nCREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;\n'
-nodes = json.loads((root / 'apps/vaachak_app/assets/skill_graph.json').read_text())
+nodes = json.loads((root / 'content/skill_graph.json').read_text())
 parts = [header]
 for environment in ('dev', 'qa', 'prod'):
     parts.append(template.replace('__ENV__', environment))

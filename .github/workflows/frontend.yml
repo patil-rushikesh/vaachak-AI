@@ -23,17 +23,19 @@ jobs:
       - run: npm ci
       - run: pip install -r classroom_web/requirements-dev.txt
         working-directory: .
-      - run: npm run lint && npm run typecheck && npm run api:check && npm test && npm run build:all
+      - run: npm run lint && npm run typecheck && npm run api:check && npm test && EXPO_PUBLIC_API_URL=http://127.0.0.1:8002 npm run build:all
       - run: npx playwright install --with-deps chromium
       - run: |
           sudo apt-get update && sudo apt-get install -y ffmpeg
-          VAACHAK_DATA="$RUNNER_TEMP/vaachak-e2e" GROQ_API_KEY='' VAACHAK_GROQ_KEY='' PYTHONPATH=classroom_web/server python -m uvicorn main:app --port 8002 > /tmp/vaachak-e2e-api.log 2>&1 &
+          VAACHAK_DATA="$RUNNER_TEMP/vaachak-e2e" VAACHAK_AUTH_PER_MINUTE=1000 VAACHAK_CORS_ORIGINS=http://127.0.0.1:8082 GROQ_API_KEY='' VAACHAK_GROQ_KEY='' PYTHONPATH=classroom_web/server python -m uvicorn main:app --port 8002 > /tmp/vaachak-e2e-api.log 2>&1 &
         working-directory: .
       - run: |
           API_PORT=8002 PORT=8082 node scripts/serve.mjs > /tmp/vaachak-e2e-web.log 2>&1 &
           for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8082/api/ready && break || sleep 1; done
           npm run test:e2e
       - run: docker build -t vaachak-web:ci .
+      # Compile-only URL; this job never publishes the resulting bundle.
+      - run: EXPO_PUBLIC_API_URL=https://vaachak-release-check.onrender.com npm run build:release:web
       - uses: actions/upload-artifact@v4
         if: always()
         with:

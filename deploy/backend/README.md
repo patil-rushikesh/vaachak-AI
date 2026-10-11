@@ -1,6 +1,76 @@
-# Backend deployment and operations
+# Release deployment and operations
 
 The supported target is one FastAPI instance on one Linux host, backed by persistent SQLite and private local audio storage. Do not horizontally replicate this deployment or place its database on a network filesystem. The existing Dart/Supabase components are separate and are not needed to run this service.
+
+## Render backend, Vercel web, and mobile release
+
+This configuration packages the current G1/G2 release. Later generative-AI milestones remain separate. A checked-in deployment configuration is not evidence of a live deployment or a signed mobile binary.
+
+### Render
+
+1. Create a Blueprint from this repository's `main` branch using the root `render.yaml`. Leave the repository root unchanged; the Dockerfile path is already configured. It specifies **one paid service with a 5 GB persistent disk**. Review Render's current cost before provisioning.
+2. Enter `GROQ_API_KEY` as a Render secret and `VAACHAK_CORS_ORIGINS` as a comma-separated list of exact Vercel/custom HTTPS origins. No `/api`, paths, queries, or wildcards. If the Vercel origin is not assigned yet, add it after creating that project and redeploy the API.
+3. The Blueprint generates `VAACHAK_TEACHER_INVITE`. Retrieve it privately from Render and share it only with approved instructors. Production startup requires at least 24 characters. Learner registration remains public.
+4. Wait for `/api/ready` to return 200 and save the actual Render HTTPS origin. `/api/health` reports configured capabilities; readiness checks storage, SQLite, and FFmpeg without making paid provider requests. Test real AI separately before launch.
+5. Check logs for `service_child_started` events for `api` and `worker`, along with structured request/job events. The API uses `PORT` (10000 in the Blueprint). The entrypoint prepares a fresh disk and drops to UID 10001 before starting the application.
+
+Keep **one Render instance, one Uvicorn worker, and `VAACHAK_RUN_WORKER=1`**. The API and draft worker run in the same service and share `/data/classroom.db` and `/data/audio`. A child process failure stops the service for platform restart. Do not create a separate Render worker: it cannot share this disk. Migrations run at startup when storage is mounted; do not move them to a build or pre-deploy command. Disk-backed deployments have a short interruption. Back up before upgrades; the Blueprint deploys after GitHub checks pass.
+
+### Vercel
+
+1. Import the repository, choose branch `main`, and set **Root Directory to `apps/vaachak`**, Node.js 22, and framework preset **Other**. The checked-in `vercel.json` selects `npm ci`, `npm run build:release:web`, and output directory `dist`.
+2. Set `EXPO_PUBLIC_API_URL` to the actual Render HTTPS origin, without `/api`, in every Vercel environment you intend to build. Never put provider keys or the instructor invitation in Vercel or an `EXPO_PUBLIC_*` variable.
+3. Deploy, add the assigned production origin to Render's CORS list, and redeploy the API. Add individual preview origins only when necessary; do not allow all `*.vercel.app` sites.
+4. Verify sign-in, direct reload of a nested route, class creation/joining, feedback/history, and recording/playback on the HTTPS site. Requests, including audio uploads, go directly to Render. The SPA fallback handles route reloads.
+
+Release builds reject missing, HTTP, local/test, or path-suffixed API origins. The API origin is compiled into the client: changing it requires rebuilding web and mobile artifacts. The CI fixture URL is for compilation checks only and must never be distributed.
+
+### Android and iOS distribution
+
+The app is linked to the EAS project `@patilrushikesh/vaachak`. Its public project ID is committed in `apps/vaachak/app.json`; signing credentials remain in EAS. After the backend is reachable, run from `apps/vaachak`:
+
+```sh
+npx eas-cli@latest login
+npx eas-cli@latest env:create --environment production --name EXPO_PUBLIC_API_URL --value https://YOUR-ACTUAL-API.onrender.com --visibility plaintext
+npx eas-cli@latest build --platform android --profile apk
+```
+
+The `apk` profile creates a signed APK for direct Android installation. Preserve its signing key for future upgrades. The `production` profile creates an Android AAB for the Play Store instead. EAS manages incrementing release build numbers remotely. The package/bundle identifier is `com.vaachak.learning`; confirm ownership before creating store records.
+
+Choose the actual iOS distribution route before building:
+
+```sh
+# Ad hoc IPA: register the physical iPhones/iPads first.
+npx eas-cli@latest device:create
+npx eas-cli@latest build --platform ios --profile preview
+
+# App Store / TestFlight binary; upload separately after building.
+npx eas-cli@latest build --platform ios --profile production
+
+# Simulator-only build, which does not install on physical iPhones.
+npx eas-cli@latest build --platform ios --profile ios-simulator
+```
+
+Physical-device iOS distribution requires Apple signing access and a paid Apple Developer membership. An ad hoc IPA installs only on devices included in its provisioning profile; use TestFlight for broader testing. An arbitrary IPA file is not installable by every iPhone user. Expo Go and simulator checks do not certify a signed release binary.
+
+| Configuration | Location | Purpose |
+| --- | --- | --- |
+| `GROQ_API_KEY` | Render secret | AI feedback, transcription, and drafting |
+| `VAACHAK_TEACHER_INVITE` | Render secret | Approved instructor signup |
+| `VAACHAK_CORS_ORIGINS` | Render environment | Exact allowed HTTPS web origins |
+| `VAACHAK_DATA`, `VAACHAK_RUN_WORKER`, `PORT` | Render Blueprint | Persistent storage and process configuration |
+| `EXPO_PUBLIC_API_URL` | Vercel and EAS production environments | Public API origin compiled into clients |
+| Android keystore / Apple signing credentials | EAS / Apple account | Installable mobile distribution |
+
+AI remains subject to provider availability and configured quotas; unlimited existing practice does not imply unlimited paid generation. Replace provider credentials previously pasted into chat with a fresh key in Render before public launch.
+
+### Hosted acceptance and operations
+
+After deployment, verify readiness, allowed/rejected browser origins, instructor invitation, learner signup, all six task formats, real speech upload/transcription/playback, teacher review/publication, knowledge citations, unscored retries, account export/erasure, and password recovery. Redeploy and verify an account and recording survive. Run Postman smoke tests only against disposable staging records. Install signed Android/iOS builds and repeat microphone, session restoration, navigation, and network recovery checks.
+
+Keep backups outside the application disk and rehearse restoration before storing real learner work. Render Cron jobs cannot mount this service's disk. Run the existing backup/retention commands inside the service using an operator-controlled schedule or authenticated shell/SSH, with an external backup destination. This repository does not provision that external destination or scheduler; an explicit operator schedule is needed until configured.
+
+References: [Render Blueprint](https://render.com/docs/blueprint-spec), [persistent disks](https://render.com/docs/disks), [Expo web deployment](https://docs.expo.dev/guides/publishing-websites/), [Expo internal distribution](https://docs.expo.dev/build/internal-distribution/).
 
 ## Local development
 
@@ -66,7 +136,7 @@ python tools/backend_admin.py restore /protected-backups/pre-upgrade /new-empty-
 
 Verify the manifest, database integrity, record counts and representative authenticated audio playback before switching the service to the restored directory. The tool refuses a nonempty destination and verifies every restored manifest file. A backup is not an acceptable erasure workaround: define a retention period and reapply account-erasure records if restoring older backups containing erased users.
 
-For rollback, prefer a code version compatible with the migrated schema. If that is impossible, stop the service and restore a pre-upgrade snapshot, explicitly accounting for later writes. Do not automatically downgrade tables. Current migration version: 1; migrations are additive and legacy evidence is marked unknown.
+For rollback, prefer a code version compatible with the migrated schema. If that is impossible, stop the service and restore a pre-upgrade snapshot, explicitly accounting for later writes. Do not automatically downgrade tables. Current migration version: 7; migrations are additive and legacy evidence is marked unknown.
 
 ## Recovery, ownership and privacy
 
@@ -101,6 +171,8 @@ python -m pytest classroom_web/tests -q --junitxml=docs/verification/backend-tes
 python tools/export_postman.py
 python tools/build_postman_smoke.py
 python tools/backend_load_check.py --seconds 900 --users 20
+docker build -f deploy/backend/Dockerfile -t vaachak-backend:release .
+python tools/release_container_check.py --report docs/verification/release-container.json
 ```
 
 The load check creates an isolated server/database and uses deterministic text grading; its latency is not live-AI latency. The Postman collection is destructive only to its own synthetic test records but should run against a dedicated test environment. It covers successful operations, authorization checks, archive/delete guards and an intentionally invalid password-reset token. Pytest exercises a valid operator reset separately.

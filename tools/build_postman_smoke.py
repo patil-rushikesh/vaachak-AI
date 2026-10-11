@@ -14,6 +14,7 @@ parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--audio-file", type=Path, help="Existing fixture inside the Postman working directory for desktop runs")
 args=parser.parse_args()
 upload_fixture=args.audio_file.resolve() if args.audio_file else fixture
+fixture_source=str(upload_fixture) if args.audio_file else 'fixtures/silence.wav'
 if not upload_fixture.is_file():
  raise SystemExit(f"Audio fixture missing: {upload_fixture}")
 items=[]
@@ -29,7 +30,7 @@ def add(method,path,role='teacher',body=None,form=None,capture=None,checks=(),st
  if form is not None:
   fields=[]
   for key,value in form.items():
-   fields.append({'key':key,'type':'file','src':str(upload_fixture),'contentType':'audio/wav'} if key in ('file','audio') else {'key':key,'value':str(value),'type':'text'})
+   fields.append({'key':key,'type':'file','src':fixture_source,'contentType':'audio/wav'} if key in ('file','audio') else {'key':key,'value':str(value),'type':'text'})
   req['body']={'mode':'formdata','formdata':fields}
  tests=[f'pm.test("HTTP {status}", () => pm.response.to.have.status({status}));']
  if capture:
@@ -105,6 +106,47 @@ add('PATCH','/api/attempts/{{attempt_id}}/dispute','student',body={'disputed':Tr
 add('PATCH','/api/attempts/{{attempt_id}}/dispute','student',body={'disputed':False})
 add('GET','/api/me/recommendations','student')
 add('GET','/api/me/export','student')
+# Current growth, durable authoring, and reviewed-knowledge operations.
+add('GET','/api/me/learning-profile','student')
+add('PUT','/api/me/learning-profile','student',body={'goal':'everyday','difficulty':'starter','weekly_goal':3,'analytics':False})
+add('GET','/api/me/review-queue','student')
+add('POST','/api/me/practice-sessions','student',body={'client_uuid':'{{run_id}}','mode':'mixed','count':3},capture={'session_id':'id'})
+add('GET','/api/me/practice-sessions','student')
+add('GET','/api/me/practice-sessions/{{session_id}}','student')
+add('PATCH','/api/me/practice-sessions/{{session_id}}','student',body={'revision':1,'item_index':0,'text':'A saved practice answer'})
+add('GET','/api/practice-download','student')
+add('POST','/api/events','student',body={'id':'{{run_id}}','name':'practice_started'})
+add('POST','/api/feedback-reports','student',body={'category':'suggestion','message':'Synthetic smoke test','helpful':True})
+add('POST','/api/conversations','student',body={'id':'{{run_id}}','scenario':'everyday'},capture={'conversation_id':'id'})
+add('GET','/api/conversations/{{conversation_id}}','student')
+add('POST','/api/conversations/{{conversation_id}}/turns','student',body={'id':'{{run_id}}','revision':1,'text':'Hello, I am learning English.'})
+add('PUT','/api/teacher/drafts/{{run_id}}',body={'revision':0,'payload':{'title':'Smoke draft'}})
+add('GET','/api/teacher/drafts')
+add('DELETE','/api/teacher/drafts/{{run_id}}')
+for method in ('put','delete'):
+ covered.discard((method,'/api/teacher/drafts/{run_id}'))
+ covered.add((method,'/api/teacher/drafts/{draft_id}'))
+add('GET','/api/teacher/archives')
+add('POST','/api/ai/jobs',body={'client_uuid':'{{run_id}}','topic':'Greetings','count':1,'kinds':['read'],'level':'A1'},capture={'job_id':'id'})
+add('GET','/api/ai/jobs')
+add('GET','/api/ai/jobs/{{job_id}}')
+note={'skill_code':'MORPH.AGREEMENT','title':'Smoke agreement note','body':'Use she goes in the simple present.','visibility':'public','client_uuid':'{{run_id}}'}
+add('POST','/api/teacher/knowledge',body=note,capture={'knowledge_id':'id','knowledge_version':'version'})
+add('GET','/api/teacher/knowledge')
+add('PUT','/api/teacher/knowledge/{{knowledge_id}}',body={**note,'title':'Updated smoke note','version':'{{knowledge_version}}'},capture={'knowledge_version':'version'})
+for action in ('review','publish','withdraw'):
+ add('POST','/api/teacher/knowledge/{{knowledge_id}}/'+action,body={'version':'{{knowledge_version}}'},capture={'knowledge_version':'version'})
+for method,path in list(covered):
+ if '{knowledge_id}' in path:
+  covered.discard((method,path));covered.add((method,path.replace('{knowledge_id}','{unit_id}')))
+add('POST','/api/transcriptions','student',form={'client_uuid':'{{run_id}}','audio':True},label='Transcription configuration/failure boundary (synthetic silence)')
+items[-1]['event'][0]['script']['exec']=['pm.test("Speech succeeds or returns an explicit unavailable/empty-speech error", () => pm.expect([200, 422, 502, 503]).to.include(pm.response.code));']
+add('GET','/api/transcriptions/{{run_id}}','student')
+items[-1]['event'][0]['script']['exec']=['pm.test("Only saved usable transcripts can be retrieved", () => pm.expect([200, 404]).to.include(pm.response.code));']
+covered.discard(('get','/api/transcriptions/{run_id}'))
+covered.add(('get','/api/transcriptions/{transcription_id}'))
+add('POST','/api/auth/password-reset-request',None,body={'email':'nonexistent-{{run_id}}@example.invalid'})
+items[-1]['event'][0]['script']['exec']=['pm.test("Recovery acknowledges the request or explicitly reports missing SMTP", () => pm.expect([200, 503]).to.include(pm.response.code));']
 add('POST','/api/classes/{{class_id}}/attention/actions',body={'student_id':'{{student_id}}','reason':'never_started','status':'resolved'})
 add('GET','/api/classes/{{class_id}}/attention/actions')
 add('PATCH','/api/assignments/{{assignment_id}}',body={'title':'Updated smoke assignment','due_at':'2026-12-01T10:00:00Z'})

@@ -19,6 +19,7 @@
       "package": "com.vaachak.learning"
     },
     "web": {
+      "output": "single",
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
@@ -36,6 +37,13 @@
       "expo-router",
       "expo-notifications"
     ],
-    "scheme": "vaachak"
+    "scheme": "vaachak",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "4916cde1-4caa-40f3-82a1-a3ac5cc137ca"
+      }
+    },
+    "owner": "patilrushikesh"
   }
 }

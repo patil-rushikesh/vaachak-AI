@@ -1,6 +1,7 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
+COPY scripts/patch-query-string.mjs ./scripts/patch-query-string.mjs
 RUN npm ci
 COPY . .
 ARG EXPO_PUBLIC_API_URL=""

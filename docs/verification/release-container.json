@@ -1,0 +1,12 @@
+{
+  "ready_on_dynamic_port": true,
+  "schema_version": 7,
+  "root_owned_disk_initialized_and_privileges_dropped": true,
+  "production_instructor_invitation": true,
+  "device_timezone_alias_supported_in_slim_image": true,
+  "cors_authentication_and_structured_errors": true,
+  "colocated_worker_consumes_job_and_handles_missing_provider": true,
+  "graceful_platform_shutdown": true,
+  "database_sessions_jobs_and_audio_survive_replacement": true,
+  "worker_failure_stops_service_for_platform_restart": true
+}

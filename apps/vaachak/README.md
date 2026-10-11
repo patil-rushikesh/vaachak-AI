@@ -2,6 +2,10 @@
 
 One Expo SDK 57 / React Native / TypeScript app for **iOS, Android and web**. This isolated directory owns its dependencies, theme, features, tests and web container. It uses the existing FastAPI backend; no provider secret belongs in this app.
 
+## Release deployment
+
+Use the [Render + Vercel + mobile release guide](../../deploy/backend/README.md). Vercel must use this directory as its project root. Set the actual HTTPS backend origin in both Vercel and the EAS production environment before building. `npm run build:release:web` validates the web release configuration. The EAS `apk` profile produces a shareable Android APK; iOS `preview` requires registered devices and Apple signing.
+
 ## Run locally
 
 From the repository root, start the backend:
@@ -115,16 +119,16 @@ Regenerate Postman/OpenAPI from the repository root with `.venv313/bin/python to
 
 ## Release gates and bounded limitations
 
-- Set a deployed HTTPS API URL and complete EAS project/signing setup. `eas.json` provides preview APK and release profiles; no signed APK/IPA or app-store upload is claimed. Use a development build for final verification, not only Expo Go.
+- Set a deployed HTTPS API URL and complete signing setup for the linked EAS project. `eas.json` provides preview APK and release profiles; no signed APK/IPA or app-store upload is claimed. Use a development build for final verification, not only Expo Go.
 - Run real-device microphone/permission, accessibility, slow-network, long-session and user acceptance testing. Simulator/browser results do not establish speech or learning efficacy.
 - Publish reviewed teaching content and complete the user study in the product plan. The skill picker excludes acoustic/accent categories; the backend is not a phoneme-scoring model.
-- Authoring edits are in memory. Leaving the editor or terminating the app can lose unsaved changes; durable teacher drafts and full offline support remain follow-up work.
-- Archive discovery/restoration has a backend listing gap. Multiple-role accounts, push notifications and translated interfaces are not implemented.
+- Teacher drafts and saved practice sessions are available. Full offline synchronization and interrupted native audio recovery remain outside this release.
+- Archive discovery/restoration is implemented. Multiple-role accounts, remote push notifications and translated interfaces remain outside this release.
 - The Expo build tool dependency tree currently reports upstream npm advisories (braces, node-forge and xcode/uuid). The static Nginx runtime does not ship Node tooling. Review patched compatible upstream releases before public release; do not apply npm's suggested downgrade to Expo 44 blindly.
 
 ## User-value additions
 
-See [implementation status](../../docs/USER_VALUE_IMPLEMENTATION_STATUS.md) for shipped features, current test evidence, and remaining release gates. The current backend contract has 94 operations. Personal sessions, teacher drafts, transcript confirmation, optional public quiz downloads, and scripted conversations are incremental additions. Run the generation worker alongside the API; Compose includes it.
+See [implementation status](../../docs/USER_VALUE_IMPLEMENTATION_STATUS.md) for shipped features, current test evidence, and remaining release gates. The current backend contract has 100 operations. Personal sessions, teacher drafts, transcript confirmation, optional public quiz downloads, and scripted conversations are incremental additions. Run the generation worker alongside the API; Compose includes it.
 
 Native Maestro flows live in `tests/native/`. Use only disposable emulator accounts, pass `TEST_EMAIL` and `TEST_PASSWORD` at execution, and keep runner output outside source control. Current flows target Expo Go through `exp://127.0.0.1:8091`; Android requires `adb reverse tcp:8091 tcp:8091` and a reachable API URL. These smoke flows do not replace signed-build, microphone, notification, or full accessibility acceptance.
 
@@ -151,3 +155,9 @@ Teachers open **Library → Teaching notes** to create a private explanation, se
 Learners can expand **Why this feedback?** on both new and historical attempts to see the evaluation basis and versioned reviewed-note references when present. Optional next-line suggestions are labeled as unscored practice. Uncertain transcripts continue to show **Not scored** and allow retry without advancing completion.
 
 Current release verification is recorded in [G1/G2 release verification](../../docs/verification/G1_G2_REVIEW_FIXES.md). `tests/e2e/knowledge.spec.ts` covers the new workflows against an isolated API; only its learner citation display uses simulated provider-derived fields. `tests/native/teaching-knowledge.yaml` covers teacher note lifecycle on an Android ATD emulator with synthetic credentials.
+
+### Dependency security compatibility
+
+SDK 57 navigation uses CommonJS `query-string` 7. The release overrides its URI decoder to the upstream security-fixed `decode-uri-component` 0.5.0, with a small fail-fast postinstall import adapter in `scripts/patch-query-string.mjs`. This avoids a full SDK upgrade. Tests cover ordinary, Unicode, repeated, and malformed query values in a process with a timeout. Reassess/remove the adapter when Expo upgrades query-string. Do not disable install scripts in release builds.
+
+The remaining npm audit findings concern the Expo/native build tooling dependency chains (braces, node-forge, and xcode/uuid). They are not a clean security audit; review compatible upstream fixes and signing/build exposure before broad public distribution. Do not run an unreviewed major SDK downgrade suggested by `npm audit --force`.

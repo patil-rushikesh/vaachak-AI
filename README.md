@@ -1,10 +1,12 @@
-# VaachakAI backend and libraries
+# VaachakAI learning application
 
-The web and Android frontends have been removed. This repository retains the classroom API, reusable learning libraries, curriculum data, and Supabase infrastructure.
+Vaachak combines a FastAPI classroom backend with one React Native / Expo application for Android, iOS, and web. The original web and Android frontends were replaced by the isolated application in `apps/vaachak`; reusable libraries and curriculum tooling remain available.
+
+For release, follow the [Render, Vercel, and mobile deployment guide](deploy/backend/README.md). Backend hosting uses the root `render.yaml`; Vercel’s project root is `apps/vaachak`. See the [app README](apps/vaachak/README.md) for local development.
 
 ## Run the classroom API
 
-Use Python 3.10 or newer.
+Use Python 3.13 and install FFmpeg (`ffprobe` must be on PATH).
 
 ```sh
 python3 -m venv .venv
@@ -18,11 +20,13 @@ API documentation is at http://localhost:8000/api/docs. The root URL and `/stati
 
 - `classroom_web/server`: FastAPI, SQLite, AI feedback, courses, and classroom endpoints.
 - `classroom_web/tests`: API and backend tests.
+- `apps/vaachak`: React Native application, web build, mobile profiles, and UI tests.
+- `deploy/backend`: backend container and release operations guide.
 - `packages`: reusable Dart learning, content, storage, speech, explanation, sync, and pack libraries. Speech and explanation adapters still require Flutter dependencies.
 - `content`: shared curriculum JSON used by libraries and content tooling.
 - `infra/supabase`: migrations, configuration, and database tests.
 - `tools`: content pipelines, library checks, and database verification utilities.
-- `docs`: historical implementation and architecture records; app build and UI instructions in these records are no longer applicable.
+- `docs`: product plans, implementation records, and verification evidence. Historical legacy-frontend instructions are superseded by the app README.
 
 ## Checks
 
@@ -37,24 +41,24 @@ The complete check script uses Flutter 3.47.5 / Dart 3.13.4 for the retained lib
 
 ## API reference and Postman
 
-The [complete API list](postman/API_LIST.txt) contains all 71 classroom operations and their access requirements. Import [the Postman collection](postman/VaachakAI.postman_collection.json), set collection variables `base_url`, `email`, `password`, `name`, and `role`, then run Register or Login. The token and created resource IDs are saved automatically. Switch credentials and log in again when changing between teacher and learner actions. Select local files for multipart uploads. Requests are a reference, not an ordered bulk-run workflow.
+The [complete API list](postman/API_LIST.txt) contains all 100 classroom operations and their access requirements. Import [the Postman collection](postman/VaachakAI.postman_collection.json), set collection variables `base_url`, `email`, `password`, `name`, and `role`, then run Register or Login. The token and created resource IDs are saved automatically. Switch credentials and log in again when changing between teacher and learner actions. Select local files for multipart uploads. Requests are a reference, not an ordered bulk-run workflow.
 
 [OpenAPI snapshot](postman/openapi.json). Regenerate these files with your backend Python environment: `python tools/export_postman.py`. Supabase deployment-generated APIs are separate from the classroom API.
 
 ### Run every classroom endpoint locally
 
-Start the API with `.venv313/bin/python classroom_web/run.py` (or your configured Python environment). Import `postman/VaachakAI.local-tests.postman_collection.json` into Postman and run all requests in order with one iteration. The collection creates unique synthetic accounts, saves tokens/IDs, exercises all 71 operations, and checks role restrictions, history-deletion guards and lifecycle behavior. Run against a dedicated test database: it erases its synthetic learner and recording, while its instructor and authored content remain.
+Start the API with `.venv313/bin/python classroom_web/run.py` (or your configured Python environment). Import `postman/VaachakAI.local-tests.postman_collection.json` into Postman and run all requests in order with one iteration. The collection creates unique synthetic accounts, saves tokens/IDs, exercises all 100 operations, and checks role restrictions, history-deletion guards and lifecycle behavior. Run against a dedicated test database: it erases its synthetic learner and recording, while its instructor and authored content remain.
 
 Command-line equivalent:
 
 ```sh
 python tools/build_postman_smoke.py
-npx --yes newman run postman/VaachakAI.local-tests.postman_collection.json --reporters cli,junit --reporter-junit-export postman/local-test-results.xml
+npx --yes newman run postman/VaachakAI.local-tests.postman_collection.json --working-dir postman --reporters cli,junit --reporter-junit-export postman/local-test-results.xml
 ```
 
 Audio uploads use `postman/fixtures/silence.wav`, a synthetic fixture. Regenerating the test collection sets its absolute upload path for your checkout. The tests verify upload/download, not speech transcription. When no AI key is configured, the AI drafting test verifies the expected HTTP 503; live model generation remains unverified.
 
-Postman desktop restricts file access to its working directory. The tested desktop requests use `/Users/admin/Postman/files/vaachak-api-tests/silence.wav`. Copy the synthetic fixture into your configured Postman working directory and regenerate with `python tools/build_postman_smoke.py --audio-file /absolute/path/to/silence.wav` before importing on another machine.
+Postman desktop restricts file access to its working directory. The generated collection uses `fixtures/silence.wav` relative to its working directory. Copy the synthetic fixture into your configured Postman working directory and regenerate with `python tools/build_postman_smoke.py --audio-file /absolute/path/to/silence.wav` before importing on another machine.
 
 If you reselect upload files in Postman, enable the form-data Content-Type column and set each file field to `audio/wav`; Postman may otherwise choose an unsupported default MIME type.
 

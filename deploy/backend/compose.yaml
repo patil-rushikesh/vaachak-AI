@@ -6,6 +6,7 @@ services:
     environment:
       VAACHAK_ENV: production
       VAACHAK_DATA: /data
+      VAACHAK_CORS_ORIGINS: ${VAACHAK_CORS_ORIGINS:-}
       VAACHAK_TEACHER_INVITE: ${VAACHAK_TEACHER_INVITE:?Set instructor invitation in deployment environment}
       VAACHAK_SMTP_HOST: ${VAACHAK_SMTP_HOST:-}
       VAACHAK_SMTP_PORT: ${VAACHAK_SMTP_PORT:-587}
