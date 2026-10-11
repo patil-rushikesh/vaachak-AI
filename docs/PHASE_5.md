@@ -1,3 +1,5 @@
+> Historical reference: the web and Android frontends and their build tooling have been removed. See the root README for current setup.
+
 # Phase 5: classroom classification, teacher recordings, assigned practice
 
 ## What exists

@@ -9,6 +9,7 @@ Quiz tasks (graded here, no speech needed):
   fill    {prompt, options[], correct, explain?}     prompt contains ___ ; pick the word that fits
   listen  {text, options[], correct, explain?}       hear the sentence (browser voice), pick what it says
 """
+
 from __future__ import annotations
 
 from typing import Literal
@@ -23,6 +24,7 @@ QUIZ_KINDS = ("choice", "fill", "listen")
 
 
 class ItemIn(BaseModel):
+    skill_ids: list[str] = Field(default_factory=list, max_length=4)
     kind: Literal["read", "free", "build", "choice", "fill", "listen"]
     text: str | None = Field(default=None, max_length=300)
     prompt: str | None = Field(default=None, max_length=300)
@@ -33,21 +35,34 @@ class ItemIn(BaseModel):
     explain: str | None = Field(default=None, max_length=300)
 
 
-def clean_item(i: ItemIn) -> dict:
+def _clean_item(i: ItemIn) -> dict:
     """Validate one item from a teacher and return the stored form."""
     if i.kind == "read" and (i.text or "").strip():
         return {"kind": "read", "text": i.text.strip()}
     if i.kind == "free" and (i.prompt or "").strip():
         return {"kind": "free", "prompt": i.prompt.strip()}
     if i.kind == "build" and i.words and len(i.words) >= 2 and (i.answer or "").strip():
-        if sorted(feedback.tokens(" ".join(i.words))) != sorted(feedback.tokens(i.answer)):
-            raise HTTPException(422, "The build answer must use exactly the given words.")
-        return {"kind": "build", "words": [w.strip() for w in i.words], "answer": i.answer.strip()}
+        if sorted(feedback.tokens(" ".join(i.words))) != sorted(
+            feedback.tokens(i.answer)
+        ):
+            raise HTTPException(
+                422, "The build answer must use exactly the given words."
+            )
+        return {
+            "kind": "build",
+            "words": [w.strip() for w in i.words],
+            "answer": i.answer.strip(),
+        }
     if i.kind in QUIZ_KINDS:
         stem = (i.text if i.kind == "listen" else i.prompt) or ""
         opts = [o.strip() for o in (i.options or []) if o and o.strip()]
         if not stem.strip():
-            raise HTTPException(422, "Write the question for each quiz item." if i.kind != "listen" else "Write the sentence that will be spoken.")
+            raise HTTPException(
+                422,
+                "Write the question for each quiz item."
+                if i.kind != "listen"
+                else "Write the sentence that will be spoken.",
+            )
         if len(opts) < 2:
             raise HTTPException(422, "A quiz item needs at least two answer options.")
         if len({o.lower() for o in opts}) != len(opts):
@@ -83,7 +98,29 @@ def grade_quiz(item: dict, chosen: int) -> dict:
         tips.append(item["explain"])
     stem = item.get("prompt") or item.get("text") or ""
     return {
-        "score": 100 if ok else 0, "accuracy": 100 if ok else 0, "words": [], "extra_words": [], "grammar": [],
-        "tips": tips, "correct": ok, "correct_index": item["correct"], "chosen": chosen, "chosen_text": item["options"][chosen],
-        "target": right, "question": stem,
+        "score": 100 if ok else 0,
+        "accuracy": 100 if ok else 0,
+        "words": [],
+        "extra_words": [],
+        "grammar": [],
+        "tips": tips,
+        "correct": ok,
+        "correct_index": item["correct"],
+        "chosen": chosen,
+        "chosen_text": item["options"][chosen],
+        "target": right,
+        "question": stem,
     }
+
+
+def clean_item(i: ItemIn) -> dict:
+    import skills
+
+    out = _clean_item(i)
+    if any(
+        code not in skills.SKILLS or skills.is_accent_only(code) for code in i.skill_ids
+    ):
+        raise HTTPException(422, "Use recognized teachable skill IDs.")
+    if i.skill_ids:
+        out["skill_ids"] = list(dict.fromkeys(i.skill_ids))
+    return out

@@ -1,3 +1,5 @@
+> Historical reference: the web and Android frontends and their build tooling have been removed. See the root README for current setup.
+
 # Phase 3 verification — 23 September 2026
 
 Verification was rerun after the Phase 4 changes. All executable checks below passed. Complete field acceptance is still pending email OTP and two-phone testing.

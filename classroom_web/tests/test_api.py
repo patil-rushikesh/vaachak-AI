@@ -1,3 +1,5 @@
+from pathlib import Path
+WAV = (Path(__file__).resolve().parents[2] / "postman/fixtures/silence.wav").read_bytes()
 import io
 
 from .conftest import make_user
@@ -134,7 +136,7 @@ def test_self_practice_and_catalog(client):
 
 def test_recording_upload_and_access(client, world):
     cid = world["cls"]["id"]
-    audio = ("lesson.webm", io.BytesIO(b"\x1aE\xdf\xa3" + b"0" * 2000), "audio/webm")
+    audio = ("lesson.wav", io.BytesIO(WAV), "audio/wav")
     rec = client.post("/api/recordings", headers=world["t"], data={"title": "Poem", "duration_ms": "4000"}, files={"file": audio})
     assert rec.status_code == 200, rec.text
     rid = rec.json()["id"]
@@ -148,9 +150,9 @@ def test_recording_upload_and_access(client, world):
     assert client.get(f"/api/recordings/{rid}/audio", headers=world["t"]).status_code == 200
     outsider = make_user(client, "student", "Out", "out@s.test")
     assert client.get(f"/api/recordings/{rid}/audio", headers=outsider).status_code == 404
-    # token in the query string works for <audio> elements
+    # Query-string bearer tokens are deliberately rejected to avoid URL leakage.
     token = world["a"]["Authorization"][7:]
-    assert client.get(f"/api/recordings/{rid}/audio?token={token}").status_code == 200
+    assert client.get(f"/api/recordings/{rid}/audio?token={token}").status_code == 401
     # recording only, no items, is a valid "listen" assignment
     r = client.post(f"/api/classes/{cid}/assignments", headers=world["t"], json={"title": "Listen", "recording_id": rid})
     assert r.status_code == 200 and r.json()["item_count"] == 0
@@ -159,13 +161,13 @@ def test_recording_upload_and_access(client, world):
 def test_student_audio_attempt_playable_by_teacher_only(client, world):
     a = make_assignment(client, world)
     r = client.post("/api/attempts", headers=world["a"], data={"assignment_id": a["id"], "item_index": 0, "transcript": "she goes to school"},
-                    files={"audio": ("a.webm", io.BytesIO(b"\x1aE\xdf\xa3" + b"1" * 500), "audio/webm")})
+                    files={"audio": ("a.wav", io.BytesIO(WAV), "audio/wav")})
     aid = r.json()["id"]
     assert client.get(f"/api/attempts/{aid}/audio", headers=world["t"]).status_code == 200
     assert client.get(f"/api/attempts/{aid}/audio", headers=world["a"]).status_code == 200
     assert client.get(f"/api/attempts/{aid}/audio", headers=world["b"]).status_code == 404
     assert client.post("/api/attempts", headers=world["a"], data={"assignment_id": a["id"], "item_index": 0},
-                       files={"audio": ("a.webm", io.BytesIO(b"x" * 10), "audio/webm")}).status_code == 422  # no transcript, no server ASR
+                       files={"audio": ("a.webm", io.BytesIO(b"x" * 10), "audio/webm")}).status_code == 415  # forged media is rejected before ASR
 
 
 def test_remove_student_and_new_code(client, world):
@@ -244,8 +246,8 @@ def test_audio_survives_the_json_normaliser_intact(client, world):
     separately there to avoid buffering a whole audio file in memory.)"""
     rec = client.post("/api/recordings", headers=world["t"],
                       data={"title": "n", "duration_ms": "2000"},
-                      files={"file": ("a.webm", b"BINARY\x00\xff" * 30, "audio/webm")}).json()
+                      files={"file": ("a.wav", WAV, "audio/wav")}).json()
     r = client.get(f"/api/recordings/{rec['id']}/audio", headers=world["t"])
     assert r.status_code == 200
-    assert r.content == b"BINARY\x00\xff" * 30, "binary audio must stream through untouched"
-    assert r.headers["content-type"] == "audio/webm"
+    assert r.content == WAV, "binary audio must stream through untouched"
+    assert r.headers["content-type"] == "audio/wav"

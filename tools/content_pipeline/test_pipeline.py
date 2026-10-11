@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 from pipeline import canonical, review_export, review_import, validate, sign, validate_runtime
 
-ASSETS = Path(__file__).resolve().parents[2] / 'apps/vaachak_app/assets'
+ASSETS = Path(__file__).resolve().parents[2] / 'content'
 class PipelineTests(unittest.TestCase):
     def test_canonical_is_stable(self):
         self.assertEqual(canonical({'b': 2, 'a': {'z': 1, 'c': 0}}), b'{"a":{"c":0,"z":1},"b":2}')

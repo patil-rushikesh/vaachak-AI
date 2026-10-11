@@ -1,3 +1,5 @@
+> Historical reference: the web and Android frontends and their build tooling have been removed. See the root README for current setup.
+
 # Production preparation evidence
 
 This workspace is not approved for production deployment. The most recent complete APK predates incompatible changes to the learning engine/content APIs. A fresh whole-workspace analysis currently reports 353 issues. Do not replace the working testing APK with a build from this state.

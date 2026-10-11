@@ -1,0 +1,12 @@
+.git
+**/.venv*
+**/__pycache__
+**/*.env
+**/.env
+**/data/audio
+**/data/classroom.db*
+postman
+apps
+packages
+infra
+content

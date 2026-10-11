@@ -1,0 +1,11 @@
+{
+  "http_status": 200,
+  "latency_ms": 1461.28,
+  "input_mode": "recorded",
+  "transcript_origin": "server_asr",
+  "transcript_nonempty": true,
+  "feedback_source": "ai",
+  "provider_model": "openai/gpt-oss-120b",
+  "fixture": "vaachak-speech-check.wav",
+  "limitation": "Synthesized speech plumbing check; not a human accent or learning evaluation."
+}

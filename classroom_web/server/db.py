@@ -75,13 +75,17 @@ CREATE INDEX IF NOT EXISTS ix_attempts_lesson ON attempts(lesson_id, user_id);
 
 
 def data_dir() -> Path:
-    d = Path(os.environ.get("VAACHAK_DATA", Path(__file__).resolve().parent.parent / "data"))
+    d = Path(
+        os.environ.get("VAACHAK_DATA", Path(__file__).resolve().parent.parent / "data")
+    )
     (d / "audio").mkdir(parents=True, exist_ok=True)
     return d
 
 
 def connect() -> sqlite3.Connection:
-    conn = sqlite3.connect(data_dir() / "classroom.db", check_same_thread=False, timeout=15)
+    conn = sqlite3.connect(
+        data_dir() / "classroom.db", check_same_thread=False, timeout=15
+    )
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys=ON")
     conn.execute("PRAGMA journal_mode=WAL")
@@ -92,8 +96,15 @@ def init() -> None:
     conn = connect()
     conn.executescript(SCHEMA)
     # Databases made before courses existed have no attempts.lesson_id; add it in place.
-    if "lesson_id" not in {r["name"] for r in conn.execute("PRAGMA table_info(attempts)")}:
-        conn.execute("ALTER TABLE attempts ADD COLUMN lesson_id INTEGER REFERENCES lessons(id) ON DELETE CASCADE")
+    if "lesson_id" not in {
+        r["name"] for r in conn.execute("PRAGMA table_info(attempts)")
+    }:
+        conn.execute(
+            "ALTER TABLE attempts ADD COLUMN lesson_id INTEGER REFERENCES lessons(id) ON DELETE CASCADE"
+        )
     conn.executescript(AFTER_MIGRATION)
     conn.commit()
+    from migrations import migrate
+
+    migrate(conn)
     conn.close()

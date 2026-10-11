@@ -1,3 +1,5 @@
+> Historical reference: the web and Android frontends and their build tooling have been removed. See the root README for current setup.
+
 # VaachakAI
 
 **Adaptive, offline-first, on-device English learning with a teacher in the loop**

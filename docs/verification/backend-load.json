@@ -1,0 +1,25 @@
+{
+  "duration_seconds": 900,
+  "concurrent_users": 20,
+  "workload": "80% reads, 20% typed deterministic-rules attempts; no provider calls",
+  "status_counts": {
+    "200": 17900
+  },
+  "success_fraction": 1.0,
+  "reads": {
+    "requests": 14320,
+    "p50_ms": 32.14,
+    "p95_ms": 448.36,
+    "max_ms": 1152.93
+  },
+  "writes": {
+    "requests": 3580,
+    "p50_ms": 26.51,
+    "p95_ms": 78.84,
+    "max_ms": 207.4
+  },
+  "restart_preserved_attempts": true,
+  "first_user_attempts": 179,
+  "request_log": "/var/folders/_5/4j4ydp4x0xd7k4xwkmjx6w6c0000gn/T/vaachak_load_e_n05asa/requests.jsonl",
+  "passed": true
+}

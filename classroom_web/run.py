@@ -20,5 +20,5 @@ if a.seed:
     seed.seed(reset=True)
 
 import uvicorn
-print(f"\nOpen http://localhost:{a.port} in Chrome or Edge (they support in-browser speech recognition).\n")
+print(f"\nAPI documentation: http://localhost:{a.port}/api/docs\n")
 uvicorn.run("main:app", host=a.host, port=a.port, log_level="warning")

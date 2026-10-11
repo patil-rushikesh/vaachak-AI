@@ -1,3 +1,5 @@
+> Historical reference: the web and Android frontends and their build tooling have been removed. See the root README for current setup.
+
 # Implementation decisions
 
 1. **Pure deterministic engine.** `vaachak_engine/lib` uses only `dart:math` and `dart:convert`. Time is passed to algorithms. BKT graded evidence mixes the two Bayesian posteriors before applying transition. Sorting by HLC and event ID makes replay independent of arrival order. Duplicate identities must have the same canonical payload. Erasure dominates all observations.

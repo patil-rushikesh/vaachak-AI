@@ -3,7 +3,6 @@ publish_to: none
 environment:
   sdk: '>=3.10.0 <4.0.0'
 workspace:
-  - apps/vaachak_app
   - packages/vaachak_engine
   - packages/vaachak_content
   - packages/vaachak_store

@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="VaachakAI Local Endpoint Tests" tests="88" time="2.575">
+  <testsuite name="01 GET /api/health" id="41d07ee9-b1e1-4492-881f-ea2a0e75b5f2" timestamp="2026-10-11T07:15:32.386Z" tests="2" failures="0" errors="0" time="0.026">
+    <testcase name="HTTP 200" time="0.026" classname="01GetApiHealth"/>
+    <testcase name="Database is healthy" time="0.026" classname="01GetApiHealth"/>
+  </testsuite>
+  <testsuite name="02 Register teacher" id="d5405928-0d12-4432-b578-7189c49e360b" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.020">
+    <testcase name="HTTP 200" time="0.020" classname="02RegisterTeacher"/>
+  </testsuite>
+  <testsuite name="03 Register student" id="d7857d02-a84c-4674-9e6b-bfa32d17a708" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.019">
+    <testcase name="HTTP 200" time="0.019" classname="03RegisterStudent"/>
+  </testsuite>
+  <testsuite name="04 POST /api/auth/login" id="7dc5dbf3-30ed-4e3f-a1a5-dfe99990e20b" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.018">
+    <testcase name="HTTP 200" time="0.018" classname="04PostApiAuthLogin"/>
+  </testsuite>
+  <testsuite name="05 GET /api/me" id="f6a93a1b-942a-465c-8255-807809086892" timestamp="2026-10-11T07:15:32.386Z" tests="2" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="05GetApiMe"/>
+    <testcase name="Teacher role" time="0.002" classname="05GetApiMe"/>
+  </testsuite>
+  <testsuite name="06 POST /api/classes" id="653f212d-a6ab-41a7-8b86-c0c360ac8195" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="06PostApiClasses"/>
+  </testsuite>
+  <testsuite name="07 POST /api/classes/join" id="21dc9ba8-7a41-41ce-8181-3553bd03d153" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="07PostApiClassesJoin"/>
+  </testsuite>
+  <testsuite name="08 GET /api/classes" id="628166af-af75-4035-b77e-cfb725fbc572" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="08GetApiClasses"/>
+  </testsuite>
+  <testsuite name="09 GET /api/classes/{{class_id}}" id="ffb34af5-08ab-46d3-9302-be71004729de" timestamp="2026-10-11T07:15:32.386Z" tests="2" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="09GetApiClassesClassId"/>
+    <testcase name="Student joined" time="0.002" classname="09GetApiClassesClassId"/>
+  </testsuite>
+  <testsuite name="10 POST /api/classes/{{class_id}}/code" id="c6bc0221-92ea-497a-86a8-f361c7eee4ce" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="10PostApiClassesClassIdCode"/>
+  </testsuite>
+  <testsuite name="11 POST /api/recordings" id="57090a66-4f7f-4981-b5ff-8210ec94d8f8" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.067">
+    <testcase name="HTTP 200" time="0.067" classname="11PostApiRecordings"/>
+  </testsuite>
+  <testsuite name="12 GET /api/recordings" id="0c8a07e2-f94f-4e97-848f-cb8bd100550a" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="12GetApiRecordings"/>
+  </testsuite>
+  <testsuite name="13 GET /api/recordings/{{rec_id}}/audio" id="5db9895a-d774-4ff5-b3dc-beafb5579b89" timestamp="2026-10-11T07:15:32.386Z" tests="2" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="13GetApiRecordingsRecIdAudio"/>
+    <testcase name="WAV content type" time="0.003" classname="13GetApiRecordingsRecIdAudio"/>
+  </testsuite>
+  <testsuite name="14 POST /api/classes/{{class_id}}/assignments" id="adb2847c-21f1-47b1-9cd4-fafac0e60dd7" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="14PostApiClassesClassIdAssignments"/>
+  </testsuite>
+  <testsuite name="15 GET /api/classes/{{class_id}}/assignments" id="b7b90bbe-720a-45ad-b759-97b606004f4c" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="15GetApiClassesClassIdAssignments"/>
+  </testsuite>
+  <testsuite name="16 GET /api/assignments/{{assignment_id}}" id="d8c00df8-034b-49d0-9964-b3047ce0be12" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="16GetApiAssignmentsAssignmentId"/>
+  </testsuite>
+  <testsuite name="17 GET /api/catalog" id="f6900624-8652-454a-a287-79300767198d" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="17GetApiCatalog"/>
+  </testsuite>
+  <testsuite name="18 GET /api/sets/{{set_id}}" id="f4357ff6-a239-4e5d-9c66-17f9f51faaee" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="18GetApiSetsSetId"/>
+  </testsuite>
+  <testsuite name="19 POST /api/attempts" id="fe2dd491-e6b0-4683-92f8-207192b495fe" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.686">
+    <testcase name="HTTP 200" time="0.686" classname="19PostApiAttempts"/>
+  </testsuite>
+  <testsuite name="20 GET /api/attempts/{{attempt_id}}/audio" id="d2aae2a7-cacd-4f99-bc92-a96b601c6da6" timestamp="2026-10-11T07:15:32.386Z" tests="2" failures="0" errors="0" time="0.005">
+    <testcase name="HTTP 200" time="0.005" classname="20GetApiAttemptsAttemptIdAudio"/>
+    <testcase name="Attempt audio" time="0.005" classname="20GetApiAttemptsAttemptIdAudio"/>
+  </testsuite>
+  <testsuite name="21 GET /api/me/stats" id="7e90ce3a-aecc-42a0-920f-8a860c27c54c" timestamp="2026-10-11T07:15:32.386Z" tests="2" failures="0" errors="0" time="0.006">
+    <testcase name="HTTP 200" time="0.006" classname="21GetApiMeStats"/>
+    <testcase name="Attempt recorded" time="0.006" classname="21GetApiMeStats"/>
+  </testsuite>
+  <testsuite name="22 GET /api/classes/{{class_id}}/performance" id="c54d8b4d-ecf9-4ee6-b73a-d3483471101c" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.004">
+    <testcase name="HTTP 200" time="0.004" classname="22GetApiClassesClassIdPerformance"/>
+  </testsuite>
+  <testsuite name="23 GET /api/classes/{{class_id}}/students/{{student_id}}" id="6a86447a-c627-4e33-8975-f18e080bf1a6" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.004">
+    <testcase name="HTTP 200" time="0.004" classname="23GetApiClassesClassIdStudentsStudentId"/>
+  </testsuite>
+  <testsuite name="24 GET /api/classes/{{class_id}}/attention" id="1085f129-3af2-48bf-b89d-ff827409e1aa" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="24GetApiClassesClassIdAttention"/>
+  </testsuite>
+  <testsuite name="25 POST /api/classes/{{class_id}}/attention/dismiss" id="dc0eb2d2-ad53-4983-a6e0-4cd79d5b496e" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="25PostApiClassesClassIdAttentionDismiss"/>
+  </testsuite>
+  <testsuite name="26 GET /api/classes/{{class_id}}/skill-grid" id="fb87d63a-2ad8-4985-882f-bef104165d4f" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="26GetApiClassesClassIdSkillGrid"/>
+  </testsuite>
+  <testsuite name="27 AI drafting (requires configured provider)" id="9c25ce5c-2a26-4dce-864c-1c626a7ee019" timestamp="2026-10-11T07:15:32.386Z" tests="2" failures="0" errors="0" time="0.742">
+    <testcase name="AI returns generated items" time="0.742" classname="27AiDraftingRequiresConfiguredProvider"/>
+    <testcase name="Generated items" time="0.742" classname="27AiDraftingRequiresConfiguredProvider"/>
+  </testsuite>
+  <testsuite name="28 POST /api/courses" id="ca34b067-daff-40e9-90ed-518980891204" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.051">
+    <testcase name="HTTP 200" time="0.051" classname="28PostApiCourses"/>
+  </testsuite>
+  <testsuite name="29 GET /api/courses" id="5b6d4ffb-ea8e-439a-b034-9685f1f575e8" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="29GetApiCourses"/>
+  </testsuite>
+  <testsuite name="30 GET /api/courses/{{course_id}}" id="2a7a5921-a2a8-4eee-85ec-505c3332af45" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="30GetApiCoursesCourseId"/>
+  </testsuite>
+  <testsuite name="31 PATCH /api/courses/{{course_id}}" id="be6f5943-80fb-4819-b7be-ddc1bdcc7a00" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.004">
+    <testcase name="HTTP 200" time="0.004" classname="31PatchApiCoursesCourseId"/>
+  </testsuite>
+  <testsuite name="32 POST /api/courses/{{course_id}}/units" id="8d7409c9-7aab-4f77-8c4b-9e03853d9abf" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="32PostApiCoursesCourseIdUnits"/>
+  </testsuite>
+  <testsuite name="33 POST /api/courses/{{course_id}}/units" id="b0b093f2-8c5d-47d9-b96b-ae1f4fe8c5cd" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="33PostApiCoursesCourseIdUnits"/>
+  </testsuite>
+  <testsuite name="34 PATCH /api/units/{{unit_id}}" id="fb8db304-1009-433f-ae53-c218ec17b635" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="34PatchApiUnitsUnitId"/>
+  </testsuite>
+  <testsuite name="35 POST /api/units/{{unit_id}}/move" id="448cbee8-4e7c-4a79-b6e5-83d350af3e67" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="35PostApiUnitsUnitIdMove"/>
+  </testsuite>
+  <testsuite name="36 POST /api/units/{{unit_id}}/lessons" id="77c50afc-017d-44e1-b87c-362e047dd3d4" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="36PostApiUnitsUnitIdLessons"/>
+  </testsuite>
+  <testsuite name="37 POST /api/units/{{unit_id}}/lessons" id="7a5a7e30-3b6d-4d76-b97c-21c92ce3adb3" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="37PostApiUnitsUnitIdLessons"/>
+  </testsuite>
+  <testsuite name="38 PUT /api/lessons/{{lesson_id}}" id="752f044d-cac4-4336-94b2-0cb666e060cb" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="38PutApiLessonsLessonId"/>
+  </testsuite>
+  <testsuite name="39 POST /api/lessons/{{lesson_id}}/move" id="0f4456d7-22c7-445b-a1f6-a02060808b21" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="39PostApiLessonsLessonIdMove"/>
+  </testsuite>
+  <testsuite name="40 POST /api/courses/{{course_id}}/publish" id="2f78550a-1e6c-4a4f-a25c-814ddd4e2a6c" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="40PostApiCoursesCourseIdPublish"/>
+  </testsuite>
+  <testsuite name="41 GET /api/lessons/{{lesson_id}}" id="3c53521d-e4b2-4af8-8cbb-c9ef992e4957" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="41GetApiLessonsLessonId"/>
+  </testsuite>
+  <testsuite name="42 POST /api/courses/{{course_id}}/enroll" id="255b9533-d5e1-4d92-b72b-5867fd8efb11" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="42PostApiCoursesCourseIdEnroll"/>
+  </testsuite>
+  <testsuite name="43 POST /api/classes/{{class_id}}/courses" id="8db70746-7425-4c09-b8ac-8c7b00900e20" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="43PostApiClassesClassIdCourses"/>
+  </testsuite>
+  <testsuite name="44 GET /api/classes/{{class_id}}/courses" id="8b14bec7-a61a-411f-9216-3c6717501333" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="44GetApiClassesClassIdCourses"/>
+  </testsuite>
+  <testsuite name="45 POST /api/attempts" id="b2d56d1c-5872-45bf-8361-d2b52e36ccd4" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.603">
+    <testcase name="HTTP 200" time="0.603" classname="45PostApiAttempts"/>
+  </testsuite>
+  <testsuite name="46 GET /api/courses/{{course_id}}/progress" id="de61f02c-49da-4f9f-a987-987c5a44d085" timestamp="2026-10-11T07:15:32.386Z" tests="2" failures="0" errors="0" time="0.010">
+    <testcase name="HTTP 200" time="0.010" classname="46GetApiCoursesCourseIdProgress"/>
+    <testcase name="Learner progress exists" time="0.010" classname="46GetApiCoursesCourseIdProgress"/>
+  </testsuite>
+  <testsuite name="47 GET /api/me/review" id="0640a6a5-50d0-47bf-b176-a79d782a446d" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.005">
+    <testcase name="HTTP 200" time="0.005" classname="47GetApiMeReview"/>
+  </testsuite>
+  <testsuite name="48 Student cannot create classes" id="dd378eb3-e4e0-4d8c-bc88-e79b3301fa85" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 403" time="0.003" classname="48StudentCannotCreateClasses"/>
+  </testsuite>
+  <testsuite name="49 Anonymous access rejected" id="eb160f3e-6eeb-4e33-a60c-46b4df141ea3" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 401" time="0.003" classname="49AnonymousAccessRejected"/>
+  </testsuite>
+  <testsuite name="50 Ambiguous attempt source rejected" id="87f95091-8933-4895-b93c-41cb348b630e" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.004">
+    <testcase name="HTTP 422" time="0.004" classname="50AmbiguousAttemptSourceRejected"/>
+  </testsuite>
+  <testsuite name="51 GET /api/ready" id="38e88dda-7d82-4278-8043-e4ec91973d30" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.033">
+    <testcase name="HTTP 200" time="0.033" classname="51GetApiReady"/>
+  </testsuite>
+  <testsuite name="52 GET /api/me/preferences" id="27385ddb-a994-454b-acc3-84037690d79e" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="52GetApiMePreferences"/>
+  </testsuite>
+  <testsuite name="53 PATCH /api/me/preferences" id="ae300917-6c78-4369-a2b9-2dfcfec8e573" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="53PatchApiMePreferences"/>
+  </testsuite>
+  <testsuite name="54 GET /api/me/attempts" id="e688b236-d896-4563-aa6d-17eb78787a42" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="54GetApiMeAttempts"/>
+  </testsuite>
+  <testsuite name="55 GET /api/attempts/{{attempt_id}}" id="65c8dba5-a035-491f-a227-6c7c03a29a9d" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.001">
+    <testcase name="HTTP 200" time="0.001" classname="55GetApiAttemptsAttemptId"/>
+  </testsuite>
+  <testsuite name="56 GET /api/me/submissions/{{run_id}}" id="313fc865-f351-4646-97d7-bed05f8f53ba" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="56GetApiMeSubmissionsRunId"/>
+  </testsuite>
+  <testsuite name="57 PATCH /api/attempts/{{attempt_id}}/dispute" id="a298decc-78bc-40e9-b210-2f86059a1cb8" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="57PatchApiAttemptsAttemptIdDispute"/>
+  </testsuite>
+  <testsuite name="58 PATCH /api/attempts/{{attempt_id}}/dispute" id="96703c0e-3b14-450a-80f9-0e9320cce871" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="58PatchApiAttemptsAttemptIdDispute"/>
+  </testsuite>
+  <testsuite name="59 GET /api/me/recommendations" id="f97b841d-206b-4426-8ef8-f63504948c61" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="59GetApiMeRecommendations"/>
+  </testsuite>
+  <testsuite name="60 GET /api/me/export" id="62979bdd-f43f-41d8-be93-5896fe1c3de4" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="60GetApiMeExport"/>
+  </testsuite>
+  <testsuite name="61 POST /api/classes/{{class_id}}/attention/actions" id="efccfe2a-f255-41a4-bb91-572133873cdf" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.004">
+    <testcase name="HTTP 200" time="0.004" classname="61PostApiClassesClassIdAttentionActions"/>
+  </testsuite>
+  <testsuite name="62 GET /api/classes/{{class_id}}/attention/actions" id="82c21b99-c1b0-4bae-8ff8-1af96872bd58" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="62GetApiClassesClassIdAttentionActions"/>
+  </testsuite>
+  <testsuite name="63 PATCH /api/assignments/{{assignment_id}}" id="fc5cd616-d34c-4050-a9e0-9ee2eb4d41a5" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="63PatchApiAssignmentsAssignmentId"/>
+  </testsuite>
+  <testsuite name="64 PATCH /api/classes/{{class_id}}/archive" id="c0d723ce-2bd0-4400-83c0-d3f6751773ac" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="64PatchApiClassesClassIdArchive"/>
+  </testsuite>
+  <testsuite name="65 PATCH /api/classes/{{class_id}}/archive" id="38d3bda4-af73-4228-ad78-a9229b23df89" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="65PatchApiClassesClassIdArchive"/>
+  </testsuite>
+  <testsuite name="66 PATCH /api/courses/{{course_id}}/archive" id="8329885e-cc91-4dc1-adde-5b374b2e64e9" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="66PatchApiCoursesCourseIdArchive"/>
+  </testsuite>
+  <testsuite name="67 PATCH /api/courses/{{course_id}}/archive" id="abd9fc66-6873-416f-90f6-06a9cab25ecf" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="67PatchApiCoursesCourseIdArchive"/>
+  </testsuite>
+  <testsuite name="68 PATCH /api/lessons/{{lesson_id}}/archive" id="8d2a0ed4-6bb2-4642-8378-c0b8379959fb" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="68PatchApiLessonsLessonIdArchive"/>
+  </testsuite>
+  <testsuite name="69 PATCH /api/lessons/{{lesson_id}}/archive" id="c599d395-b0da-4017-936d-df1d9d6f161b" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.005">
+    <testcase name="HTTP 200" time="0.005" classname="69PatchApiLessonsLessonIdArchive"/>
+  </testsuite>
+  <testsuite name="70 PATCH /api/assignments/{{assignment_id}}/archive" id="bacf6c3d-c692-4c0a-a38c-e26829f76855" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="70PatchApiAssignmentsAssignmentIdArchive"/>
+  </testsuite>
+  <testsuite name="71 PATCH /api/assignments/{{assignment_id}}/archive" id="54d92abe-e578-425a-893d-5514bd73e6a4" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="71PatchApiAssignmentsAssignmentIdArchive"/>
+  </testsuite>
+  <testsuite name="72 DELETE /api/recordings/{{rec_id}}" id="e53562aa-51e3-4f0a-a35a-45c6b61ebf2e" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="72DeleteApiRecordingsRecId"/>
+  </testsuite>
+  <testsuite name="73 POST /api/auth/reset-password" id="bb693b88-b629-4e8c-a7a6-143bda54f291" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 400" time="0.002" classname="73PostApiAuthResetPassword"/>
+  </testsuite>
+  <testsuite name="74 DELETE /api/courses/{{course_id}}/enroll" id="acf93833-e613-4a9f-b313-51af10e6adf6" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="74DeleteApiCoursesCourseIdEnroll"/>
+  </testsuite>
+  <testsuite name="75 DELETE /api/classes/{{class_id}}/courses/{{course_id}}" id="42929ea9-81b7-49c3-8cce-38af520a2f9f" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="75DeleteApiClassesClassIdCoursesCourseId"/>
+  </testsuite>
+  <testsuite name="76 DELETE /api/lessons/{{lesson_id}}" id="e52bf460-41e1-4f18-b286-fc72c8793696" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 409" time="0.002" classname="76DeleteApiLessonsLessonId"/>
+  </testsuite>
+  <testsuite name="77 DELETE /api/units/{{unit_id}}" id="b6247169-1b50-4893-9c69-3edce3154dd0" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 409" time="0.003" classname="77DeleteApiUnitsUnitId"/>
+  </testsuite>
+  <testsuite name="78 DELETE /api/courses/{{course_id}}" id="1eb113ff-6387-4139-a492-737a62923ced" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 409" time="0.003" classname="78DeleteApiCoursesCourseId"/>
+  </testsuite>
+  <testsuite name="79 DELETE /api/assignments/{{assignment_id}}" id="6002773f-acd6-4ada-a8b9-2c95840dedd9" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 409" time="0.002" classname="79DeleteApiAssignmentsAssignmentId"/>
+  </testsuite>
+  <testsuite name="80 DELETE /api/classes/{{class_id}}/students/{{student_id}}" id="7fac31c3-b5cb-47de-a12c-fda5004a7bb3" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="80DeleteApiClassesClassIdStudentsStudentId"/>
+  </testsuite>
+  <testsuite name="81 POST /api/auth/logout" id="191f3833-e004-4c0e-b301-66a064721623" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="HTTP 200" time="0.003" classname="81PostApiAuthLogout"/>
+  </testsuite>
+  <testsuite name="82 Logged-out token rejected" id="afbc635a-a826-47cd-ae47-493c061ee8a2" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.009">
+    <testcase name="HTTP 401" time="0.009" classname="82LoggedOutTokenRejected"/>
+  </testsuite>
+  <testsuite name="83 POST /api/auth/login" id="20109d8f-d64c-4aea-bb3e-f82a9f936ace" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.026">
+    <testcase name="HTTP 200" time="0.026" classname="83PostApiAuthLogin"/>
+  </testsuite>
+  <testsuite name="84 POST /api/me/password" id="c71673ef-bd2a-4c66-8da3-1603b7052346" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.035">
+    <testcase name="HTTP 200" time="0.035" classname="84PostApiMePassword"/>
+  </testsuite>
+  <testsuite name="85 Password change revoked sessions" id="6b3bd101-6b49-45d6-8d0a-5a095d8b2b7d" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 401" time="0.002" classname="85PasswordChangeRevokedSessions"/>
+  </testsuite>
+  <testsuite name="86 POST /api/auth/login" id="17f1d6da-e69b-42bc-a4af-c27ef19c8c5d" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.017">
+    <testcase name="HTTP 200" time="0.017" classname="86PostApiAuthLogin"/>
+  </testsuite>
+  <testsuite name="87 DELETE /api/me" id="f5d478b3-902e-414f-9889-361d36a4266d" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.018">
+    <testcase name="HTTP 200" time="0.018" classname="87DeleteApiMe"/>
+  </testsuite>
+  <testsuite name="88 POST /api/auth/logout" id="6f4ed346-bcb5-43f5-87f9-1dc5c2f853bc" timestamp="2026-10-11T07:15:32.386Z" tests="1" failures="0" errors="0" time="0.002">
+    <testcase name="HTTP 200" time="0.002" classname="88PostApiAuthLogout"/>
+  </testsuite>
+</testsuites>

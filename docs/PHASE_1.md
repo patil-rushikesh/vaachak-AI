@@ -1,3 +1,5 @@
+> Historical reference: the web and Android frontends and their build tooling have been removed. See the root README for current setup.
+
 # Phase 1 — Core engine, persistence and learner UI
 
 The **engineering checklist from the user's pasted four-phase roadmap is implemented and locally verified**. This is not a production-release certification. The separate prototype schedule in `VaachakAI.md` has a broader scope; its complete seven-skill experience and deployment gates are not implied by this milestone.

@@ -1,3 +1,5 @@
+from pathlib import Path
+WAV = (Path(__file__).resolve().parents[2] / "postman/fixtures/silence.wav").read_bytes()
 import sqlite3
 
 import db
@@ -188,7 +190,7 @@ def test_move_and_delete_keep_order(client, world):
 
 def test_lesson_voice_note_plays_for_learners_only(client, world):
     cid, l1, _ = build_course(client, world["t"])
-    rec = client.post("/api/recordings", headers=world["t"], data={"title": "Intro", "duration_ms": "2000"}, files={"file": ("a.webm", b"x" * 100, "audio/webm")}).json()
+    rec = client.post("/api/recordings", headers=world["t"], data={"title": "Intro", "duration_ms": "2000"}, files={"file": ("a.wav", WAV, "audio/wav")}).json()
     client.put(f"/api/lessons/{l1}", headers=world["t"], json={"title": "Hello", "recording_id": rec["id"], "items": [QUIZ]})
     assert client.get(f"/api/recordings/{rec['id']}/audio", headers=world["a"]).status_code == 200
     outsider = make_user(client, "learner", "Out", "out@l.test")

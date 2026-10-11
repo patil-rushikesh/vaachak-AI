@@ -1,3 +1,5 @@
+> Historical reference: the web and Android frontends and their build tooling have been removed. See the root README for current setup.
+
 # Model and content packs
 
 The signer accepts a directory and creates a detached `manifest.json`. Each file is signed indirectly through its path, byte length and SHA-256 digest. After signing, distribute the manifest alongside the unchanged files. The app accepts a folder or an HTTPS URL ending in `/manifest.json`.

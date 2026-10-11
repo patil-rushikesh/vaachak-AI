@@ -1,3 +1,5 @@
+> Historical reference: the web and Android frontends and their build tooling have been removed. See the root README for current setup.
+
 # Phase 2 — On-device AI and model packs
 
 The implementation covers the **Phase 2: On-device AI & Model Pack System** engineering checklist from the pasted roadmap. Host-side checks, Android compilation/installation and real desktop/Android Whisper/Piper smoke have passed. Android Gemma native inference also passed, with safe template retention rather than an accepted model explanation. The corrected offline-profile UI test also passed on Android. The Phase 2 engineering checklist and emulator acceptance checks are complete; production model approval, physical-phone acceptance and the broader seven-skill assessment roadmap remain separate gates.

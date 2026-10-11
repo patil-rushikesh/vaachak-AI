@@ -1,0 +1,81 @@
+VaachakAI classroom API — complete route inventory
+Base URL: http://localhost:8000
+Source: FastAPI app.openapi(); regenerate with python tools/export_postman.py
+
+POST    /api/auth/register                                         Public
+POST    /api/auth/login                                            Public
+POST    /api/auth/logout                                           Authenticated (ownership/membership rules apply)
+GET     /api/me                                                    Authenticated (ownership/membership rules apply)
+DELETE  /api/me                                                    Authenticated (ownership/membership rules apply)
+GET     /api/health                                                Public
+GET     /api/classes                                               Authenticated (ownership/membership rules apply)
+POST    /api/classes                                               Teacher
+POST    /api/classes/join                                          Learner (student or learner)
+GET     /api/classes/{class_id}                                    Authenticated (ownership/membership rules apply)
+DELETE  /api/classes/{class_id}/students/{student_id}              Teacher
+GET     /api/classes/{class_id}/students/{student_id}              Teacher
+POST    /api/classes/{class_id}/code                               Teacher
+GET     /api/recordings                                            Teacher
+POST    /api/recordings                                            Teacher
+GET     /api/recordings/{rec_id}/audio                             Authenticated (ownership/membership rules apply)
+POST    /api/classes/{class_id}/assignments                        Teacher
+GET     /api/classes/{class_id}/assignments                        Authenticated (ownership/membership rules apply)
+GET     /api/assignments/{assignment_id}                           Authenticated (ownership/membership rules apply)
+DELETE  /api/assignments/{assignment_id}                           Teacher
+PATCH   /api/assignments/{assignment_id}                           Teacher
+GET     /api/catalog                                               Authenticated (ownership/membership rules apply)
+GET     /api/sets/{set_id}                                         Authenticated (ownership/membership rules apply)
+POST    /api/attempts                                              Learner (student or learner)
+GET     /api/attempts/{attempt_id}/audio                           Authenticated (ownership/membership rules apply)
+GET     /api/me/stats                                              Learner (student or learner)
+GET     /api/classes/{class_id}/performance                        Teacher
+GET     /api/classes/{class_id}/attention                          Teacher
+POST    /api/classes/{class_id}/attention/dismiss                  Teacher
+GET     /api/classes/{class_id}/skill-grid                         Teacher
+POST    /api/ai/items                                              Teacher
+POST    /api/courses                                               Teacher
+GET     /api/courses                                               Authenticated (ownership/membership rules apply)
+GET     /api/courses/{course_id}                                   Authenticated (ownership/membership rules apply)
+PATCH   /api/courses/{course_id}                                   Teacher
+DELETE  /api/courses/{course_id}                                   Teacher
+POST    /api/courses/{course_id}/publish                           Teacher
+POST    /api/courses/{course_id}/units                             Teacher
+PATCH   /api/units/{unit_id}                                       Teacher
+DELETE  /api/units/{unit_id}                                       Teacher
+POST    /api/units/{unit_id}/move                                  Teacher
+POST    /api/units/{unit_id}/lessons                               Teacher
+PUT     /api/lessons/{lesson_id}                                   Teacher
+DELETE  /api/lessons/{lesson_id}                                   Teacher
+GET     /api/lessons/{lesson_id}                                   Authenticated (ownership/membership rules apply)
+POST    /api/lessons/{lesson_id}/move                              Teacher
+POST    /api/courses/{course_id}/enroll                            Learner (student or learner)
+DELETE  /api/courses/{course_id}/enroll                            Learner (student or learner)
+POST    /api/classes/{class_id}/courses                            Teacher
+GET     /api/classes/{class_id}/courses                            Authenticated (ownership/membership rules apply)
+DELETE  /api/classes/{class_id}/courses/{course_id}                Teacher
+GET     /api/courses/{course_id}/progress                          Teacher
+GET     /api/me/review                                             Learner (student or learner)
+GET     /api/attempts/{attempt_id}                                 Authenticated (ownership/membership rules apply)
+GET     /api/me/attempts                                           Learner (student or learner)
+GET     /api/me/submissions/{client_uuid}                          Learner (student or learner)
+PATCH   /api/attempts/{attempt_id}/dispute                         Learner (student or learner)
+GET     /api/me/preferences                                        Authenticated (ownership/membership rules apply)
+PATCH   /api/me/preferences                                        Authenticated (ownership/membership rules apply)
+POST    /api/me/password                                           Authenticated (ownership/membership rules apply)
+POST    /api/auth/reset-password                                   Public
+GET     /api/me/export                                             Authenticated (ownership/membership rules apply)
+POST    /api/classes/{class_id}/attention/actions                  Teacher
+GET     /api/classes/{class_id}/attention/actions                  Teacher
+PATCH   /api/classes/{class_id}/archive                            Teacher
+PATCH   /api/courses/{course_id}/archive                           Teacher
+PATCH   /api/assignments/{assignment_id}/archive                   Teacher
+PATCH   /api/lessons/{lesson_id}/archive                           Teacher
+DELETE  /api/recordings/{rec_id}                                   Teacher
+GET     /api/ready                                                 Public
+GET     /api/me/recommendations                                    Learner (student or learner)
+
+Documentation endpoints (not application operations):
+GET /api/docs
+GET /docs/oauth2-redirect
+GET /api/openapi.json
+GET /redoc

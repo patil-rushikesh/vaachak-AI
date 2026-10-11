@@ -1,0 +1,339 @@
+{
+  "base_url": "http://localhost:8000",
+  "runner": "Newman",
+  "ai_enabled": true,
+  "endpoint_coverage": {
+    "covered": 51,
+    "total": 51
+  },
+  "requests": 60,
+  "assertions": 68,
+  "failures": 0,
+  "speech_test": {
+    "http_status": 200,
+    "source": "Synthetic spoken English generated locally; no transcript supplied",
+    "transcript": "Hello, I am learning English. I practice speaking every day.",
+    "score": 0,
+    "attempt_id": 1
+  },
+  "limitations": [
+    "Speech transcription was checked with synthesized speech, not a human microphone recording."
+  ],
+  "operations": [
+    {
+      "name": "01 GET /api/health",
+      "assertions": 2,
+      "failures": 0
+    },
+    {
+      "name": "02 Register teacher",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "03 Register student",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "04 POST /api/auth/login",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "05 GET /api/me",
+      "assertions": 2,
+      "failures": 0
+    },
+    {
+      "name": "06 POST /api/classes",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "07 POST /api/classes/join",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "08 GET /api/classes",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "09 GET /api/classes/{{class_id}}",
+      "assertions": 2,
+      "failures": 0
+    },
+    {
+      "name": "10 POST /api/classes/{{class_id}}/code",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "11 POST /api/recordings",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "12 GET /api/recordings",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "13 GET /api/recordings/{{rec_id}}/audio",
+      "assertions": 2,
+      "failures": 0
+    },
+    {
+      "name": "14 POST /api/classes/{{class_id}}/assignments",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "15 GET /api/classes/{{class_id}}/assignments",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "16 GET /api/assignments/{{assignment_id}}",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "17 GET /api/catalog",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "18 GET /api/sets/{{set_id}}",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "19 POST /api/attempts",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "20 GET /api/attempts/{{attempt_id}}/audio",
+      "assertions": 2,
+      "failures": 0
+    },
+    {
+      "name": "21 GET /api/me/stats",
+      "assertions": 2,
+      "failures": 0
+    },
+    {
+      "name": "22 GET /api/classes/{{class_id}}/performance",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "23 GET /api/classes/{{class_id}}/students/{{student_id}}",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "24 GET /api/classes/{{class_id}}/attention",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "25 POST /api/classes/{{class_id}}/attention/dismiss",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "26 GET /api/classes/{{class_id}}/skill-grid",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "27 AI drafting (requires configured provider)",
+      "assertions": 2,
+      "failures": 0
+    },
+    {
+      "name": "28 POST /api/courses",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "29 GET /api/courses",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "30 GET /api/courses/{{course_id}}",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "31 PATCH /api/courses/{{course_id}}",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "32 POST /api/courses/{{course_id}}/units",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "33 POST /api/courses/{{course_id}}/units",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "34 PATCH /api/units/{{unit_id}}",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "35 POST /api/units/{{unit_id}}/move",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "36 POST /api/units/{{unit_id}}/lessons",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "37 POST /api/units/{{unit_id}}/lessons",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "38 PUT /api/lessons/{{lesson_id}}",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "39 POST /api/lessons/{{lesson_id}}/move",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "40 POST /api/courses/{{course_id}}/publish",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "41 GET /api/lessons/{{lesson_id}}",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "42 POST /api/courses/{{course_id}}/enroll",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "43 POST /api/classes/{{class_id}}/courses",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "44 GET /api/classes/{{class_id}}/courses",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "45 POST /api/attempts",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "46 GET /api/courses/{{course_id}}/progress",
+      "assertions": 2,
+      "failures": 0
+    },
+    {
+      "name": "47 GET /api/me/review",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "48 Student cannot create classes",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "49 Anonymous access rejected",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "50 Ambiguous attempt source rejected",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "51 DELETE /api/courses/{{course_id}}/enroll",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "52 DELETE /api/classes/{{class_id}}/courses/{{course_id}}",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "53 DELETE /api/lessons/{{lesson_id}}",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "54 DELETE /api/units/{{unit_id}}",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "55 DELETE /api/courses/{{course_id}}",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "56 DELETE /api/assignments/{{assignment_id}}",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "57 DELETE /api/classes/{{class_id}}/students/{{student_id}}",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "58 POST /api/auth/logout",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "59 Logged-out token rejected",
+      "assertions": 1,
+      "failures": 0
+    },
+    {
+      "name": "60 POST /api/auth/logout",
+      "assertions": 1,
+      "failures": 0
+    }
+  ],
+  "previous_desktop_run_before_ai_enabled": {
+    "collection": "VaachakAI Local Endpoint Tests",
+    "requests": 60,
+    "assertions": 67,
+    "failures": 0,
+    "errors": 0,
+    "verified_in_ui": "No failed tests",
+    "upload_fixture": "/Users/admin/Postman/files/vaachak-api-tests/silence.wav",
+    "upload_content_type": "audio/wav"
+  },
+  "backend_tests": {
+    "passed": 111,
+    "failed": 0,
+    "configuration": "Isolated from local AI credentials; live AI tested separately through HTTP."
+  }
+}

@@ -5,10 +5,7 @@ import 'package:test/test.dart';
 import 'package:vaachak_engine/vaachak_engine.dart';
 
 List<dynamic> asset(String name) =>
-    jsonDecode(
-          File('../../apps/vaachak_app/assets/$name.json').readAsStringSync(),
-        )
-        as List;
+    jsonDecode(File('../../content/$name.json').readAsStringSync()) as List;
 void main() {
   final graph = SkillGraph(
     asset(

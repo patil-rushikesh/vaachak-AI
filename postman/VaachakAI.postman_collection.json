@@ -1,0 +1,2286 @@
+{
+  "info": {
+    "name": "VaachakAI Classroom API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "All 51 classroom API operations. Set base_url, name, email, password and role; run Register or Login to save token automatically. Authenticated requests inherit Bearer {{token}}. Switch credentials and log in again for teacher vs learner actions. Creation requests save resource IDs. Empty ID variables must be populated before use. Select local files for uploads. This is an endpoint reference, not an ordered collection-runner workflow; choose requests individually, especially deletion/logout. API docs: {{base_url}}/api/docs. Supabase deployment-generated endpoints are separate and are not part of this collection."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "name",
+      "value": "Postman Teacher",
+      "type": "string"
+    },
+    {
+      "key": "email",
+      "value": "teacher@example.test",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "change-this-test-password",
+      "type": "string"
+    },
+    {
+      "key": "role",
+      "value": "teacher",
+      "type": "string"
+    },
+    {
+      "key": "class_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "class_code",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "student_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "rec_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "client_uuid",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "assignment_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "set_id",
+      "value": "en-present-agreement",
+      "type": "string"
+    },
+    {
+      "key": "attempt_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "course_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "unit_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "lesson_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Access: Public.\n\n",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{name}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"role\": \"{{role}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"token\", data.token);",
+                  "  if (data.user.role !== \"teacher\") pm.collectionVariables.set(\"student_id\", String(data.user.id));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Access: Public.\n\n",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"token\", data.token);",
+                  "  if (data.user.role !== \"teacher\") pm.collectionVariables.set(\"student_id\", String(data.user.id));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"token\", \"\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/reset-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "reset-password"
+              ]
+            },
+            "description": "Access: Public.\n\n",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"replace-me\",\n  \"new_password\": \"replace-me\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Profile and progress",
+      "item": [
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "me"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Account",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "me"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n\nDeletes/removes the selected resource or relationship.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"replace-me\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "My Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/me/stats",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "me",
+                "stats"
+              ]
+            },
+            "description": "Access: Learner (student or learner).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Review",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/me/review",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "me",
+                "review"
+              ]
+            },
+            "description": "Access: Learner (student or learner).\n\nPast mistakes that are due to come back, oldest and weakest first.\n\nScheduling is Leitner: a task returns after 1, 2, 4, 8 then 16 days, moving up a box each\ntime it is answered well and dropping back to the first box when it is not. A task that\nsurvives the longest gap is treated as learned and stops appearing."
+          },
+          "response": []
+        },
+        {
+          "name": "Submission",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/me/submissions/{{client_uuid}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "me",
+                "submissions",
+                "{{client_uuid}}"
+              ]
+            },
+            "description": "Access: Learner (student or learner).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Preferences",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/me/preferences",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "me",
+                "preferences"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Preferences",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/me/preferences",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "me",
+                "preferences"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"timezone\": \"replace-me\",\n  \"language\": \"en\",\n  \"research_consent\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/me/password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "me",
+                "password"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"replace-me\",\n  \"new_password\": \"replace-me\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/me/export",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "me",
+                "export"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Recommendations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/me/recommendations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "me",
+                "recommendations"
+              ]
+            },
+            "description": "Access: Learner (student or learner).\n\nFind a different accessible task for a relevant skill; never infer untagged success."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "health"
+              ]
+            },
+            "description": "Access: Public.\n\n",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Classes",
+      "item": [
+        {
+          "name": "List Classes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/classes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Class",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/classes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"English Practice\",\n  \"standard\": \"5\",\n  \"section\": \"A\",\n  \"language\": \"en\",\n  \"academic_year\": \"2026-27\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id !== undefined) pm.collectionVariables.set(\"class_id\", String(data.id));",
+                  "  if (data.code !== undefined) pm.collectionVariables.set(\"class_code\", String(data.code));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Join Class",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/classes/join",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "join"
+              ]
+            },
+            "description": "Access: Learner (student or learner).\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"{{class_code}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Class",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "New Class Code",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/code",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "code"
+              ]
+            },
+            "description": "Access: Teacher.\n\n"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.code !== undefined) pm.collectionVariables.set(\"class_code\", String(data.code));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Archive Class",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/archive",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "archive"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"archived\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Class insights and students",
+      "item": [
+        {
+          "name": "Remove Student",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/students/{{student_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "students",
+                "{{student_id}}"
+              ]
+            },
+            "description": "Access: Teacher.\n\n\nDeletes/removes the selected resource or relationship."
+          },
+          "response": []
+        },
+        {
+          "name": "Student Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/students/{{student_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "students",
+                "{{student_id}}"
+              ]
+            },
+            "description": "Access: Teacher.\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Class Performance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/performance",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "performance"
+              ]
+            },
+            "description": "Access: Teacher.\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Class Attention",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/attention",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "attention"
+              ]
+            },
+            "description": "Access: Teacher.\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Dismiss Insight",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/attention/dismiss",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "attention",
+                "dismiss"
+              ]
+            },
+            "description": "Access: Teacher.\n\nThe teacher says this flag was not useful, so it never comes back for that learner.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_id\": {{student_id}},\n  \"reason\": \"Reviewed with learner\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Class Skills",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/skill-grid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "skill-grid"
+              ]
+            },
+            "description": "Access: Teacher.\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Act",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/attention/actions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "attention",
+                "actions"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_id\": 1,\n  \"reason\": \"never_started\",\n  \"status\": \"open\",\n  \"snooze_until\": \"2026-12-01T10:00:00Z\",\n  \"assignment_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/attention/actions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "attention",
+                "actions"
+              ]
+            },
+            "description": "Access: Teacher.\n\n"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Recordings",
+      "item": [
+        {
+          "name": "My Recordings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/recordings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recordings"
+              ]
+            },
+            "description": "Access: Teacher.\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Recording",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/recordings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recordings"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "type": "text",
+                  "value": "Greeting recording"
+                },
+                {
+                  "key": "duration_ms",
+                  "type": "text",
+                  "value": "3000"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [],
+                  "description": "Select a local audio file in Postman."
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id !== undefined) pm.collectionVariables.set(\"rec_id\", String(data.id));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Recording Audio",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/recordings/{{rec_id}}/audio",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recordings",
+                "{{rec_id}}",
+                "audio"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Recording",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/recordings/{{rec_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recordings",
+                "{{rec_id}}"
+              ]
+            },
+            "description": "Access: Teacher.\n\n\nDeletes/removes the selected resource or relationship."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Assignments",
+      "item": [
+        {
+          "name": "Create Assignment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/assignments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "assignments"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Present agreement practice\",\n  \"set_id\": \"{{set_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id !== undefined) pm.collectionVariables.set(\"assignment_id\", String(data.id));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Assignments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/assignments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "assignments"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Assignment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/assignments/{{assignment_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "assignments",
+                "{{assignment_id}}"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Assignment",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/assignments/{{assignment_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "assignments",
+                "{{assignment_id}}"
+              ]
+            },
+            "description": "Access: Teacher.\n\n\nDeletes/removes the selected resource or relationship."
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Assignment",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/assignments/{{assignment_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "assignments",
+                "{{assignment_id}}"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"replace-me\",\n  \"instructions\": \"replace-me\",\n  \"due_at\": \"2026-12-01T10:00:00Z\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Archive Assignment",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/assignments/{{assignment_id}}/archive",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "assignments",
+                "{{assignment_id}}",
+                "archive"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"archived\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Catalog",
+      "item": [
+        {
+          "name": "Catalog",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/catalog",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "catalog"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Set",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/sets/{{set_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "sets",
+                "{{set_id}}"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Ready",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/ready",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ready"
+              ]
+            },
+            "description": "Access: Public.\n\n",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Attempts",
+      "item": [
+        {
+          "name": "Submit Attempt",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/attempts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "attempts"
+              ]
+            },
+            "description": "Access: Learner (student or learner).\n\n\nSend exactly one of set_id, assignment_id, or lesson_id. Enable choice for quizzes; use transcript or audio for speaking tasks. item_index is zero-based.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "item_index",
+                  "type": "text",
+                  "value": "0"
+                },
+                {
+                  "key": "transcript",
+                  "type": "text",
+                  "value": "She goes to school."
+                },
+                {
+                  "key": "choice",
+                  "type": "text",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "assignment_id",
+                  "type": "text",
+                  "value": "{{assignment_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "set_id",
+                  "type": "text",
+                  "value": "{{set_id}}"
+                },
+                {
+                  "key": "lesson_id",
+                  "type": "text",
+                  "value": "{{lesson_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "client_uuid",
+                  "type": "text",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "item_version",
+                  "type": "text",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "retry_of_attempt_id",
+                  "type": "text",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "audio",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "Select a local audio file in Postman."
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id !== undefined) pm.collectionVariables.set(\"attempt_id\", String(data.id));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Attempt Audio",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/attempts/{{attempt_id}}/audio",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "attempts",
+                "{{attempt_id}}",
+                "audio"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Attempt Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/attempts/{{attempt_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "attempts",
+                "{{attempt_id}}"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/me/attempts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "me",
+                "attempts"
+              ],
+              "query": [
+                {
+                  "key": "cursor",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Access: Learner (student or learner).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Dispute",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/attempts/{{attempt_id}}/dispute",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "attempts",
+                "{{attempt_id}}",
+                "dispute"
+              ]
+            },
+            "description": "Access: Learner (student or learner).\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"disputed\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AI",
+      "item": [
+        {
+          "name": "Draft Items",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ai/items",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ai",
+                "items"
+              ]
+            },
+            "description": "Access: Teacher.\n\nDraft practice items for the teacher to review. Nothing is saved and no learner sees this.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"topic\": \"Everyday English\",\n  \"count\": 6,\n  \"kinds\": [\n    \"read\",\n    \"choice\"\n  ],\n  \"level\": \"A1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "item": [
+        {
+          "name": "Create Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/courses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Everyday English\",\n  \"summary\": \"Short English practice lessons\",\n  \"level\": \"A1\",\n  \"visibility\": \"public\",\n  \"sequential\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id !== undefined) pm.collectionVariables.set(\"course_id\", String(data.id));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Courses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/courses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Course",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/courses/{{course_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{course_id}}"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Patch Course",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/courses/{{course_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{course_id}}"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Everyday English \\u2014 updated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Course",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/courses/{{course_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{course_id}}"
+              ]
+            },
+            "description": "Access: Teacher.\n\n\nDeletes/removes the selected resource or relationship."
+          },
+          "response": []
+        },
+        {
+          "name": "Publish Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/courses/{{course_id}}/publish",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{course_id}}",
+                "publish"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"published\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Unit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/courses/{{course_id}}/units",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{course_id}}",
+                "units"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Getting started\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id !== undefined) pm.collectionVariables.set(\"unit_id\", String(data.id));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Enroll",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/courses/{{course_id}}/enroll",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{course_id}}",
+                "enroll"
+              ]
+            },
+            "description": "Access: Learner (student or learner).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Leave",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/courses/{{course_id}}/enroll",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{course_id}}",
+                "enroll"
+              ]
+            },
+            "description": "Access: Learner (student or learner).\n\n\nDeletes/removes the selected resource or relationship."
+          },
+          "response": []
+        },
+        {
+          "name": "Assign Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/courses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "courses"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"course_id\": {{course_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Class Courses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/courses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "courses"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Unassign Course",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/classes/{{class_id}}/courses/{{course_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                "{{class_id}}",
+                "courses",
+                "{{course_id}}"
+              ]
+            },
+            "description": "Access: Teacher.\n\n\nDeletes/removes the selected resource or relationship."
+          },
+          "response": []
+        },
+        {
+          "name": "Course Progress",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/courses/{{course_id}}/progress",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{course_id}}",
+                "progress"
+              ]
+            },
+            "description": "Access: Teacher.\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Archive Course",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/courses/{{course_id}}/archive",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "{{course_id}}",
+                "archive"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"archived\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Units",
+      "item": [
+        {
+          "name": "Rename Unit",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/units/{{unit_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "units",
+                "{{unit_id}}"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Getting started\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Unit",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/units/{{unit_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "units",
+                "{{unit_id}}"
+              ]
+            },
+            "description": "Access: Teacher.\n\n\nDeletes/removes the selected resource or relationship."
+          },
+          "response": []
+        },
+        {
+          "name": "Move Unit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/units/{{unit_id}}/move",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "units",
+                "{{unit_id}}",
+                "move"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"direction\": \"up\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Lesson",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/units/{{unit_id}}/lessons",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "units",
+                "{{unit_id}}",
+                "lessons"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Greetings\",\n  \"intro\": \"Read the sentence aloud.\",\n  \"items\": [\n    {\n      \"kind\": \"read\",\n      \"text\": \"Hello, how are you?\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id !== undefined) pm.collectionVariables.set(\"lesson_id\", String(data.id));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Lessons",
+      "item": [
+        {
+          "name": "Save Lesson",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/lessons/{{lesson_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "lessons",
+                "{{lesson_id}}"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Greetings\",\n  \"intro\": \"Read the sentence aloud.\",\n  \"items\": [\n    {\n      \"kind\": \"read\",\n      \"text\": \"Hello, how are you?\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Lesson",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/lessons/{{lesson_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "lessons",
+                "{{lesson_id}}"
+              ]
+            },
+            "description": "Access: Teacher.\n\n\nDeletes/removes the selected resource or relationship."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Lesson",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/lessons/{{lesson_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "lessons",
+                "{{lesson_id}}"
+              ]
+            },
+            "description": "Access: Authenticated (ownership/membership rules apply).\n\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Move Lesson",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/lessons/{{lesson_id}}/move",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "lessons",
+                "{{lesson_id}}",
+                "move"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"direction\": \"up\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Archive Lesson",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/lessons/{{lesson_id}}/archive",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "lessons",
+                "{{lesson_id}}",
+                "archive"
+              ]
+            },
+            "description": "Access: Teacher.\n\n",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"archived\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

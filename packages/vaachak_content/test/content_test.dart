@@ -4,8 +4,7 @@ import 'package:vaachak_content/vaachak_content.dart';
 
 void main() {
   test('seed bank loads but cannot pass production content gate', () {
-    String asset(String n) =>
-        File('../../apps/vaachak_app/assets/$n.json').readAsStringSync();
+    String asset(String n) => File('../../content/$n.json').readAsStringSync();
     final bank = ContentBank.decode(
       asset('skill_graph'),
       asset('grammar_rules'),
@@ -94,8 +93,7 @@ void main() {
     }
   });
   test('reading passages require reading nodes and immutable content', () {
-    String asset(String n) =>
-        File('../../apps/vaachak_app/assets/$n.json').readAsStringSync();
+    String asset(String n) => File('../../content/$n.json').readAsStringSync();
     final bank = ContentBank.decode(
       asset('skill_graph'),
       asset('grammar_rules'),

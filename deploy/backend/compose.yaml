@@ -1,0 +1,39 @@
+services:
+  api:
+    build:
+      context: ../..
+      dockerfile: deploy/backend/Dockerfile
+    environment:
+      VAACHAK_ENV: production
+      VAACHAK_DATA: /data
+      VAACHAK_TEACHER_INVITE: ${VAACHAK_TEACHER_INVITE:?Set instructor invitation in deployment environment}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      VAACHAK_CHAT_MODEL: ${VAACHAK_CHAT_MODEL:-}
+      VAACHAK_ASR_MODEL: ${VAACHAK_ASR_MODEL:-}
+    volumes:
+      - data:/data
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+  proxy:
+    image: caddy:2.10
+    environment:
+      DOMAIN: ${DOMAIN:?Set a DNS hostname pointing to this host}
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  data:
+  caddy_data:
+  caddy_config:

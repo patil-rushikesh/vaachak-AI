@@ -1,90 +1,68 @@
-# VaachakAI
+# VaachakAI backend and libraries
 
-Offline-first English learning in Flutter, with a pure Dart learning engine and a Supabase teacher portal. Product requirements remain in [VaachakAI.md](VaachakAI.md).
+The web and Android frontends have been removed. This repository retains the classroom API, reusable learning libraries, curriculum data, and Supabase infrastructure.
 
-**This repository is an implemented and tested development baseline, not a finished production release.** The four-phase specification is larger than the implementation currently delivered. See [implementation status](docs/IMPLEMENTATION_STATUS.md) for the precise boundaries, remaining engineering, and external release gates. There are no fake model responses or seeded learner metrics in the application.
+## Run the classroom API
 
-## Run
-
-Use Flutter **3.47.5 / Dart 3.13.4**. The SDK installed during implementation is at `/Users/admin/.local/share/vaachak/flutter`. It was not added to your global shell configuration.
-
-```sh
-export PATH="/Users/admin/.local/share/vaachak/flutter/bin:$PATH"
-flutter pub get --enforce-lockfile
-cd apps/vaachak_app
-flutter run -d chrome
-```
-
-Web runs the teacher portal. Without school configuration it shows a clear connection screen and no learner data. Configure a provisioned Supabase deployment with public client configuration:
-
-```sh
-flutter run -d chrome \
-  --dart-define=SUPABASE_URL=https://YOUR_PROJECT.supabase.co \
-  --dart-define=SUPABASE_ANON_KEY=YOUR_PUBLIC_ANON_KEY \
-  --dart-define=VAACHAK_ENV=dev
-```
-
-Android runs the offline profile picker, learner dashboard, choice practice, grammar coach, reading coach, model packs, and the same teacher portal. An Android SDK and connected ARM64 device are required:
-
-```sh
-flutter run -d DEVICE_ID --dart-define=ALLOW_DRAFT_CONTENT=true
-```
-
-`ALLOW_DRAFT_CONTENT` is for adult developer/educator evaluation only. It unlocks the small starter bank: **15 draft questions, 40 draft grammar patterns, and one draft reading passage**. Production mode does not present this unreviewed teaching content. It needs a signed, reviewed content bank; the release validator enforces three approved items per node, rung, and age band. The full 1,500-item/media bank described in the specification is not supplied.
-
-Profiles use a 6–12 digit PIN, encrypted local storage, lockout after repeated failures, and an inactivity lock. The minor flag is independent of the presentation age band. The paper-consent reference records an external witnessed consent; it does not itself verify a guardian's identity or make the app legally compliant.
-
-## Workspace
-
-| Location | Implementation |
-|---|---|
-| `apps/vaachak_app` | Flutter Android learner and web/Android teacher UI |
-| `packages/vaachak_engine` | 70-node graph loader, BKT, path planner, ladder, staircase, grammar, alignment, event fold; no Flutter or I/O imports |
-| `packages/vaachak_content` | Content schemas, bank loader, release coverage checks |
-| `packages/vaachak_store` | Drift, SQLCipher Community encryption, PIN hashing, HLC/ULID event log, transactions, replay, acknowledgements, erasure |
-| `packages/vaachak_speech` | Signal quality gate and sherpa-onnx ASR/TTS worker |
-| `packages/vaachak_explain` | Immediate templates, strict output validation, optional flutter_gemma adapter |
-| `packages/vaachak_packs` | Device tiers, Ed25519 verification, streaming SHA-256 checks, atomic activation and retained versions |
-| `packages/vaachak_sync` | AES-GCM bundles, HTTPS batching, persistent retry, QR fountain frames, file and LAN transport utilities |
-| `tools/content_pipeline` | Review CSV round trip, validation, immutable Ed25519 manifest signing |
-| `infra/supabase` | Isolated dev/qa/prod schemas, RLS, ingestion, BKT replay, insights, interventions, export/erasure, SQL and pgTAP tests |
-
-## Verification
+Use Python 3.10 or newer.
 
 ```sh
 python3 -m venv .venv
-.venv/bin/python -m pip install -r tools/content_pipeline/requirements.txt
+.venv/bin/python -m pip install -r classroom_web/requirements-dev.txt -r tools/content_pipeline/requirements.txt
+.venv/bin/python classroom_web/run.py
+```
+
+API documentation is at http://localhost:8000/api/docs. The root URL and `/static` do not serve an application. Optional `--seed` resets the local database and loads demo accounts; use only with disposable data. See [API contract](classroom_web/API_CONTRACT.md) and [server setup](classroom_web/README.md).
+
+## Repository layout
+
+- `classroom_web/server`: FastAPI, SQLite, AI feedback, courses, and classroom endpoints.
+- `classroom_web/tests`: API and backend tests.
+- `packages`: reusable Dart learning, content, storage, speech, explanation, sync, and pack libraries. Speech and explanation adapters still require Flutter dependencies.
+- `content`: shared curriculum JSON used by libraries and content tooling.
+- `infra/supabase`: migrations, configuration, and database tests.
+- `tools`: content pipelines, library checks, and database verification utilities.
+- `docs`: historical implementation and architecture records; app build and UI instructions in these records are no longer applicable.
+
+## Checks
+
+```sh
+.venv/bin/python -m pytest classroom_web/tests -q
+.venv/bin/python -m unittest discover -s tools/content_pipeline -v
+.venv/bin/python tools/content_pipeline/pipeline.py validate content
 FLUTTER=/path/to/flutter/bin/flutter .venv/bin/python tools/check.py
 ```
 
-This runs formatting, analysis, package tests, Flutter widget tests, Python tests, development-content validation, and a release teacher-web build. It does **not** certify model quality, Android hardware performance, pedagogy, privacy compliance, or accessibility.
+The complete check script uses Flutter 3.47.5 / Dart 3.13.4 for the retained libraries. Database checks run separately with `python3 tools/sql_check.py --bootstrap` against a configured test PostgreSQL instance.
 
-For a disposable PostgreSQL 16 database with pgcrypto and pgTAP installed:
+## API reference and Postman
+
+The [complete API list](postman/API_LIST.txt) contains all 71 classroom operations and their access requirements. Import [the Postman collection](postman/VaachakAI.postman_collection.json), set collection variables `base_url`, `email`, `password`, `name`, and `role`, then run Register or Login. The token and created resource IDs are saved automatically. Switch credentials and log in again when changing between teacher and learner actions. Select local files for multipart uploads. Requests are a reference, not an ordered bulk-run workflow.
+
+[OpenAPI snapshot](postman/openapi.json). Regenerate these files with your backend Python environment: `python tools/export_postman.py`. Supabase deployment-generated APIs are separate from the classroom API.
+
+### Run every classroom endpoint locally
+
+Start the API with `.venv313/bin/python classroom_web/run.py` (or your configured Python environment). Import `postman/VaachakAI.local-tests.postman_collection.json` into Postman and run all requests in order with one iteration. The collection creates unique synthetic accounts, saves tokens/IDs, exercises all 71 operations, and checks role restrictions, history-deletion guards and lifecycle behavior. Run against a dedicated test database: it erases its synthetic learner and recording, while its instructor and authored content remain.
+
+Command-line equivalent:
 
 ```sh
-PGHOST=127.0.0.1 PGPORT=5432 PGUSER=postgres python3 tools/sql_check.py --bootstrap
+python tools/build_postman_smoke.py
+npx --yes newman run postman/VaachakAI.local-tests.postman_collection.json --reporters cli,junit --reporter-junit-export postman/local-test-results.xml
 ```
 
-The bootstrap supplies local test auth objects; never run `tests/local_auth.sql` against a Supabase deployment. Supabase already owns `auth.users`, `auth.uid()` and `auth.jwt()`.
+Audio uploads use `postman/fixtures/silence.wav`, a synthetic fixture. Regenerating the test collection sets its absolute upload path for your checkout. The tests verify upload/download, not speech transcription. When no AI key is configured, the AI drafting test verifies the expected HTTP 503; live model generation remains unverified.
 
-For Android instrumentation, run `flutter test integration_test/offline_test.dart -d DEVICE_ID` from the app directory. The Android SDK and ARM64 emulator are installed; final device execution results are tracked in [verification](docs/VERIFICATION.md). Native speech and optional Gemma tests use explicitly supplied signed development fixtures; see [Phase 2](docs/PHASE_2.md). `tools/benchmarks/android_capture.sh` records startup, RAM, battery and thermal information; it is a measurement helper, not evidence that the performance targets have been achieved.
+Postman desktop restricts file access to its working directory. The tested desktop requests use `/Users/admin/Postman/files/vaachak-api-tests/silence.wav`. Copy the synthetic fixture into your configured Postman working directory and regenerate with `python tools/build_postman_smoke.py --audio-file /absolute/path/to/silence.wav` before importing on another machine.
 
-## Configuration and release
+If you reselect upload files in Postman, enable the form-data Content-Type column and set each file field to `audio/wav`; Postman may otherwise choose an unsupported default MIME type.
 
-- [Backend operations](docs/OPERATIONS.md)
-- [Implementation and release gaps](docs/IMPLEMENTATION_STATUS.md)
-- [Architecture decisions](docs/ARCHITECTURE.md)
-- [Model pack contract](docs/MODEL_PACKS.md)
-- [Phase 2 implementation and native test instructions](docs/PHASE_2.md)
 
-No secrets, signing keys, model weights, cloud deployment, or production learner data are included. Android release tasks require a real private `android/key.properties`; they never fall back to debug signing. CI builds a debug APK and a release web artifact. Publish only after completing the documented release gates.
+## Enhanced backend deployment
 
-The learner dashboard now includes resumable reviewed-choice checks for vocabulary, grammar and sentence formation. See [assessment behavior and remaining work](docs/ASSESSMENT.md). Read-aloud reading checks now support reviewed passages and approved speech-model versions; see [reading assessment](docs/READING_ASSESSMENT.md). Listening, pronunciation and free-speaking checks remain unavailable.
-
-Phase 1 core-engine, encrypted-persistence and learner-UI engineering is complete against the pasted roadmap checklist. See [Phase 1 acceptance evidence and release gates](docs/PHASE_1.md). The end-to-end platform and production release remain incomplete.
-
-Phase 2 connects offline speech, verified model-pack installation and optional local grammar rewording. The host suite passed 165 Dart/Flutter and 10 Python tests; Android build/installation and native speech integration also passed. Android Gemma inference/safe template fallback and offline profile/PIN/grammar/background-lock tests passed. Phase 2 engineering and emulator acceptance are complete; physical-phone benchmarks, human-speech evaluation and production content/model approval remain release gates. See [Phase 2 scope and release gates](docs/PHASE_2.md).
-
-Phase 3 connects class joining, teacher approval, foreground synchronization, signed teacher interventions and encrypted file/QR/LAN transfer workflows. Real local backend and Android learner/teacher tests passed. See [Phase 3 setup, evidence and deployment status](docs/PHASE_3.md).
-
-Phase 4 adds recoverable Play updates with explicit restart, signed CDN catalogs, overlapping pack trust keys, purpose-specific consent withdrawal and production release checks. See [Phase 4 implementation and acceptance limits](docs/PHASE_4.md).
+The backend now includes durable submission identities, versioned evidence, explainable review,
+instructor follow-up, account lifecycle operations, structured logs and uniform errors.
+See [implementation and test status](docs/BACKEND_IMPLEMENTATION_STATUS.md) and the
+[deployment/operator runbook](deploy/backend/README.md). The supported release runtime is
+Python 3.13 with FFmpeg. Container/HTTPS configuration is in `deploy/backend`.

@@ -18,6 +18,6 @@ if errorlevel 1 (
 )
 set SEED=
 if not exist data\classroom.db set SEED=--seed
-start "" cmd /c "timeout /t 4 >nul & start http://localhost:8000"
+start "" cmd /c "timeout /t 4 >nul & start http://localhost:8000/api/docs"
 python run.py %SEED%
 pause

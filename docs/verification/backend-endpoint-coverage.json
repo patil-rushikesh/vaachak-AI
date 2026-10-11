@@ -1,0 +1,706 @@
+{
+  "operations": 71,
+  "covered": 71,
+  "successful": 71,
+  "items": [
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "statuses": {
+        "200": 255,
+        "409": 1,
+        "422": 3,
+        "403": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "statuses": {
+        "401": 11,
+        "429": 1,
+        "200": 1,
+        "413": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/me",
+      "statuses": {
+        "401": 6,
+        "200": 10
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/me",
+      "statuses": {
+        "200": 1,
+        "409": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/health",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/classes",
+      "statuses": {
+        "200": 3
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/classes",
+      "statuses": {
+        "200": 79,
+        "403": 1,
+        "422": 2
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/classes/join",
+      "statuses": {
+        "200": 158,
+        "404": 2
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/classes/{class_id}",
+      "statuses": {
+        "200": 3,
+        "404": 3
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/classes/{class_id}/students/{student_id}",
+      "statuses": {
+        "200": 2
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/classes/{class_id}/students/{student_id}",
+      "statuses": {
+        "200": 2,
+        "404": 1,
+        "403": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/classes/{class_id}/code",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/recordings",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/recordings",
+      "statuses": {
+        "200": 5,
+        "415": 1,
+        "403": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/recordings/{rec_id}/audio",
+      "statuses": {
+        "404": 5,
+        "200": 5,
+        "401": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/classes/{class_id}/assignments",
+      "statuses": {
+        "200": 37,
+        "422": 3,
+        "403": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/classes/{class_id}/assignments",
+      "statuses": {
+        "404": 2,
+        "200": 5
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/assignments/{assignment_id}",
+      "statuses": {
+        "404": 1,
+        "200": 7
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/assignments/{assignment_id}",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/assignments/{assignment_id}",
+      "statuses": {
+        "200": 1,
+        "422": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/catalog",
+      "statuses": {
+        "200": 3
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/sets/{set_id}",
+      "statuses": {
+        "200": 3
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/attempts",
+      "statuses": {
+        "200": 52,
+        "422": 6,
+        "404": 1,
+        "415": 1,
+        "409": 3,
+        "502": 1,
+        "500": 1,
+        "429": 1,
+        "403": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/attempts/{attempt_id}/audio",
+      "statuses": {
+        "200": 2,
+        "404": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/stats",
+      "statuses": {
+        "200": 5
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/classes/{class_id}/performance",
+      "statuses": {
+        "404": 1,
+        "403": 2,
+        "200": 2
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/classes/{class_id}/attention",
+      "statuses": {
+        "200": 3,
+        "403": 2,
+        "404": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/classes/{class_id}/attention/dismiss",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/classes/{class_id}/skill-grid",
+      "statuses": {
+        "200": 2,
+        "403": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/ai/items",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/courses",
+      "statuses": {
+        "200": 28,
+        "403": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/courses",
+      "statuses": {
+        "200": 4
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/courses/{course_id}",
+      "statuses": {
+        "200": 8,
+        "404": 8
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/courses/{course_id}",
+      "statuses": {
+        "404": 1,
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/courses/{course_id}",
+      "statuses": {
+        "409": 1,
+        "200": 1,
+        "404": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/courses/{course_id}/publish",
+      "statuses": {
+        "200": 25,
+        "422": 2
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/courses/{course_id}/units",
+      "statuses": {
+        "200": 28
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/units/{unit_id}",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/units/{unit_id}",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/units/{unit_id}/move",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/units/{unit_id}/lessons",
+      "statuses": {
+        "200": 53,
+        "422": 5
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "PUT",
+      "path": "/api/lessons/{lesson_id}",
+      "statuses": {
+        "200": 3,
+        "404": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/lessons/{lesson_id}",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/lessons/{lesson_id}",
+      "statuses": {
+        "200": 6,
+        "404": 1,
+        "403": 2
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/lessons/{lesson_id}/move",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/courses/{course_id}/enroll",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/courses/{course_id}/enroll",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/classes/{class_id}/courses",
+      "statuses": {
+        "200": 4,
+        "422": 1,
+        "404": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/classes/{class_id}/courses",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/classes/{class_id}/courses/{course_id}",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/courses/{course_id}/progress",
+      "statuses": {
+        "200": 1,
+        "403": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/review",
+      "statuses": {
+        "200": 6
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/attempts/{attempt_id}",
+      "statuses": {
+        "200": 4,
+        "404": 2
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/attempts",
+      "statuses": {
+        "200": 2
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/submissions/{client_uuid}",
+      "statuses": {
+        "200": 3,
+        "404": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/attempts/{attempt_id}/dispute",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/preferences",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/me/preferences",
+      "statuses": {
+        "422": 1,
+        "200": 3
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/me/password",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/reset-password",
+      "statuses": {
+        "200": 1,
+        "400": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/export",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/classes/{class_id}/attention/actions",
+      "statuses": {
+        "403": 1,
+        "422": 1,
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/classes/{class_id}/attention/actions",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/classes/{class_id}/archive",
+      "statuses": {
+        "404": 1,
+        "200": 3
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/courses/{course_id}/archive",
+      "statuses": {
+        "200": 3,
+        "404": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/assignments/{assignment_id}/archive",
+      "statuses": {
+        "404": 1,
+        "200": 2
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/lessons/{lesson_id}/archive",
+      "statuses": {
+        "404": 1,
+        "200": 2
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/recordings/{rec_id}",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/ready",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/recommendations",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    }
+  ]
+}

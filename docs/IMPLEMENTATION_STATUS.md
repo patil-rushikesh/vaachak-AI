@@ -1,3 +1,5 @@
+> Historical reference: the web and Android frontends and their build tooling have been removed. See the root README for current setup.
+
 # Implementation status and release gates
 
 The codebase contains working implementations across all requested package boundaries. **The requested end-to-end production platform is not complete.** Tests establish the behaviors they cover; they do not establish the specification's complete functionality or non-functional targets.

@@ -1,3 +1,5 @@
+> Historical reference: the web and Android frontends and their build tooling have been removed. See the root README for current setup.
+
 # Verification record
 
 Local verification on 2026-09-23, macOS ARM64, Flutter 3.47.5 / Dart 3.13.4, PostgreSQL 16.15.

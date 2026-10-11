@@ -1,0 +1,51 @@
+{
+  "dataset": "five synthetic correctness cases; no human participants",
+  "clock": "2026-10-11T12:00:00+00:00",
+  "policy_version": "skill-review-v1",
+  "baseline": "original global clean-success heuristic",
+  "baseline_correct": 2,
+  "enhanced_correct": 5,
+  "cases": [
+    {
+      "case": "unrelated_success",
+      "expected_stuck": true,
+      "baseline_stuck": false,
+      "enhanced_stuck": true,
+      "baseline_correct": false,
+      "enhanced_correct": true
+    },
+    {
+      "case": "immediate_same_task",
+      "expected_stuck": true,
+      "baseline_stuck": false,
+      "enhanced_stuck": true,
+      "baseline_correct": false,
+      "enhanced_correct": true
+    },
+    {
+      "case": "delayed_different_task",
+      "expected_stuck": false,
+      "baseline_stuck": false,
+      "enhanced_stuck": false,
+      "baseline_correct": true,
+      "enhanced_correct": true
+    },
+    {
+      "case": "disputed_errors",
+      "expected_stuck": false,
+      "baseline_stuck": true,
+      "enhanced_stuck": false,
+      "baseline_correct": false,
+      "enhanced_correct": true
+    },
+    {
+      "case": "no_success",
+      "expected_stuck": true,
+      "baseline_stuck": true,
+      "enhanced_stuck": true,
+      "baseline_correct": true,
+      "enhanced_correct": true
+    }
+  ],
+  "limitation": "This tests designed invariants, not pedagogical efficacy or instructor-rated relevance."
+}

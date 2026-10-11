@@ -1,3 +1,5 @@
+> Historical reference: the web and Android frontends and their build tooling have been removed. See the root README for current setup.
+
 # Reviewed reading checks
 
 Reading is now an assessment activity in the seven-skill overview. It shares the existing per-skill staircase, event replay, exact-rung selection, no-repeat IDs and transactional completion. The reading coach also loads passages from the content bank instead of keeping its own hardcoded text.

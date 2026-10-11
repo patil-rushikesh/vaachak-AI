@@ -85,13 +85,13 @@ def test_the_same_skill_going_wrong_repeatedly_becomes_one_action(room):
     assert row["action"] == "practise"
 
 
-def test_a_skill_the_learner_has_since_got_right_stops_being_stuck(room):
+def test_unrelated_success_does_not_clear_a_stuck_skill(room):
     for i in range(insights.STUCK_MISSES):
         put_attempt(room["conn"], room["asha"], score=40, when=ago(3, i), skill="MORPH.AGREEMENT",
                     assignment_id=room["assignment_id"])
     for i in range(2):
         put_attempt(room["conn"], room["asha"], score=95, when=ago(0, i + 1), assignment_id=room["assignment_id"])
-    assert "stuck_skill" not in reasons(room, room["asha"])
+    assert "stuck_skill" in reasons(room, room["asha"])
 
 
 def test_an_accent_feature_is_never_a_reason_to_flag_anyone(room):
@@ -194,16 +194,19 @@ def test_getting_it_wrong_again_sends_it_back_to_the_start(room):
 def test_a_task_answered_well_enough_times_is_done(room):
     conn, uid = room["conn"], room["asha"]
     for i in range(len(insights.BOX_DAYS) + 1):
-        put_attempt(conn, uid, score=100, when=ago(40 - i * 2), assignment_id=room["assignment_id"])
+        put_attempt(conn, uid, score=100, when=ago(200 - i * 20), assignment_id=room["assignment_id"])
     assert insights.due_for_review(conn, uid) == []
 
 
-def test_review_shows_the_weakest_first(room):
+def test_review_returns_explainable_priorities(room):
     conn, uid = room["conn"], room["asha"]
     put_attempt(conn, uid, score=70, when=ago(0), assignment_id=room["assignment_id"], item_index=0)
     put_attempt(conn, uid, score=10, when=ago(0), assignment_id=room["assignment_id"], item_index=1)
     put_attempt(conn, uid, score=40, when=ago(0), assignment_id=room["assignment_id"], item_index=2)
-    assert [d["last_score"] for d in insights.due_for_review(conn, uid)] == [10, 40, 70]
+    due = insights.due_for_review(conn, uid)
+    assert len(due) == 3
+    assert all(d["reason"] == "repeated_skill_error" and d["evidence_ids"] for d in due)
+    assert [d["priority"] for d in due] == sorted([d["priority"] for d in due], reverse=True)
 
 
 def test_review_only_offers_tasks_the_learner_may_still_open(client, world):

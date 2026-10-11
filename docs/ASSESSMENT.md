@@ -1,3 +1,5 @@
+> Historical reference: the web and Android frontends and their build tooling have been removed. See the root README for current setup.
+
 # Resumable assessment checks
 
 The learner dashboard opens **Start or resume skill checks**. The overview shows all seven skills independently. Vocabulary, grammar and sentence formation currently support reviewed choice questions. Reading supports reviewed passages and approved speech-pack versions through the read-aloud route; see `READING_ASSESSMENT.md`. Listening, pronunciation and speaking remain unavailable.

@@ -2,7 +2,7 @@
 
 For building a new frontend (React Native) against the existing `classroom_web` backend.
 
-Every example below was captured from the running server, not written by hand. 51 endpoints.
+The examples below originated from the 51-operation baseline. The enhanced backend has 71 operations and additional response fields; use `postman/openapi.json` and the milestone update below as the current contract.
 
 ---
 
@@ -12,9 +12,7 @@ Every example below was captured from the running server, not written by hand. 5
 starting, so here it is plainly:
 
 - The backend is a FastAPI server holding a SQLite database. **Every screen is a network call.**
-- The current web client stores exactly one thing locally: the auth token in `localStorage`. There is
-  **no cached data, no service worker, no IndexedDB, no sync queue, no outbox, no conflict
-  resolution**. Lose the connection and the app stops working.
+- No frontend is included. Clients must reach this API over the network.
 - The server runs on *your* machine, so it does not need the **internet** — but the client always
   needs the **server**.
 
@@ -27,7 +25,7 @@ What needs the internet, specifically:
 | Grading quizzes, rule-based grammar, scoring | No |
 
 If the AI key is missing or Groq is unreachable, the server quietly falls back to a rule engine and
-the browser's own speech recognition. Nothing errors; feedback just gets shallower.
+a transcript supplied by the client. Nothing errors; feedback just gets shallower.
 
 ### What this means for a React Native app
 
@@ -41,9 +39,7 @@ the browser's own speech recognition. Nothing errors; feedback just gets shallow
    would need a local store on the device, an attempt outbox, and a sync endpoint. None of that
    exists today. Worth deciding before the rebuild starts.
 
-> Note the repo contains a **second, different** application: the Flutter app under `apps/`, which
-> *is* offline-first by design (local encrypted store, on-device speech, downloadable packs). These
-> two do not share a backend or a data model. Make sure you are rebuilding the one you mean.
+The reusable Dart libraries and Supabase infrastructure are separate from this API.
 
 ---
 
@@ -556,24 +552,13 @@ Streams the audio. A learner may fetch it only if it is attached to work they ca
 
 ### Playing audio in React Native — the one gotcha
 
-Audio endpoints accept the token **either** as an `Authorization` header **or** as a `?token=`
-query parameter, because `<audio src>` cannot send headers. Use whichever your player supports:
+Audio endpoints require `Authorization: Bearer <token>`. Query-string tokens are rejected.
+Use an authenticated media source supported by the selected player, or fetch into protected
+application storage before playback. Never place a session token in a playback URL.
 
-```ts
-// expo-av accepts headers, which is the cleaner option
-Audio.Sound.createAsync(
-  { uri: `${BASE}/api/recordings/${id}/audio`, headers: { Authorization: `Bearer ${token}` } }
-);
-// fallback for players that take a bare URL
-const uri = `${BASE}/api/recordings/${id}/audio?token=${encodeURIComponent(token)}`;
-```
-
-Prefer the header. A token in a URL leaks into logs.
-
-**Known issue:** browser-recorded WebM has no duration header, so some players show `0:00` and
-refuse to seek. The web client works around this by nudging `currentTime`. React Native recording
-`.m4a` should not hit this, but if a teacher recorded on the web, the file may still be a WebM with
-no duration — use the `duration_ms` the API already gives you rather than asking the player.
+Uploads must be decodable, match the declared MIME type, and expose a valid duration of at
+most ten minutes. Re-record or re-export files whose container metadata cannot be validated.
+Do not infer playback support solely from the filename extension.
 
 ---
 
@@ -614,7 +599,7 @@ questions.
 ### Things that will bite you if you skip them
 
 - `multipart/form-data` on attempts, not JSON.
-- `detail` can be a string or an array.
+- `detail` is a safe string; structured `error` and sanitized validation `fields` carry additional information.
 - Learner payloads have answers stripped — never assume `correct` exists.
 - `best` map keys are strings, not numbers.
 - `verdict` / `strengths` / `next_line` only exist when `source === "ai"`.
@@ -624,7 +609,21 @@ questions.
 
 ### Generating a typed client
 
-The server publishes OpenAPI at `/api/openapi.json` (docs at `/api/docs`). Request bodies and path
-params are accurate there; **response shapes are not** — the routes return plain dicts without
-declared response models, so a generator will produce `any` for responses. Use this document for
-responses, or add `response_model=` server-side first if you want full type generation.
+The server publishes typed success and error contracts at `/api/openapi.json` (docs at
+`/api/docs`). All JSON operations declare response models. Some nested content and optional
+additive fields remain extensible; generated clients should preserve the task `kind`
+discriminator and handle documented optional fields rather than assuming every feedback
+response has AI-only properties.
+
+## Backend milestone update
+
+The authoritative current inventory is `postman/API_LIST.txt` and typed schema is
+`postman/openapi.json`. The additive backend release provides 71 application operations.
+See `docs/BACKEND_IMPLEMENTATION_STATUS.md` and `deploy/backend/README.md` for migration,
+submission recovery, lifecycle and deployment details.
+
+All errors now include `{detail, error: {code, message, request_id}}`; validation errors
+also include sanitized `fields`. Responses carry `X-Request-ID`. Audio requires an
+Authorization bearer header; query-string tokens are no longer accepted. Media must
+be valid decodable audio. DELETE on content with learner attempts returns 409; use
+its archive operation instead. The new behavior supersedes older examples above.
