@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -44,6 +44,48 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(title="VaachakAI Classroom", docs_url="/api/docs", openapi_url="/api/openapi.json", lifespan=lifespan)
+
+
+# ----------------------------------------------------------------------------- timestamps
+# SQLite's CURRENT_TIMESTAMP writes "2026-10-11 04:16:01" while Python writes a full ISO
+# string, so the same field could arrive in two shapes. JavaScript's Date() rejects the first
+# on iOS, so every timestamp leaving this API is normalised to ISO-8601 UTC here, once.
+TS_KEYS = {"created_at", "updated_at", "due_at", "last_active", "joined_at", "last_miss",
+           "assigned_at", "expires_at", "day"}
+_NAIVE = re.compile(r"^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}(\.\d+)?$")
+
+
+def to_iso(value: Any) -> Any:
+    """A stored timestamp as ISO-8601 UTC. Anything unrecognised is passed through."""
+    if not isinstance(value, str) or not _NAIVE.match(value):
+        return value
+    try:
+        return datetime.fromisoformat(value).replace(tzinfo=timezone.utc).isoformat()
+    except ValueError:
+        return value
+
+
+def isoify(obj: Any) -> Any:
+    if isinstance(obj, dict):
+        return {k: (to_iso(v) if k in TS_KEYS else isoify(v)) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [isoify(v) for v in obj]
+    return obj
+
+
+@app.middleware("http")
+async def normalise_timestamps(request: Request, call_next):
+    response = await call_next(request)
+    if not response.headers.get("content-type", "").startswith("application/json"):
+        return response  # audio and files stream straight through
+    body = b"".join([chunk async for chunk in response.body_iterator])
+    try:
+        fixed = json.dumps(isoify(json.loads(body))).encode()
+    except ValueError:
+        fixed = body
+    headers = {k: v for k, v in response.headers.items() if k.lower() != "content-length"}
+    return Response(content=fixed, status_code=response.status_code, headers=headers,
+                    media_type="application/json")
 
 
 def get_db():
