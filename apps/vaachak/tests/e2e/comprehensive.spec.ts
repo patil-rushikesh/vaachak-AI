@@ -173,10 +173,20 @@ test("class code rotation, assignment update, learner removal and archives", asy
   await login(page, t.email);
   await page.getByRole("tab", { name: "Classes", exact: true }).click();
   await page.getByLabel("Class name").fill("Managed classroom");
+  const created = page.waitForResponse(
+    (response) => response.url().endsWith("/api/classes") &&
+      response.request().method() === "POST",
+  );
   await button(page, "Create class").click();
-  const classes = await (await request.get("/api/classes", { headers })).json();
-  const cl = classes.find((c: any) => c.name === "Managed classroom");
+  const createdResponse = await created;
+  expect(createdResponse.ok()).toBeTruthy();
+  const cl = await createdResponse.json();
+  const rotated = page.waitForResponse(
+    (response) => response.url().endsWith(`/api/classes/${cl.id}/code`) &&
+      response.request().method() === "POST",
+  );
   await confirm(page, "Refresh joining code");
+  expect((await rotated).ok()).toBeTruthy();
   const updated = await (
     await request.get(`/api/classes/${cl.id}`, { headers })
   ).json();
@@ -213,7 +223,12 @@ test("class code rotation, assignment update, learner removal and archives", asy
   await page.getByRole("button", { name: /Managed classroom/ }).click();
   await confirm(page, "Remove from class");
   await button(page, "View & manage").click();
+  const deleted = page.waitForResponse(
+    (response) => response.url().endsWith(`/api/assignments/${assignment.id}`) &&
+      response.request().method() === "DELETE",
+  );
   await confirm(page, "Delete unused assignment");
+  expect((await deleted).ok()).toBeTruthy();
   expect(
     (
       await request.get(`/api/assignments/${assignment.id}`, { headers })
@@ -804,13 +819,18 @@ test("teacher secondary navigation and personal follow-up entry", async ({
   request,
 }) => {
   const t = await account(request, "teacher"),
-    l = await account(request),
-    headers = { Authorization: `Bearer ${t.token}` };
+    l = await account(request);
   await login(page, t.email);
   await button(page, "Create my first class").click();
   await page.getByLabel("Class name").fill("Navigation class");
+  const created = page.waitForResponse(
+    (response) => response.url().endsWith("/api/classes") &&
+      response.request().method() === "POST",
+  );
   await button(page, "Create class").click();
-  const cl = (await (await request.get("/api/classes", { headers })).json())[0];
+  const createdResponse = await created;
+  expect(createdResponse.ok()).toBeTruthy();
+  const cl = await createdResponse.json();
   await request.post("/api/classes/join", {
     headers: { Authorization: `Bearer ${l.token}` },
     data: { code: cl.code },
