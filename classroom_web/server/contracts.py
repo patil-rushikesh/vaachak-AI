@@ -65,7 +65,7 @@ class PracticeSet(Response):
 class Attempt(Response):
     id: int
     transcript: str
-    score: int
+    score: int | None
     accuracy: int | None
     kind: Literal["read", "free", "build", "choice", "fill", "listen"]
     tips: list[str]
@@ -79,6 +79,7 @@ class Attempt(Response):
     rubric_version: str
     # G1 fair feedback (optional; present on fresh evaluations)
     evaluation_status: str = "scored"
+    evidence_eligible: bool = True
     uncertainty_reasons: list[str] = []
     basis: str | None = None
     feedback_version: str | None = None
@@ -181,14 +182,30 @@ class Export(Response):
     enrollments: list[dict[str, JsonValue]]
 
 
-class KnowledgeList(Response):
-    units: list[dict]
-
-
-class KnowledgeCreated(Response):
+class KnowledgeUnit(Response):
     id: str
     skill_code: str
-    visibility: str
+    title: str
+    body: str
+    example: str | None
+    level: str
+    language: str
+    source: str
+    visibility: Literal["private", "public"]
+    status: Literal["draft", "approved", "published", "withdrawn"]
+    version: int
+    can_manage: bool
+    reviewed_by: int | None
+    reviewed_at: str | None
+    published_at: str | None
+
+
+class KnowledgeList(Response):
+    units: list[KnowledgeUnit]
+
+
+class KnowledgeCreated(KnowledgeUnit):
+    pass
 
 
 class Items(Response):

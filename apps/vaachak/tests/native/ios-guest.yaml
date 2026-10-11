@@ -1,0 +1,17 @@
+# Start at the Vaachak sign-in screen in Expo Go 57.
+appId: host.exp.Exponent
+name: iOS guest first value
+---
+- extendedWaitUntil:
+    visible: Try a free 2-minute sample
+    timeout: 45000
+- tapOn: Try a free 2-minute sample
+- tapOn: practise
+- assertVisible: One useful correction.
+- assertVisible: Use practises with she in the present simple.
+- tapOn: Next sample
+- tapOn: Could you explain that again, please?
+- assertVisible: You got it.
+- takeScreenshot: ios-guest-feedback
+- tapOn: Continue to sign in
+- assertVisible: Welcome back

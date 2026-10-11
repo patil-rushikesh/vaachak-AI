@@ -2,6 +2,8 @@
 
 ## Scope and evidence
 
+Subsequent G1/G2 code fixes and their current verification are recorded in [G1 and G2 review fixes](G1_G2_REVIEW_FIXES.md). The audit below retains its original scope and limitations.
+
 This audit expands the previous smoke tests into learner and teacher page/control journeys. It exercises the actual API and persistent database except where a test explicitly injects a failure or a synthetic ASR preview. Synthetic accounts and disposable classes/courses keep destructive checks away from user data.
 
 Final combined browser result: **66 / 66 passed** across desktop Chrome and mobile web. Two additional re-recording regressions passed after extending that scenario. Backend: **152 passed** in `full-backend-tests.xml`. Frontend units: **19 passed**, TypeScript passed, ESLint **0 errors / 11 existing warnings**. Live AI generation and its queue worker: **1 desktop journey passed**, recorded in `frontend/live-provider-test.log`.

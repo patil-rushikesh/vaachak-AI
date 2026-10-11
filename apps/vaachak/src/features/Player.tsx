@@ -1,4 +1,5 @@
 import { initialTaskIndex } from "./sessionPosition";
+import { attemptScoreLabel, isScoredAttempt } from "./attemptScore";
 import { FeedbackRating } from "../components/FeedbackRating";
 import { event } from "../api/events";
 import React, { useEffect, useRef, useState } from "react";
@@ -109,7 +110,13 @@ function Session({
         </Label>
       </Row>
       {data.reason && <Label muted>{data.reason}</Label>}
-      <ProgressBar value={((index + (result ? 1 : 0)) / items.length) * 100} />
+      <ProgressBar
+        value={
+          ((index + (result && isScoredAttempt(result) ? 1 : 0)) /
+            items.length) *
+          100
+        }
+      />
       {index === 0 && (data.intro || data.instructions) && (
         <Label muted>{data.intro || data.instructions}</Label>
       )}
@@ -133,19 +140,27 @@ function Session({
         <>
           <Feedback key={result.id} attempt={result} />
           <Row>
-            <Button
-              title={
-                index === items.length - 1
-                  ? "Finish practice"
-                  : "Next small step"
-              }
-              onPress={() => {
-                setResult(null);
-                setRetry(undefined);
-                if (index === items.length - 1) setDone(true);
-                else setIndex(index + 1);
-              }}
-            />
+            {isScoredAttempt(result) ? (
+              <Button
+                title={
+                  index === items.length - 1
+                    ? "Finish practice"
+                    : "Next small step"
+                }
+                onPress={() => {
+                  setResult(null);
+                  setRetry(undefined);
+                  if (index === items.length - 1) setDone(true);
+                  else setIndex(index + 1);
+                }}
+              />
+            ) : (
+              <Button
+                title="Back to my day"
+                kind="secondary"
+                onPress={() => n.navigate("Today")}
+              />
+            )}
             <Button
               title="Try this again"
               kind="secondary"
@@ -384,7 +399,12 @@ function Task({
       setError(e);
       // Definitive upload rejection is safe to retry with a fresh identity.
       // Retain it for timeouts/5xx because the server may still finish the upload.
-      if (!attemptStarted && e instanceof ApiError && e.status >= 400 && e.status < 500)
+      if (
+        !attemptStarted &&
+        e instanceof ApiError &&
+        e.status >= 400 &&
+        e.status < 500
+      )
         transcriptionKey.current = Crypto.randomUUID();
       if (
         attemptStarted &&
@@ -616,6 +636,8 @@ function Task({
   );
 }
 export function Feedback({ attempt: a }: { attempt: Attempt }) {
+  const [showBasis, setShowBasis] = useState(false);
+  const scored = isScoredAttempt(a);
   const teacher = useAuth().user?.role === "teacher";
   const [disputed, setDisputed] = useState(a.disputed),
     [busy, setBusy] = useState(false),
@@ -626,18 +648,22 @@ export function Feedback({ attempt: a }: { attempt: Attempt }) {
       <Row style={{ justifyContent: "space-between" }}>
         <Pill
           text={
-            a.score >= 80
-              ? "A LOVELY STEP FORWARD"
-              : "HERE’S YOUR NEXT SMALL STEP"
+            !scored
+              ? "LET’S CHECK THIS ANSWER"
+              : (a.score ?? 0) >= 80
+                ? "A LOVELY STEP FORWARD"
+                : "HERE’S YOUR NEXT SMALL STEP"
           }
         />
-        <Label style={{ fontWeight: "800" }}>{a.score}% task score</Label>
+        <Label style={{ fontWeight: "800" }}>{attemptScoreLabel(a)}</Label>
       </Row>
       <Title small>
-        {a.verdict ||
-          (a.score >= 80
-            ? "Nicely done. Keep growing."
-            : "You’re learning. Let’s try one change.")}
+        {!scored
+          ? "This answer has not been scored."
+          : a.verdict ||
+            ((a.score ?? 0) >= 80
+              ? "Nicely done. Keep growing."
+              : "You’re learning. Let’s try one change.")}
       </Title>
       {a.transcript && (
         <>
@@ -649,21 +675,83 @@ export function Feedback({ attempt: a }: { attempt: Attempt }) {
           <Label>{a.transcript}</Label>
         </>
       )}
-      {a.grammar?.slice(0, 1).map((g, i) => (
-        <Card key={i}>
-          <Label muted>{g.said}</Label>
-          <Label style={{ fontWeight: "700" }}>{g.fix}</Label>
-          <Label>{g.why}</Label>
-        </Card>
-      ))}
-      {a.tips?.slice(0, 2).map((tip, i) => (
-        <Label key={i}>{tip}</Label>
-      ))}
+      {scored &&
+        a.grammar?.slice(0, 1).map((g, i) => (
+          <Card key={i}>
+            <Label muted>{g.said}</Label>
+            <Label style={{ fontWeight: "700" }}>{g.fix}</Label>
+            <Label>{g.why}</Label>
+          </Card>
+        ))}
+      {(scored
+        ? a.tips
+        : [
+            "Check the transcript, record again, or type your answer. This answer does not affect your score or progress.",
+          ]
+      )
+        ?.slice(0, 2)
+        .map((tip, i) => (
+          <Label key={i}>{tip}</Label>
+        ))}
       <Label muted style={{ fontSize: 12 }}>
         {a.source === "ai" ? "AI-assisted feedback" : "Rule-based feedback"} ·{" "}
         {a.input_mode?.replaceAll("_", " ")}. This is task feedback, not an
         accent or proficiency assessment.
       </Label>
+      {scored && !!a.next_line && (
+        <Card>
+          <Label style={{ fontWeight: "700" }}>A little more practice</Label>
+          <Label>{a.next_line}</Label>
+          <Label muted>
+            This suggestion is optional and is not a scored activity.
+          </Label>
+        </Card>
+      )}
+      <Button
+        title={showBasis ? "Hide feedback details" : "Why this feedback?"}
+        kind="quiet"
+        onPress={() => setShowBasis(!showBasis)}
+      />
+      {showBasis && (
+        <Card>
+          <Title small>How to read this feedback</Title>
+          <Label>
+            {!scored
+              ? "There was not enough reliable evidence to grade this answer. It does not count against your progress."
+              : a.basis === "word_accuracy"
+                ? "The reading score compares the words in your transcript with the expected sentence. It does not measure your accent."
+                : a.basis === "exact_match" ||
+                    ["choice", "fill", "listen", "build"].includes(a.kind)
+                  ? "This activity checks your answer against the exercise’s expected answer."
+                  : "This is coaching for this answer, based on the task rubric. It is not a formal proficiency assessment."}
+          </Label>
+          {scored && !!a.sources?.length ? (
+            <>
+              <Label style={{ fontWeight: "700" }}>
+                Reviewed notes used by the coach
+              </Label>
+              {a.sources.map((source, index) => (
+                <Card key={`${source.id}-${index}`}>
+                  <Label>{source.title}</Label>
+                  <Label muted>
+                    {source.source}
+                    {source.version ? ` · Version ${source.version}` : ""}
+                  </Label>
+                </Card>
+              ))}
+              <Label muted>
+                These references were checked against the notes supplied to the
+                coach for this attempt. A citation does not guarantee that every
+                suggestion is correct.
+              </Label>
+            </>
+          ) : (
+            <Label muted>
+              No teaching-note citations were attached to this attempt.
+            </Label>
+          )}
+        </Card>
+      )}
       {!teacher && <FeedbackRating key={a.id} attemptId={a.id} />}
       {a.has_audio && !teacher && (
         <>

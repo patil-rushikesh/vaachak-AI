@@ -119,6 +119,30 @@
     "method": "GET",
     "path": "/api/classes/{class_id}/skill-grid"
   },
+  "list_knowledge_api_teacher_knowledge_get": {
+    "method": "GET",
+    "path": "/api/teacher/knowledge"
+  },
+  "add_knowledge_api_teacher_knowledge_post": {
+    "method": "POST",
+    "path": "/api/teacher/knowledge"
+  },
+  "update_knowledge_api_teacher_knowledge__unit_id__put": {
+    "method": "PUT",
+    "path": "/api/teacher/knowledge/{unit_id}"
+  },
+  "review_knowledge_api_teacher_knowledge__unit_id__review_post": {
+    "method": "POST",
+    "path": "/api/teacher/knowledge/{unit_id}/review"
+  },
+  "publish_knowledge_api_teacher_knowledge__unit_id__publish_post": {
+    "method": "POST",
+    "path": "/api/teacher/knowledge/{unit_id}/publish"
+  },
+  "withdraw_knowledge_api_teacher_knowledge__unit_id__withdraw_post": {
+    "method": "POST",
+    "path": "/api/teacher/knowledge/{unit_id}/withdraw"
+  },
   "draft_items_api_ai_items_post": {
     "method": "POST",
     "path": "/api/ai/items"

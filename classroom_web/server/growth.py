@@ -136,7 +136,7 @@ def review_items(conn, user_id):
     cannot leak. A dispute or immediate retry cannot advance the interval.
     """
     rows = conn.execute(
-        "SELECT * FROM attempts WHERE user_id=? AND practice_session_id IS NOT NULL AND disputed=0 AND retry_of_attempt_id IS NULL ORDER BY id DESC LIMIT 2000",
+        "SELECT * FROM scored_attempts WHERE user_id=? AND practice_session_id IS NOT NULL AND disputed=0 AND retry_of_attempt_id IS NULL ORDER BY id DESC LIMIT 2000",
         (user_id,),
     ).fetchall()
     grouped = {}

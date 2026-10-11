@@ -116,6 +116,12 @@ def accessible_attempt(conn, user, attempt_id):
 
 def attempt_json(a):
     result = json.loads(a["result"])
+    if result.get("evaluation_status") == "unscored":
+        # Also sanitize historical G1 rows which persisted numeric zero and corrective tips.
+        result.update(score=None, accuracy=None, grammar=[], words=[], extra_words=[],
+                      strengths=[], next_line="", evidence_eligible=False,
+                      verdict="This answer has not been scored.",
+                      tips=["Check the transcript, record again, or type your answer."])
     return {
         "id": a["id"],
         "transcript": a["transcript"],

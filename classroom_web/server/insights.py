@@ -66,7 +66,7 @@ def skill_counts(
     as something a learner has to fix.
     """
     rows = conn.execute(
-        f"SELECT id, created_at, score, result, item_snapshot, input_mode FROM attempts WHERE user_id=? AND disputed=0 {where} ORDER BY datetime(created_at),id",
+        f"SELECT id, created_at, score, result, item_snapshot, input_mode FROM scored_attempts WHERE user_id=? AND disputed=0 {where} ORDER BY datetime(created_at),id",
         (user_id, *args),
     ).fetchall()
     out: dict[str, dict] = {}
@@ -146,7 +146,7 @@ def due_for_review(
     """
     rows = conn.execute(
         "SELECT id, lesson_id, assignment_id, set_id, item_index, score, created_at, kind, target, content_version, result "
-        "FROM attempts WHERE user_id=? AND disputed=0 ORDER BY datetime(created_at),id",
+        "FROM scored_attempts WHERE user_id=? AND disputed=0 ORDER BY datetime(created_at),id",
         (user_id,),
     ).fetchall()
     tasks: dict[tuple, dict] = {}
@@ -248,7 +248,7 @@ def due_for_review(
 # ----------------------------------------------------------------------------- teacher attention queue
 def _recent_scores(conn, user_id: int, class_id: int, n: int = 6) -> list[int]:
     rows = conn.execute(
-        "SELECT score FROM attempts WHERE user_id=? AND disputed=0 AND (assignment_id IN (SELECT id FROM assignments WHERE class_id=?) "
+        "SELECT score FROM scored_attempts WHERE user_id=? AND disputed=0 AND (assignment_id IN (SELECT id FROM assignments WHERE class_id=?) "
         "OR lesson_id IN (SELECT l.id FROM lessons l JOIN class_courses cc ON cc.course_id=l.course_id WHERE cc.class_id=?)) "
         "ORDER BY created_at DESC LIMIT ?",
         (user_id, class_id, class_id, n * 2),
@@ -278,7 +278,7 @@ def attention(conn: sqlite3.Connection, class_id: int, teacher_id: int) -> list[
     ).fetchall()
     class_attempts = [
         conn.execute(
-            f"SELECT count(*) n FROM attempts WHERE user_id=? AND disputed=0 {where}",
+            f"SELECT count(*) n FROM scored_attempts WHERE user_id=? AND disputed=0 {where}",
             (u["id"], class_id, class_id),
         ).fetchone()["n"]
         for u in roster
@@ -288,7 +288,7 @@ def attention(conn: sqlite3.Connection, class_id: int, teacher_id: int) -> list[
     rows: list[dict] = []
     for u, n_attempts in zip(roster, class_attempts):
         last = conn.execute(
-            f"SELECT max(created_at) t FROM attempts WHERE user_id=? AND disputed=0 {where}",
+            f"SELECT max(created_at) t FROM scored_attempts WHERE user_id=? AND disputed=0 {where}",
             (u["id"], class_id, class_id),
         ).fetchone()["t"]
         quiet_days = _days_since(last)
@@ -304,7 +304,7 @@ def attention(conn: sqlite3.Connection, class_id: int, teacher_id: int) -> list[
             if (u["id"], reason) in dismissed:
                 return
             latest = conn.execute(
-                f"SELECT COALESCE(max(id),0) FROM attempts WHERE user_id=? AND disputed=0 {where}",
+                f"SELECT COALESCE(max(id),0) FROM scored_attempts WHERE user_id=? AND disputed=0 {where}",
                 (u["id"], class_id, class_id),
             ).fetchone()[0]
             state = conn.execute(
@@ -323,7 +323,7 @@ def attention(conn: sqlite3.Connection, class_id: int, teacher_id: int) -> list[
             evidence_ids = [
                 a[0]
                 for a in conn.execute(
-                    f"SELECT id FROM attempts WHERE user_id=? AND disputed=0 {where} ORDER BY id DESC LIMIT 12",
+                    f"SELECT id FROM scored_attempts WHERE user_id=? AND disputed=0 {where} ORDER BY id DESC LIMIT 12",
                     (u["id"], class_id, class_id),
                 )
             ]

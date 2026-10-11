@@ -202,6 +202,9 @@ def export_data(user=Depends(current_user), conn=Depends(get_db)):
                 (user["id"],),
             )
         ]
+        owned["knowledge_units"] = [dict(r) for r in conn.execute(
+            "SELECT * FROM knowledge_units WHERE owner_id=?", (user["id"],)
+        )]
     return {
         "profile": profile,
         "learning_data": {
@@ -350,7 +353,7 @@ def act(
                 422, "Follow-up must target this learner in this class."
             )
     latest = conn.execute(
-        "SELECT COALESCE(max(id),0) FROM attempts WHERE user_id=? "
+        "SELECT COALESCE(max(id),0) FROM scored_attempts WHERE user_id=? "
         + evidence.CLASS_SCOPE,
         (body.student_id, class_id, class_id),
     ).fetchone()[0]
@@ -388,7 +391,7 @@ def actions(class_id: int, user=Depends(teacher_only), conn=Depends(get_db)):
         value["follow_up_attempts"] = [
             dict(a)
             for a in conn.execute(
-                "SELECT id,score,disputed,created_at FROM attempts WHERE user_id=? AND assignment_id=? ORDER BY id",
+                "SELECT id,score,disputed,created_at FROM scored_attempts WHERE user_id=? AND assignment_id=? ORDER BY id",
                 (r["student_id"], r["assignment_id"]),
             )
         ]
@@ -566,7 +569,7 @@ def recommendations(user=Depends(learner_only), conn=Depends(get_db)):
             ):
                 continue
             rows = conn.execute(
-                "SELECT id,score,created_at,result,item_snapshot FROM attempts WHERE user_id=? AND disputed=0 ORDER BY created_at DESC,id DESC",
+                "SELECT id,score,created_at,result,item_snapshot FROM scored_attempts WHERE user_id=? AND disputed=0 ORDER BY created_at DESC,id DESC",
                 (user["id"],),
             ).fetchall()
             relevant = []

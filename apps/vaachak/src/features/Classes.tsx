@@ -1,3 +1,4 @@
+import { attemptScoreLabel } from "./attemptScore";
 import React, { useState } from "react";
 import { View } from "react-native";
 import { useQueryClient } from "@tanstack/react-query";
@@ -509,7 +510,8 @@ export function Student({ route, navigation: n }: any) {
                 <Pill text={a.kind} />
                 <Label>{a.transcript || a.target}</Label>
                 <Label muted>
-                  {a.score}% · {a.assignment || a.lesson || "Course practice"}
+                  {attemptScoreLabel(a)} ·{" "}
+                  {a.assignment || a.lesson || "Course practice"}
                 </Label>
               </Card>
             ))}

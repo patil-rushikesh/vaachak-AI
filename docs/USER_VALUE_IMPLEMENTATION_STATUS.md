@@ -2,6 +2,8 @@
 
 Updated 11 October 2026. This is an incremental implementation of USER_VALUE_IMPLEMENTATION_PLAN.md. The application has working additions, but **the eight milestones are not yet fully accepted and the release is not deployment-certified**. Automated checks do not replace educator review, observed usability testing, or the M.Tech pilot.
 
+Current G1/G2 bug-fix evidence is in [the review fixes report](verification/G1_G2_REVIEW_FIXES.md). The known segmentation example, unscored progress handling, knowledge privacy, explicit publication, startup content installation and contract drift are corrected there; broader feedback calibration and milestone acceptance remain pending.
+
 ## Implemented and verified locally
 
 - Expo Router route wrappers; existing feature screens retained; lint/type checking and web regression tests.
@@ -17,13 +19,15 @@ Updated 11 October 2026. This is an incremental implementation of USER_VALUE_IMP
 - SMTP password-reset request with generic account response, hashed single-use expiring tokens and rate limits. SMTP is optional and unconfigured locally; operator recovery remains available.
 - Three bounded scripted text conversation scenarios with owned sessions, revision checks and idempotent turns. Summaries describe participation, not measured proficiency.
 
+Current G1/G2 release finalization: the teacher teaching-note lifecycle and learner source/basis details are integrated into the existing Expo app. Final verification: 181 backend tests, all 100 API operations with successful responses, 74 browser journeys, 21 frontend unit tests, Android teacher lifecycle and a live versioned-citation smoke check. See [current release details](verification/G1_G2_REVIEW_FIXES.md). This does not close the broader acceptance gaps below.
+
 ## Acceptance gaps by milestone
 
 | Milestone | Remaining work before acceptance |
 | --- | --- |
 | M0 reliability | Signed staging builds; complete iOS/Android microphone, interruptions and accessibility runs; comprehensive unsaved-change guards/local fallback; stage flags; real SMTP delivery and safe reset deep links; scheduled retention/backup expiry and production restore drill. |
 | M1 first value | Learner/trainer interviews; reviewed guest material and optional merge; explanation-language preference; calibrated starting-path recommendation; observed time-to-first-value measurement. |
-| M2 fair feedback | ASR word-boundary scoring defect (“everyday” versus “every day”); human rubric/transcription calibration; persisted versioned due-state beyond current derived queue; comparable longitudinal skill views; full audio edge-case/native evidence. |
+| M2 fair feedback | Broader ASR segmentation and human rubric/transcription calibration beyond the corrected known cases; persisted versioned due-state beyond current derived queue; comparable longitudinal skill views; full audio edge-case/native evidence. |
 | M3 continuous learning | Semantic near-duplicate detection; reviewed generation-to-pool workflow; richer transfer/exploration policy, skill adaptation, skip controls and capacity/cost checks. Existing pool is finite and revision is explicitly labeled. |
 | M4 teaching | Four educator-reviewed full-week goal paths; conflict recovery UI/local fallback; report triage and content retirement workflow; improved invitation links and bulk assignment preview. |
 | M5 return/offline | Private lesson/reference-audio download manifests; durable consent-aware audio outbox; app-kill/offline recovery beyond current submission reconciliation; reviewed localization; native reminder/DST and screen-reader testing. Public quiz download is not a full offline application. |

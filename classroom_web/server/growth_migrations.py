@@ -40,11 +40,29 @@ MIGRATIONS = [
             "CREATE INDEX ix_generation_pending ON generation_jobs(status,created_at)",
         ],
     ),
+    (
+        7,
+        [
+            "ALTER TABLE knowledge_units ADD COLUMN reviewed_by INTEGER REFERENCES users(id) ON DELETE SET NULL",
+            "ALTER TABLE knowledge_units ADD COLUMN reviewed_at TEXT",
+            "ALTER TABLE knowledge_units ADD COLUMN published_at TEXT",
+            # Previous teacher notes were auto-approved, without a recorded review.
+            "UPDATE knowledge_units SET status='draft' WHERE owner_id IS NOT NULL",
+            "DELETE FROM knowledge_units WHERE owner_id IS NULL AND (visibility='private' OR source='Teacher note')",
+            "UPDATE knowledge_units SET status='published',reviewed_at=created_at,published_at=created_at WHERE owner_id IS NULL AND visibility='public' AND status='approved'",
+            "CREATE TRIGGER erase_owned_knowledge BEFORE DELETE ON users BEGIN DELETE FROM knowledge_units WHERE owner_id=OLD.id; END",
+            # Historical numeric storage stays compatible; only eligible rows enter progress.
+            "CREATE VIEW scored_attempts AS SELECT * FROM attempts WHERE COALESCE(json_extract(result, '$.evaluation_status'), 'scored')='scored'",
+            # Repair personal sessions completed by older G1 unscored submissions.
+            "UPDATE practice_sessions SET position=COALESCE((SELECT min(CAST(j.key AS INTEGER)) FROM json_each(practice_sessions.items) j WHERE NOT EXISTS(SELECT 1 FROM scored_attempts a WHERE a.practice_session_id=practice_sessions.id AND a.item_index=CAST(j.key AS INTEGER))),json_array_length(items)),revision=revision+1 WHERE id IN (SELECT practice_session_id FROM attempts WHERE json_extract(result,'$.evaluation_status')='unscored')",
+            "UPDATE practice_sessions SET completed=(position>=json_array_length(items)) WHERE id IN (SELECT practice_session_id FROM attempts WHERE json_extract(result,'$.evaluation_status')='unscored')",
+        ],
+    ),
 ]
 
 
 def migrate(conn):
-    for version, statements in MIGRATIONS:
+    for version, statements in sorted(MIGRATIONS):
         conn.execute("BEGIN IMMEDIATE")
         try:
             if not conn.execute(

@@ -2,6 +2,8 @@
 
 Implementation date: 11 October 2026. This report concerns the FastAPI backend only. It preserves the existing service, SQLite store, task types, classroom/course routes and Groq/rules integration. React Native screens and academic human-participant evaluation are outside this backend implementation.
 
+Current G1/G2 release finalization and frontend integration are tracked in [G1/G2 release verification](verification/G1_G2_REVIEW_FIXES.md). Its current schema and 100-operation inventory supersede counts in older verification runs below.
+
 ## Implemented milestone coverage
 
 | Milestone | Backend delivery |

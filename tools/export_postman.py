@@ -10,6 +10,9 @@ sys.path.insert(0, str(ROOT / 'classroom_web/server'))
 from main import app
 
 spec = app.openapi()
+if '--schema-only' in sys.argv:
+    print(json.dumps(spec))
+    sys.exit(0)
 variables = {
     'base_url': 'http://localhost:8000', 'token': '',
     'name': 'Postman Teacher', 'email': 'teacher@example.test',
@@ -17,6 +20,7 @@ variables = {
     'class_id': '', 'class_code': '', 'student_id': '', 'rec_id': '',
     'client_uuid': '', 'assignment_id': '', 'set_id': 'en-present-agreement', 'attempt_id': '',
     'course_id': '', 'unit_id': '', 'lesson_id': '',
+    'knowledge_id': '', 'knowledge_version': 1,
 }
 examples = {
     'Register': {'name': '{{name}}', 'email': '{{email}}', 'password': '{{password}}', 'role': '{{role}}'},
@@ -31,6 +35,9 @@ examples = {
     'TitleIn': {'title': 'Getting started'},
     'LessonIn': {'title': 'Greetings', 'intro': 'Read the sentence aloud.', 'items': [{'kind': 'read', 'text': 'Hello, how are you?'}]},
     'MoveIn': {'direction': 'up'}, 'PublishIn': {'published': True},
+    'KnowledgeIn': {'skill_code': 'MORPH.AGREEMENT', 'title': 'He, she and it', 'body': 'In the simple present use she goes, he likes.', 'visibility': 'private'},
+    'KnowledgeReviewIn': {'version': '{{knowledge_version}}'},
+    'KnowledgeUpdateIn': {'skill_code': 'MORPH.AGREEMENT', 'title': 'He, she and it', 'body': 'Use she goes and he likes in the simple present.', 'version': '{{knowledge_version}}'},
     'ClassCourseIn': {'course_id': '{{course_id}}'},
 }
 
@@ -41,10 +48,12 @@ import inspect
 import main
 import courses
 import operations
+import growth
+import generation_jobs
 
 def access(operation):
     operation_id = operation['operationId']
-    for module in (main, courses, operations):
+    for module in (main, courses, operations, growth, generation_jobs):
         for name, fn in vars(module).items():
             if inspect.isfunction(fn) and operation_id.startswith(name + '_'):
                 deps = {getattr(getattr(p.default, 'dependency', None), '__name__', '') for p in inspect.signature(fn).parameters.values()}
@@ -58,6 +67,7 @@ def access(operation):
 
 
 def group(path):
+    if '/teacher/knowledge' in path: return 'Teaching knowledge'
     if '/auth/' in path: return 'Authentication'
     if path == '/api/health': return 'Health'
     if '/attention' in path or '/performance' in path or '/skill-grid' in path or '/students/' in path: return 'Class insights and students'
@@ -73,6 +83,8 @@ def group(path):
     return 'Catalog'
 
 captures = {
+    ('post', '/api/teacher/knowledge'): {'knowledge_id': 'id', 'knowledge_version': 'version'},
+    ('put', '/api/teacher/knowledge/{unit_id}'): {'knowledge_version': 'version'},
     ('post', '/api/classes'): {'class_id': 'id', 'class_code': 'code'},
     ('post', '/api/classes/{class_id}/code'): {'class_code': 'code'},
     ('post', '/api/recordings'): {'rec_id': 'id'},
@@ -101,6 +113,8 @@ for path, methods in spec['paths'].items():
     for method, op in methods.items():
         permission = access(op)
         url_path = re.sub(r'\{(\w+)\}', r'{{\1}}', path)
+        if '/teacher/knowledge/' in path:
+            url_path = url_path.replace('{{unit_id}}', '{{knowledge_id}}')
         query = [{'key': p['name'], 'value': str(p['schema'].get('default', '')), 'disabled': not p.get('required', False)} for p in op.get('parameters', []) if p['in'] == 'query']
         description = f'Access: {permission}.\n\n' + op.get('description', '')
         if method == 'delete': description += '\nDeletes/removes the selected resource or relationship.'
@@ -126,7 +140,7 @@ for path, methods in spec['paths'].items():
                 file = key in ('file', 'audio')
                 field = {'key': key, 'type': 'file' if file else 'text'}
                 field['src' if file else 'value'] = [] if file else values.get(key, '')
-                if key in ('audio', 'choice', 'assignment_id', 'lesson_id', 'client_uuid', 'item_version', 'retry_of_attempt_id'): field['disabled'] = True
+                if key in ('audio', 'choice', 'assignment_id', 'lesson_id', 'practice_session_id', 'transcription_id', 'client_uuid', 'item_version', 'retry_of_attempt_id'): field['disabled'] = True
                 if file: field['description'] = 'Select a local audio file in Postman.'
                 fields.append(field)
             request['body'] = {'mode': 'formdata', 'formdata': fields}
@@ -147,7 +161,7 @@ for path, methods in spec['paths'].items():
 
 collection = {
     'info': {'name': 'VaachakAI Classroom API', 'schema': 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
-             'description': 'All 51 classroom API operations. Set base_url, name, email, password and role; run Register or Login to save token automatically. Authenticated requests inherit Bearer {{token}}. Switch credentials and log in again for teacher vs learner actions. Creation requests save resource IDs. Empty ID variables must be populated before use. Select local files for uploads. This is an endpoint reference, not an ordered collection-runner workflow; choose requests individually, especially deletion/logout. API docs: {{base_url}}/api/docs. Supabase deployment-generated endpoints are separate and are not part of this collection.'},
+             'description': 'All ' + str(sum(len(items) for items in folders.values())) + ' classroom API operations. Set base_url, name, email, password and role; run Register or Login to save token automatically. Authenticated requests inherit Bearer {{token}}. Switch credentials and log in again for teacher vs learner actions. Creation requests save resource IDs. Empty ID variables must be populated before use. Select local files for uploads. This is an endpoint reference, not an ordered collection-runner workflow; choose requests individually, especially deletion/logout. API docs: {{base_url}}/api/docs. Supabase deployment-generated endpoints are separate and are not part of this collection.'},
     'auth': {'type': 'bearer', 'bearer': [{'key': 'token', 'value': '{{token}}', 'type': 'string'}]},
     'variable': [{'key': key, 'value': value, 'type': 'string'} for key, value in variables.items()],
     'item': [{'name': name, 'item': items} for name, items in folders.items()],

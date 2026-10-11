@@ -1,0 +1,37 @@
+Running on emulator-5554
+ > Flow Teaching note lifecycle on Android
+Assert that "Welcome back" is visible... COMPLETED
+Tap on id: field-email... COMPLETED
+Erase 200 characters... COMPLETED
+Input text ${TEST_EMAIL}... COMPLETED
+Tap on id: field-password... COMPLETED
+Erase 200 characters... COMPLETED
+Input text ${TEST_PASSWORD}... COMPLETED
+Tap on "Let’s practise"... COMPLETED
+Assert that "Library" is visible... COMPLETED
+Tap on "Library"... COMPLETED
+Scrolling DOWN until "Teaching notes" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... COMPLETED
+Tap on "Teaching notes"... COMPLETED
+Tap on "Write a teaching note"... COMPLETED
+Scrolling DOWN until id: field-note-title is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... COMPLETED
+Tap on id: field-note-title... COMPLETED
+Input text Native reviewed explanation... COMPLETED
+Scrolling DOWN until id: field-explanation is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... COMPLETED
+Tap on id: field-explanation... COMPLETED
+Input text Use she likes in the simple present.... COMPLETED
+Scrolling DOWN until "Save private draft" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... COMPLETED
+Tap on "Save private draft"... COMPLETED
+Scrolling DOWN until "Mark as reviewed" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... COMPLETED
+Tap on "Mark as reviewed"... COMPLETED
+Tap on "I have reviewed this note"... COMPLETED
+Scrolling DOWN until "Publish teaching note" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... COMPLETED
+Tap on "Publish teaching note"... COMPLETED
+Tap on "Publish to shared library"... COMPLETED
+Scrolling UP until "Published.*shared" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... COMPLETED
+Assert that "Published.*shared" is visible... COMPLETED
+Take screenshot teaching-note-published... COMPLETED
+Scrolling DOWN until "Withdraw teaching note" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... COMPLETED
+Tap on "Withdraw teaching note"... COMPLETED
+Tap on "Withdraw this note"... COMPLETED
+Scrolling UP until "Withdrawn.*only you" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... COMPLETED
+Assert that "Withdrawn.*only you" is visible... COMPLETED

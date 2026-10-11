@@ -1,9 +1,9 @@
 name: React Native frontend
 on:
   pull_request:
-    paths: ['apps/vaachak/**', 'classroom_web/**', 'postman/openapi.json', '.github/workflows/frontend.yml']
+    paths: ['apps/vaachak/**', 'classroom_web/**', 'tools/export_postman.py', 'postman/openapi.json', '.github/workflows/frontend.yml']
   push:
-    paths: ['apps/vaachak/**', 'classroom_web/**', 'postman/openapi.json', '.github/workflows/frontend.yml']
+    paths: ['apps/vaachak/**', 'classroom_web/**', 'tools/export_postman.py', 'postman/openapi.json', '.github/workflows/frontend.yml']
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -21,11 +21,12 @@ jobs:
         with:
           python-version: '3.13'
       - run: npm ci
+      - run: pip install -r classroom_web/requirements-dev.txt
+        working-directory: .
       - run: npm run lint && npm run typecheck && npm run api:check && npm test && npm run build:all
       - run: npx playwright install --with-deps chromium
       - run: |
           sudo apt-get update && sudo apt-get install -y ffmpeg
-          pip install -r classroom_web/requirements-dev.txt
           VAACHAK_DATA="$RUNNER_TEMP/vaachak-e2e" GROQ_API_KEY='' VAACHAK_GROQ_KEY='' PYTHONPATH=classroom_web/server python -m uvicorn main:app --port 8002 > /tmp/vaachak-e2e-api.log 2>&1 &
         working-directory: .
       - run: |

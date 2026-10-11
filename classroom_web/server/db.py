@@ -110,4 +110,8 @@ def init() -> None:
     from growth_migrations import migrate as migrate_growth
 
     migrate_growth(conn)
+    from knowledge_seed import install
+
+    install(conn)
+    conn.commit()
     conn.close()

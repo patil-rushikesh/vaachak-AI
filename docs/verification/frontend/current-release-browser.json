@@ -1,0 +1,826 @@
+{
+  "stats": {
+    "startTime": "2026-10-11T14:16:18.451Z",
+    "duration": 134772.729,
+    "expected": 74,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "name": "account preferences validation, export, password rotation and deletion",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2414
+        }
+      ]
+    },
+    {
+      "name": "registration roles, validation, reset errors and return to sign in",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1364
+        }
+      ]
+    },
+    {
+      "name": "course details, visibility, ordering, unit management and deletion dialogs",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1894
+        }
+      ]
+    },
+    {
+      "name": "class code rotation, assignment update, learner removal and archives",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2441
+        }
+      ]
+    },
+    {
+      "name": "download refresh, wrong/right answers, removal and offline fallback",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1103
+        }
+      ]
+    },
+    {
+      "name": "growth goals, difficulty, weekly targets, consent, reminders and product feedback",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2045
+        }
+      ]
+    },
+    {
+      "name": "composer all task editors, validation, option controls and draft persistence",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1850
+        }
+      ]
+    },
+    {
+      "name": "course lesson movement, edit, archive restoration, publish and enroll lifecycle",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 4152
+        }
+      ]
+    },
+    {
+      "name": "teacher evidence, attention snooze and resolve controls",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1486
+        }
+      ]
+    },
+    {
+      "name": "learner wrong answer, retry comparison, ratings and history",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1841
+        }
+      ]
+    },
+    {
+      "name": "teacher course assignment, unassignment, course and lesson archive restore",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2256
+        }
+      ]
+    },
+    {
+      "name": "personal starting check saves a draft, resumes, completes and starts another session",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2508
+        }
+      ]
+    },
+    {
+      "name": "practice search, review empty state and invalid classroom error",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1057
+        }
+      ]
+    },
+    {
+      "name": "guest sample cycles through every question and restarts",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 791
+        }
+      ]
+    },
+    {
+      "name": "history pagination returns to newest attempts",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1445
+        }
+      ]
+    },
+    {
+      "name": "voice reference playback and deletion with confirmation cancellation",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 4365
+        }
+      ]
+    },
+    {
+      "name": "teacher secondary navigation and personal follow-up entry",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1461
+        }
+      ]
+    },
+    {
+      "name": "review evidence navigation and complete revision task",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1196
+        }
+      ]
+    },
+    {
+      "name": "account preferences validation, export, password rotation and deletion",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1918
+        }
+      ]
+    },
+    {
+      "name": "registration roles, validation, reset errors and return to sign in",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1121
+        }
+      ]
+    },
+    {
+      "name": "course details, visibility, ordering, unit management and deletion dialogs",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1709
+        }
+      ]
+    },
+    {
+      "name": "class code rotation, assignment update, learner removal and archives",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2171
+        }
+      ]
+    },
+    {
+      "name": "download refresh, wrong/right answers, removal and offline fallback",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1043
+        }
+      ]
+    },
+    {
+      "name": "growth goals, difficulty, weekly targets, consent, reminders and product feedback",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2011
+        }
+      ]
+    },
+    {
+      "name": "composer all task editors, validation, option controls and draft persistence",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1716
+        }
+      ]
+    },
+    {
+      "name": "course lesson movement, edit, archive restoration, publish and enroll lifecycle",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 4530
+        }
+      ]
+    },
+    {
+      "name": "teacher evidence, attention snooze and resolve controls",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1709
+        }
+      ]
+    },
+    {
+      "name": "learner wrong answer, retry comparison, ratings and history",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1699
+        }
+      ]
+    },
+    {
+      "name": "teacher course assignment, unassignment, course and lesson archive restore",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2074
+        }
+      ]
+    },
+    {
+      "name": "personal starting check saves a draft, resumes, completes and starts another session",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2587
+        }
+      ]
+    },
+    {
+      "name": "practice search, review empty state and invalid classroom error",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1162
+        }
+      ]
+    },
+    {
+      "name": "guest sample cycles through every question and restarts",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 863
+        }
+      ]
+    },
+    {
+      "name": "history pagination returns to newest attempts",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1346
+        }
+      ]
+    },
+    {
+      "name": "voice reference playback and deletion with confirmation cancellation",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 4965
+        }
+      ]
+    },
+    {
+      "name": "teacher secondary navigation and personal follow-up entry",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2210
+        }
+      ]
+    },
+    {
+      "name": "review evidence navigation and complete revision task",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1976
+        }
+      ]
+    },
+    {
+      "name": "reference selection, removal and uncertain publishing recovery",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2078
+        }
+      ]
+    },
+    {
+      "name": "teacher invitation field and desktop account shortcut",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 779
+        }
+      ]
+    },
+    {
+      "name": "screen recovery, speech mode switching and transcript editor",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 4333
+        }
+      ]
+    },
+    {
+      "name": "reference selection, removal and uncertain publishing recovery",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2664
+        }
+      ]
+    },
+    {
+      "name": "teacher invitation field and desktop account shortcut",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1253
+        }
+      ]
+    },
+    {
+      "name": "screen recovery, speech mode switching and transcript editor",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 4718
+        }
+      ]
+    },
+    {
+      "name": "learner completes all six task formats, sees journal and settings",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1908
+        }
+      ]
+    },
+    {
+      "name": "teacher creates, reviews and publishes a lesson",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1091
+        }
+      ]
+    },
+    {
+      "name": "lost submission response is reconciled without a duplicate",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1065
+        }
+      ]
+    },
+    {
+      "name": "invalid sign-in is readable and never exposes server internals",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 538
+        }
+      ]
+    },
+    {
+      "name": "teacher sees class evidence and publishes a targeted follow-up",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 965
+        }
+      ]
+    },
+    {
+      "name": "learner joins a class from a code and can recover a failed query",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2239
+        }
+      ]
+    },
+    {
+      "name": "pending practice survives browser reload and sign-in",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1209
+        }
+      ]
+    },
+    {
+      "name": "teacher records synthetic browser audio and saves a valid voice reference",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2617
+        }
+      ]
+    },
+    {
+      "name": "unsent submission can be edited after status confirms absence",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1104
+        }
+      ]
+    },
+    {
+      "name": "goal preferences, offline download, guided conversation and feedback",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1520
+        }
+      ]
+    },
+    {
+      "name": "teacher draft survives navigation and reopens with the saved title",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1054
+        }
+      ]
+    },
+    {
+      "name": "guest can get a useful correction without signing up",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 503
+        }
+      ]
+    },
+    {
+      "name": "unscored reading offers retry and never appears as a failed grade",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1171
+        }
+      ]
+    },
+    {
+      "name": "learner completes all six task formats, sees journal and settings",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1991
+        }
+      ]
+    },
+    {
+      "name": "teacher creates, reviews and publishes a lesson",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1198
+        }
+      ]
+    },
+    {
+      "name": "lost submission response is reconciled without a duplicate",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1221
+        }
+      ]
+    },
+    {
+      "name": "invalid sign-in is readable and never exposes server internals",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 685
+        }
+      ]
+    },
+    {
+      "name": "teacher sees class evidence and publishes a targeted follow-up",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1143
+        }
+      ]
+    },
+    {
+      "name": "learner joins a class from a code and can recover a failed query",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2267
+        }
+      ]
+    },
+    {
+      "name": "pending practice survives browser reload and sign-in",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1253
+        }
+      ]
+    },
+    {
+      "name": "teacher records synthetic browser audio and saves a valid voice reference",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 2730
+        }
+      ]
+    },
+    {
+      "name": "unsent submission can be edited after status confirms absence",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1162
+        }
+      ]
+    },
+    {
+      "name": "goal preferences, offline download, guided conversation and feedback",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1565
+        }
+      ]
+    },
+    {
+      "name": "teacher draft survives navigation and reopens with the saved title",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1129
+        }
+      ]
+    },
+    {
+      "name": "guest can get a useful correction without signing up",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 544
+        }
+      ]
+    },
+    {
+      "name": "unscored reading offers retry and never appears as a failed grade",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1240
+        }
+      ]
+    },
+    {
+      "name": "teacher creates, retries, reviews, publishes, edits and withdraws a teaching note",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1853
+        }
+      ]
+    },
+    {
+      "name": "stale edit shows a recoverable conflict and keeps the teacher's text",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1047
+        }
+      ]
+    },
+    {
+      "name": "learner can inspect grounded feedback and cannot access the teacher editor",
+      "project": "desktop",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 870
+        }
+      ]
+    },
+    {
+      "name": "teacher creates, retries, reviews, publishes, edits and withdraws a teaching note",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1780
+        }
+      ]
+    },
+    {
+      "name": "stale edit shows a recoverable conflict and keeps the teacher's text",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 1100
+        }
+      ]
+    },
+    {
+      "name": "learner can inspect grounded feedback and cannot access the teacher editor",
+      "project": "mobile-web",
+      "status": "expected",
+      "runs": [
+        {
+          "status": "passed",
+          "duration_ms": 911
+        }
+      ]
+    }
+  ]
+}

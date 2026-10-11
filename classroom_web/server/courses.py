@@ -121,7 +121,7 @@ def flat_lessons(conn, course_id: int) -> list[sqlite3.Row]:
 def best_by_lesson(conn, user_id: int, course_id: int) -> dict[int, dict[int, int]]:
     out: dict[int, dict[int, int]] = {}
     for r in conn.execute(
-        "SELECT a.lesson_id, a.item_index, max(a.score) s FROM attempts a JOIN lessons l ON l.id=a.lesson_id "
+        "SELECT a.lesson_id, a.item_index, max(a.score) s FROM scored_attempts a JOIN lessons l ON l.id=a.lesson_id "
         "WHERE a.user_id=? AND l.course_id=? AND a.content_version=l.revision AND a.disputed=0 GROUP BY a.lesson_id, a.item_index",
         (user_id, course_id),
     ):

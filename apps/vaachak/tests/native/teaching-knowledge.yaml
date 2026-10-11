@@ -1,0 +1,61 @@
+# Open the current bundle on a disposable ATD emulator (no software keyboard), signed out.
+# TEST_EMAIL / TEST_PASSWORD identify an isolated teacher account.
+appId: host.exp.exponent
+name: Teaching note lifecycle on Android
+---
+- extendedWaitUntil:
+    visible: Welcome back
+    timeout: 45000
+- tapOn:
+    id: field-email
+- eraseText: 200
+- inputText: ${TEST_EMAIL}
+- tapOn:
+    id: field-password
+- eraseText: 200
+- inputText: ${TEST_PASSWORD}
+- tapOn: Let’s practise
+- extendedWaitUntil:
+    visible: Library
+    timeout: 30000
+- tapOn: Library
+- scrollUntilVisible:
+    element: Teaching notes
+- tapOn: Teaching notes
+- tapOn: Write a teaching note
+- scrollUntilVisible:
+    element:
+      id: field-note-title
+- tapOn:
+    id: field-note-title
+- inputText: Native reviewed explanation
+- scrollUntilVisible:
+    element:
+      id: field-explanation
+- tapOn:
+    id: field-explanation
+- inputText: Use she likes in the simple present.
+- scrollUntilVisible:
+    element: Save private draft
+- tapOn: Save private draft
+- scrollUntilVisible:
+    element: Mark as reviewed
+- tapOn: Mark as reviewed
+- tapOn: I have reviewed this note
+- scrollUntilVisible:
+    element: Publish teaching note
+- tapOn: Publish teaching note
+- tapOn: Publish to shared library
+- scrollUntilVisible:
+    element: Published.*shared
+    direction: UP
+- assertVisible: Published.*shared
+- takeScreenshot: teaching-note-published
+- scrollUntilVisible:
+    element: Withdraw teaching note
+- tapOn: Withdraw teaching note
+- tapOn: Withdraw this note
+- scrollUntilVisible:
+    element: Withdrawn.*only you
+    direction: UP
+- assertVisible: Withdrawn.*only you

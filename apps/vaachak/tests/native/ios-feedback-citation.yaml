@@ -1,0 +1,10 @@
+# Open a persisted AI attempt and expand Why this feedback? first.
+appId: host.exp.Exponent
+name: iOS citation display assertion
+---
+- scrollUntilVisible:
+    element: .*Version 1.*
+    speed: 20
+- assertVisible: Reviewed notes used by the coach
+- assertVisible: .*Version 1.*
+- takeScreenshot: ios-grounded-feedback

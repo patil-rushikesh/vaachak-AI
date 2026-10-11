@@ -37,6 +37,19 @@ export function Library({ route, navigation: n }: any) {
       {!classId && (
         <>
           <Card>
+            <Pill text="GROUNDED COACHING" />
+            <Title small>Give every explanation a foundation.</Title>
+            <Label muted>
+              Review and share short teaching notes that can support the coach’s
+              feedback.
+            </Label>
+            <Button
+              title="Teaching notes"
+              kind="secondary"
+              onPress={() => n.navigate("Knowledge")}
+            />
+          </Card>
+          <Card>
             <Field
               label="New course title"
               value={title}

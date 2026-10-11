@@ -11,12 +11,13 @@ from conftest import make_user
 def test_retrieval_is_skill_scoped_and_keyword_ranked(client, world):
     import db
     conn = db.connect()
+    conn.execute("DELETE FROM knowledge_units")
     kb.create(conn, skill_code="MORPH.AGREEMENT", title="He she it verbs",
-              body="Add s with he, she or it: she goes.", example="she goes")
+              body="Add s with he, she or it: she goes.", example="she goes", visibility="public", status="published")
     kb.create(conn, skill_code="SYN.ARTICLE", title="A an the",
-              body="Use a, an, the correctly.", example="an apple")
+              body="Use a, an, the correctly.", example="an apple", visibility="public", status="published")
     kb.create(conn, skill_code="MORPH.AGREEMENT", title="Plurals of verbs note",
-              body="Completely unrelated words here about trains and tiffin.", example=None)
+              body="Completely unrelated words here about trains and tiffin.", example=None, visibility="public", status="published")
     conn.commit()
     got = kb.retrieve(conn, "MORPH.AGREEMENT", text="she go to school")
     assert got and got[0]["title"] == "He she it verbs"           # best keyword match first
@@ -27,9 +28,10 @@ def test_retrieval_is_skill_scoped_and_keyword_ranked(client, world):
 def test_private_units_never_leak_to_other_users(client, world):
     import db
     conn = db.connect()
+    conn.execute("DELETE FROM knowledge_units")
     me = conn.execute("SELECT id FROM users WHERE email='rao@t.test'").fetchone()["id"]
     kb.create(conn, skill_code="SYN.PREPOSITION", title="Private note", body="mine only",
-              owner_id=me, visibility="private")
+              owner_id=me, visibility="private", status="approved")
     conn.commit()
     assert kb.retrieve(conn, "SYN.PREPOSITION", owner_id=me)           # owner sees it
     assert kb.retrieve(conn, "SYN.PREPOSITION", owner_id=None) == []   # a learner does not
@@ -73,7 +75,7 @@ def test_coach_grounds_in_notes_and_rejects_invented_sources(monkeypatch):
     assert out["source_ids"] == ["UNIT1"]            # the invented id is dropped
     import feedback
     r = feedback.analyse_full("free", None, "he like music", knowledge=units)
-    assert r["sources"] == [{"id": "UNIT1", "title": "He she it verbs", "source": "Vaachak reviewed"}]
+    assert r["sources"] == [{"id": "UNIT1", "title": "He she it verbs", "source": "Vaachak reviewed", "version": 1}]
 
 
 def test_ungrounded_coaching_is_unchanged(monkeypatch):

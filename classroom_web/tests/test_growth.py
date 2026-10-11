@@ -107,6 +107,7 @@ def test_reports_events_and_conversation_idempotency(client, world):
     state = client.post(
         "/api/conversations", headers=h, json={"id": c, "scenario": "interview"}
     ).json()
+    assert client.get("/api/conversations/" + c, headers=h).json() == state
     assert client.get("/api/conversations/" + c, headers=world["b"]).status_code == 404
     for i in range(4):
         body = {
@@ -185,6 +186,8 @@ def test_confirmed_transcript_provenance_and_access(client, world, monkeypatch):
     )
     assert r.status_code == 200, r.text
     assert r.json()["transcript"] == "I works in Pune."
+    recovered = client.get("/api/transcriptions/" + k, headers=world["a"])
+    assert recovered.status_code == 200 and recovered.json()["transcript"] == "I works in Pune."
     assert client.get("/api/transcriptions/" + k, headers=world["b"]).status_code == 404
     a = client.post(
         "/api/attempts",

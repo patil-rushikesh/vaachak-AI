@@ -246,7 +246,10 @@ function Shell() {
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen
             name="[page]"
-            options={{ title: active, headerBackTitle: "Back" }}
+            options={{
+              title: active === "Knowledge" ? "Teaching notes" : active,
+              headerBackTitle: "Back",
+            }}
           />
         </Stack>
         {!wide && (

@@ -243,11 +243,11 @@ def test_a_totally_different_sentence_is_not_coached_as_grammar(monkeypatch):
     """Noise or the wrong sentence must not produce confident corrections about words we misheard."""
     wire(monkeypatch, chat_reply(json.dumps(GOOD)))
     out = feedback.analyse_full("read", "I get up at six o'clock.", "he like music and she dont play")
-    assert out["score"] == 0
+    assert out["score"] is None
     assert out["grammar"] == [], "no grammar coaching on a sentence the learner never attempted"
     assert not out.get("next_line")
-    assert "did not sound like" in out["verdict"]
-    assert out["words"], "the word marks still show what was expected"
+    assert out["evaluation_status"] == "unscored"
+    assert out["words"] == [], "uncertain audio must not claim particular word mistakes"
 
 
 def test_a_close_reading_is_still_coached(monkeypatch):

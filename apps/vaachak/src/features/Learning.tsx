@@ -1,3 +1,4 @@
+import { attemptScoreLabel } from "./attemptScore";
 import React, { useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 import { useQuery } from "@tanstack/react-query";
@@ -486,7 +487,7 @@ export function Progress({ navigation: n }: any) {
                 >
                   <Row style={{ justifyContent: "space-between" }}>
                     <Pill text={a.input_mode?.replaceAll("_", " ") || a.kind} />
-                    <Label>{a.score}% task score</Label>
+                    <Label>{attemptScoreLabel(a)}</Label>
                   </Row>
                   <Label>{a.transcript || "Choice practice"}</Label>
                   <Label muted>

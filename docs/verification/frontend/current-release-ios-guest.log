@@ -1,0 +1,13 @@
+Running on Vaachak_iOS_Release_Check - iOS 26.2 - 5100DC0F-0FCF-4535-AD68-E59E2B94B5BE
+ > Flow iOS guest first value
+Assert that "Try a free 2-minute sample" is visible... COMPLETED
+Tap on "Try a free 2-minute sample"... COMPLETED
+Tap on "practise"... COMPLETED
+Assert that "One useful correction." is visible... COMPLETED
+Assert that "Use practises with she in the present simple." is visible... COMPLETED
+Tap on "Next sample"... COMPLETED
+Tap on "Could you explain that again, please?"... COMPLETED
+Assert that "You got it." is visible... COMPLETED
+Take screenshot ios-guest-feedback... COMPLETED
+Tap on "Continue to sign in"... COMPLETED
+Assert that "Welcome back" is visible... COMPLETED

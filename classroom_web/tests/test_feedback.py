@@ -33,7 +33,7 @@ def test_reading_missed_close_and_extra_words():
 
 def test_perfect_and_empty_reading():
     assert f.analyse("read", "I like tea.", "I like tea")["score"] == 100
-    assert f.analyse("read", "I like tea.", "")["score"] == 0
+    assert f.analyse("read", "I like tea.", "")["score"] is None
 
 
 def test_build_and_free():
@@ -42,7 +42,7 @@ def test_build_and_free():
     assert 0 < part["score"] < 100 and part["tips"]
     free = f.analyse("free", None, "yesterday I go to market")
     assert free["score"] < 100 and free["grammar"]
-    assert f.analyse("free", None, "")["score"] == 0
+    assert f.analyse("free", None, "")["score"] is None
     assert f.analyse("free", None, "I play football.")["score"] <= 70  # too short
     assert f.analyse("free", None, "I play football with my friends every Sunday.")["score"] == 100
 

@@ -21,8 +21,8 @@ import skills
 DATA = Path(__file__).parent / "data"
 
 # G1 fair feedback: result provenance and the honest-uncertainty threshold.
-FEEDBACK_VERSION = "1.0"
-NORMALIZATION_VERSION = "1.1"   # 1.1: word-boundary reconciliation (every day / everyday)
+FEEDBACK_VERSION = "1.1"
+NORMALIZATION_VERSION = "1.2"   # Only explicit reading segmentation equivalents.
 UNCERTAIN_READ_ACCURACY = 35    # a read below this is a mishearing/wrong sentence, not a grade
 BASIS = {"read": "word_accuracy", "build": "exact_match", "free": "rubric"}
 
@@ -80,6 +80,18 @@ class WordResult:
 
 def tokens(text: str) -> list[str]:
     return re.findall(r"[a-z0-9]+(?:'[a-z]+)?", text.lower().replace("’", "'"))
+
+
+READING_SPLITS = {"everyday": ("every", "day"), "login": ("log", "in")}
+
+
+def reading_tokens(text: str) -> list[str]:
+    return [part for word in tokens(text) for part in READING_SPLITS.get(word, (word,))]
+
+
+def reading_equivalent(left: str, right: str) -> bool:
+    """Reviewed spoken segmentation cases, never arbitrary removal of word boundaries."""
+    return bool(tokens(left)) and reading_tokens(left) == reading_tokens(right)
 
 
 def _load_rules() -> list[dict]:
@@ -145,10 +157,7 @@ def compare_reading(target: str, spoken: str) -> tuple[list[WordResult], list[st
             extras += s[b0:b1]
         else:  # replace: pair words in order, leftovers are missed or extra
             tw, sw = t[a0:a1], s[b0:b1]
-            # The recogniser may split or join words ("every day" <-> "everyday",
-            # "log in" <-> "login"). If the block is the same letters, only segmented
-            # differently, it is the right reading, not a learner mistake.
-            if "".join(tw) == "".join(sw):
+            if reading_equivalent(" ".join(tw), " ".join(sw)):
                 results += [WordResult(w, w, "correct") for w in tw]
                 continue
             for i, w in enumerate(tw):
@@ -228,9 +237,13 @@ def analyse(kind: str, target: str | None, transcript: str, answer: str | None =
         evaluation_status, uncertainty_reasons = "unscored", ["low_match"]
     elif kind == "free" and len(tokens(transcript)) == 0:
         evaluation_status, uncertainty_reasons = "unscored", ["no_speech"]
+    if evaluation_status == "unscored":
+        score, accuracy, grammar, words, extras = None, None, [], [], []
+        tips = ["We could not evaluate this answer fairly. Check the transcript, record again, or type your answer."]
     return {"score": score, "accuracy": accuracy, "words": words, "extra_words": extras,
             "grammar": grammar, "tips": tips,
             "evaluation_status": evaluation_status, "uncertainty_reasons": uncertainty_reasons,
+            "evidence_eligible": evaluation_status == "scored",
             "basis": BASIS.get(kind, "rubric"),
             "feedback_version": FEEDBACK_VERSION, "normalization_version": NORMALIZATION_VERSION}
 
@@ -299,16 +312,27 @@ def analyse_full(kind: str, target: str | None, transcript: str, answer: str | N
 
     base = analyse(kind, target, transcript, answer)
     base["source"] = "rules"
-    if kind == "build" or not ai.configured():
+    if kind == "read" and tokens(target or "") != tokens(transcript) and reading_equivalent(target or "", transcript):
+        # A perfect reading differing only by reviewed segmentation needs no model judgment.
+        # This also prevents a false correction hiding in free-form verdicts or strengths.
+        return base
+    if base["evaluation_status"] == "unscored" or kind == "build" or not ai.configured():
         return base
     coached = ai.coach(kind, target, transcript, prompt=prompt, level=level, knowledge=knowledge)
     if not coached:
+        return base
+    if kind == "read" and any(
+        reading_equivalent(g.get("said", ""), g.get("fix", ""))
+        for g in coached.get("grammar", [])
+    ):
+        # Reject the whole explanation: its verdict/tips may repeat the false correction.
         return base
 
     base["source"] = "ai"
     if knowledge:
         by_id = {u["id"]: u for u in knowledge}
-        base["sources"] = [{"id": s, "title": by_id[s]["title"], "source": by_id[s]["source"]}
+        base["sources"] = [{"id": s, "title": by_id[s]["title"], "source": by_id[s]["source"],
+                            "version": by_id[s].get("version", 1)}
                            for s in coached.get("source_ids", []) if s in by_id]
     base["next_line"] = coached.get("next_line") or ""
     base["verdict"] = coached.get("verdict") or ""

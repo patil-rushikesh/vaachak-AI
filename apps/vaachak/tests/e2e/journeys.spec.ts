@@ -24,7 +24,7 @@ async function login(page: Page, email: string) {
     page.getByRole("tab", { name: "Today", exact: true }),
   ).toBeVisible();
 }
-async function setup(api: APIRequestContext) {
+async function setup(api: APIRequestContext, customItems?: any[]) {
   const teacher = await account(api, "teacher"),
     learner = await account(api);
   const headers = { Authorization: `Bearer ${teacher.token}` };
@@ -68,7 +68,7 @@ async function setup(api: APIRequestContext) {
   ];
   await api.post(`/api/classes/${cl.id}/assignments`, {
     headers,
-    data: { title: "Six small steps", items },
+    data: { title: "Six small steps", items: customItems || items },
   });
   return { teacher, learner, cl };
 }
@@ -376,7 +376,9 @@ test("goal preferences, offline download, guided conversation and feedback", asy
   await page.context().setOffline(true);
   await page.getByRole("button", { name: "practises", exact: true }).click();
   await expect(page.getByText("That’s right.", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Next offline activity", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Next offline activity", exact: true })
+    .click();
   await expect(page.getByText(/2\/.*I worked ___ this project/)).toBeVisible();
   await page.context().setOffline(false);
   await page
@@ -389,7 +391,9 @@ test("goal preferences, offline download, guided conversation and feedback", asy
     await page
       .getByRole("button", { name: "Continue conversation", exact: true })
       .click();
-    await expect(page.getByText("I built a useful project with my team.", { exact: true })).toHaveCount(i + 1);
+    await expect(
+      page.getByText("I built a useful project with my team.", { exact: true }),
+    ).toHaveCount(i + 1);
   }
   await expect(
     page.getByRole("button", { name: "Try another conversation", exact: true }),
@@ -446,9 +450,9 @@ test("teacher draft survives navigation and reopens with the saved title", async
     .getByRole("button", { name: "Saved drafts & archives", exact: true })
     .click();
   await page.getByRole("button", { name: "Resume draft", exact: true }).click();
-  await expect(page.getByRole("textbox", { name: "Title", exact: true })).toHaveValue(
-    "A draft worth keeping",
-  );
+  await expect(
+    page.getByRole("textbox", { name: "Title", exact: true }),
+  ).toHaveValue("A draft worth keeping");
 });
 
 test("guest can get a useful correction without signing up", async ({
@@ -466,4 +470,55 @@ test("guest can get a useful correction without signing up", async ({
   await expect(
     page.getByText("Choose a polite request.", { exact: true }),
   ).toBeVisible();
+});
+
+test("unscored reading offers retry and never appears as a failed grade", async ({
+  page,
+  request,
+}) => {
+  const { learner } = await setup(request, [
+    { kind: "read", text: "I study every day." },
+  ]);
+  await login(page, learner.email);
+  await page.getByRole("tab", { name: "Class", exact: true }).click();
+  await page.getByRole("button", { name: /Everyday confidence/ }).click();
+  await page
+    .getByRole("button", { name: "Start practice", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Type instead", exact: true }).click();
+  await page.getByLabel("Your answer", { exact: true }).fill("zzz");
+  await page
+    .getByRole("button", { name: "Check my answer", exact: true })
+    .click();
+  await expect(page.getByText("Not scored", { exact: true })).toBeVisible();
+  await expect(page.getByText("0% task score", { exact: true })).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Finish practice", exact: true }),
+  ).toHaveCount(0);
+  const headers = { Authorization: `Bearer ${learner.token}` };
+  const before = await (await request.get("/api/me/stats", { headers })).json();
+  expect(before.avg_score).toBeNull();
+  await page
+    .getByRole("button", { name: "Try this again", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Type instead", exact: true }).click();
+  await page
+    .getByLabel("Your answer", { exact: true })
+    .fill("I study everyday");
+  await page
+    .getByRole("button", { name: "Check my answer", exact: true })
+    .click();
+  await expect(
+    page.getByText("100% task score", { exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Finish practice", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "See my progress", exact: true })
+    .click();
+  await expect(page.getByText("Not scored", { exact: true })).toBeVisible();
+  const after = await (await request.get("/api/me/stats", { headers })).json();
+  expect(after.avg_score).toBe(100);
+  expect(after.attempts).toBe(1);
 });

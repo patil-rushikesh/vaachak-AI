@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-11",
+  "device": "iPhone 16 simulator",
+  "ios": "26.2",
+  "expo_go": "57.0.9",
+  "maestro": "2.11.0",
+  "api": "isolated loopback :8008",
+  "metro": ":8097",
+  "automated_passes": [
+    "Guest sample journey",
+    "Expanded historical AI citation display"
+  ],
+  "direct_native_ui_passes": [
+    "Teacher sign-in and sign-out",
+    "Create, review, publish and withdraw teaching note",
+    "Learner sign-in and classroom navigation",
+    "Correct choice and feedback explanation",
+    "Unavailable speech typed fallback",
+    "Unscored answer has retry and no completion",
+    "Correct retry and two-task completion",
+    "Journal preserves unscored entry and excludes it from scored totals",
+    "Live AI historical source/version display",
+    "Save device timezone preference",
+    "Process termination/relaunch restores learner session"
+  ],
+  "automation_limitation": "Long Maestro flows did not pass unattended: keyboard focus, system password-save dialog, and scroll/hit-target failures. Completed those journeys with native accessibility UI actions; no production code workaround was applied.",
+  "http_summary": {
+    "requests": 94,
+    "status_counts": {
+      "200": 93,
+      "401": 1
+    },
+    "server_errors": 0
+  },
+  "evidence": {
+    "live_ai": {
+      "attempt_id": 1,
+      "source": "ai",
+      "citation_count": 1
+    },
+    "unscored": {
+      "id": 3,
+      "score": null,
+      "accuracy": null,
+      "evaluation_status": "unscored"
+    },
+    "retry": {
+      "id": 4,
+      "score": 100,
+      "retry_of_attempt_id": 3
+    },
+    "withdrawn_note": {
+      "status": "withdrawn",
+      "visibility": "private",
+      "version": 1,
+      "reviewed": 1,
+      "was_published": 1
+    },
+    "timezone": "Asia/Kolkata"
+  },
+  "not_certified": [
+    "Signed standalone iOS build",
+    "Physical iPhone microphone/ASR quality",
+    "All pages/buttons on iOS",
+    "Fully unattended iOS regression suite"
+  ]
+}

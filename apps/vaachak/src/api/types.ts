@@ -28,13 +28,19 @@ export type Source = {
 };
 export type Attempt = {
   id: number;
-  score: number;
+  score: number | null;
+  evaluation_status?: "scored" | "unscored";
+  evidence_eligible?: boolean;
+  uncertainty_reasons?: string[];
   kind: Item["kind"];
   transcript: string;
   tips: string[];
   source?: string;
   verdict?: string;
   strengths?: string[];
+  next_line?: string;
+  basis?: string | null;
+  sources?: { id: string; title: string; source: string; version?: number }[];
   grammar?: { said: string; fix: string; why: string }[];
   input_mode: string;
   transcript_origin: string;

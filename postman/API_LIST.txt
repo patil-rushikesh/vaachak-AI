@@ -32,6 +32,12 @@ GET     /api/classes/{class_id}/performance                        Teacher
 GET     /api/classes/{class_id}/attention                          Teacher
 POST    /api/classes/{class_id}/attention/dismiss                  Teacher
 GET     /api/classes/{class_id}/skill-grid                         Teacher
+GET     /api/teacher/knowledge                                     Teacher
+POST    /api/teacher/knowledge                                     Teacher
+PUT     /api/teacher/knowledge/{unit_id}                           Teacher
+POST    /api/teacher/knowledge/{unit_id}/review                    Teacher
+POST    /api/teacher/knowledge/{unit_id}/publish                   Teacher
+POST    /api/teacher/knowledge/{unit_id}/withdraw                  Teacher
 POST    /api/ai/items                                              Teacher
 POST    /api/courses                                               Teacher
 GET     /api/courses                                               Authenticated (ownership/membership rules apply)
@@ -73,29 +79,29 @@ PATCH   /api/lessons/{lesson_id}/archive                           Teacher
 DELETE  /api/recordings/{rec_id}                                   Teacher
 GET     /api/ready                                                 Public
 GET     /api/me/recommendations                                    Learner (student or learner)
-GET     /api/me/learning-profile                                   Public
-PUT     /api/me/learning-profile                                   Public
+GET     /api/me/learning-profile                                   Learner (student or learner)
+PUT     /api/me/learning-profile                                   Learner (student or learner)
 GET     /api/me/review-queue                                       Learner (student or learner)
-GET     /api/me/practice-sessions                                  Public
-POST    /api/me/practice-sessions                                  Public
-GET     /api/me/practice-sessions/{session_id}                     Public
-PATCH   /api/me/practice-sessions/{session_id}                     Public
-PUT     /api/teacher/drafts/{draft_id}                             Public
-DELETE  /api/teacher/drafts/{draft_id}                             Public
-GET     /api/teacher/drafts                                        Public
-GET     /api/teacher/archives                                      Public
-POST    /api/feedback-reports                                      Public
-POST    /api/events                                                Public
-POST    /api/conversations                                         Public
-GET     /api/conversations/{conversation_id}                       Public
-POST    /api/conversations/{conversation_id}/turns                 Public
-POST    /api/transcriptions                                        Public
-GET     /api/transcriptions/{transcription_id}                     Public
-GET     /api/practice-download                                     Public
+GET     /api/me/practice-sessions                                  Learner (student or learner)
+POST    /api/me/practice-sessions                                  Learner (student or learner)
+GET     /api/me/practice-sessions/{session_id}                     Learner (student or learner)
+PATCH   /api/me/practice-sessions/{session_id}                     Learner (student or learner)
+PUT     /api/teacher/drafts/{draft_id}                             Teacher
+DELETE  /api/teacher/drafts/{draft_id}                             Teacher
+GET     /api/teacher/drafts                                        Teacher
+GET     /api/teacher/archives                                      Teacher
+POST    /api/feedback-reports                                      Authenticated (ownership/membership rules apply)
+POST    /api/events                                                Learner (student or learner)
+POST    /api/conversations                                         Learner (student or learner)
+GET     /api/conversations/{conversation_id}                       Learner (student or learner)
+POST    /api/conversations/{conversation_id}/turns                 Learner (student or learner)
+POST    /api/transcriptions                                        Learner (student or learner)
+GET     /api/transcriptions/{transcription_id}                     Learner (student or learner)
+GET     /api/practice-download                                     Learner (student or learner)
 POST    /api/auth/password-reset-request                           Public
-GET     /api/ai/jobs                                               Public
-POST    /api/ai/jobs                                               Public
-GET     /api/ai/jobs/{job_id}                                      Public
+GET     /api/ai/jobs                                               Teacher
+POST    /api/ai/jobs                                               Teacher
+GET     /api/ai/jobs/{job_id}                                      Teacher
 
 Documentation endpoints (not application operations):
 GET /api/docs

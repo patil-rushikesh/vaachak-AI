@@ -328,19 +328,22 @@ Every attempt response also carries G1 fair-feedback fields:
 "evaluation_status": "scored",        // or "unscored" when the audio could not be fairly graded
 "uncertainty_reasons": [],            // e.g. ["low_match"] (wrong sentence/mishearing), ["no_speech"]
 "basis": "word_accuracy",             // how it was graded: word_accuracy | exact_match | rubric | objective
-"feedback_version": "1.0",
-"normalization_version": "1.1"        // 1.1 = word-boundary reconciliation
+"feedback_version": "1.1",
+"normalization_version": "1.2",       // explicit reading equivalents only
+"evidence_eligible": true
 ```
 
 - **`evaluation_status: "unscored"`** means do **not** treat the score as a grade or advance skill
-  evidence from it — show the learner the uncertainty message and let them retry. `score` may still
-  be present for display but is not authoritative.
+  evidence from it. `score` and `accuracy` are null; show an uncertainty message and let the learner retry.
+  These attempts remain in history but are excluded from averages, best scores, completion and review schedules.
+  Older stored unscored rows are sanitized on read. A genuine scored zero remains a numeric zero.
 - **`basis`** tells the UI how to frame the result (read = word-by-word accuracy, build/objective =
   exact match, free = rubric). Label it so a learner understands what was judged.
 - Word-boundary differences (`every day` vs `everyday`, `log in` vs `login`) are **not** mistakes:
-  they score as correct. Genuine mispronunciations still flag.
+  these explicit reading equivalents score as correct. Other word differences still undergo alignment;
+  matching letters alone is not sufficient. Transcript comparisons do not establish acoustic pronunciation accuracy.
 - **`sources`** (G2 grounded coaching): when AI feedback was grounded in reviewed teaching units,
-  this lists the cited units as `[{ "id", "title", "source" }]`. The server validates every id the
+  this lists the cited units as `[{ "id", "title", "source", "version" }]`. Versions describe the note at evaluation time; older attempts may omit them. The server validates every id the
   model returns against the units it actually sent, so a source is never invented. Absent/empty
   when there was no grounding. Show the titles as "Based on: …" under the explanation.
 
@@ -587,7 +590,8 @@ Do not infer playback support solely from the filename extension.
 ## 11a. Reviewed knowledge base (grounded coaching)
 
 The coach grounds its explanations in short, skill-tagged teaching units and cites the ones it used
-(see `sources` on the attempt response). A base set is seeded; teachers can add their own.
+(see `sources` on the attempt response). Startup installs eight versioned starter units without
+resetting users or content. Teachers can add drafts, explicitly review them, then publish them.
 
 ### `GET /api/teacher/knowledge` — teacher only
 ```json
@@ -595,7 +599,8 @@ The coach grounds its explanations in short, skill-tagged teaching units and cit
                "body": "With he, she or it, the verb takes an s...", "example": "She goes to school.",
                "source": "Vaachak reviewed", "version": 1, "level": "A1" } ] }
 ```
-Returns the public base plus the teacher's own units. A teacher never sees another teacher's private units.
+Returns published public units plus all of the teacher's own notes, including withdrawn notes. Typed results include
+`status`, `visibility`, `reviewed_by`, `reviewed_at`, `published_at` and `can_manage`. Only render editing and lifecycle controls when `can_manage` is true; the server independently enforces ownership. Other teachers cannot see drafts or private notes.
 
 ### `POST /api/teacher/knowledge` — teacher only
 ```json
@@ -604,8 +609,33 @@ Returns the public base plus the teacher's own units. A teacher never sees anoth
   "level": "A1", "language": "en", "visibility": "private" }
 ```
 → `{ "id": "...", "skill_code": "MORPH.AGREEMENT", "visibility": "private" }`. `skill_code` must be a
-real skill (`422` otherwise). `visibility` is `private` (default, only this teacher) or `public`
-(everyone, including learners' grounded coaching). Learners cannot call these.
+real skill (`422` otherwise); text is trimmed before length validation. Notes remain unavailable to learners until explicitly reviewed and published, regardless of requested visibility. Learners cannot call these routes. The optional `client_uuid` must be a UUID. Retrying with the same UUID and content returns the same note; reusing it with different content returns 409. UUIDs are scoped to their owner. POST returns the complete typed teaching note, including its current lifecycle state on a retry.
+
+### Review and publication
+
+A new note starts with `status: "draft"` and `version: 1`, even when public visibility is requested.
+`POST /api/teacher/knowledge/{unit_id}/review` with `{ "version": 1 }` records the owning
+teacher's explicit approval. `POST /api/teacher/knowledge/{unit_id}/publish` with the same version
+then publishes the approved note. Publishing a draft or reviewing a stale version returns 409;
+a different owner receives 404. Repeating a completed transition is safe. Public retrieval requires
+published status, so approval alone does not expose the note. The API does not claim independent
+peer review; the approving teacher is identified in the provenance.
+
+### Edit and withdraw
+
+`PUT /api/teacher/knowledge/{unit_id}` accepts the note fields plus the current `version`.
+An edit increments the version, makes it a private draft and clears review/publication provenance.
+This also withdraws previously published content from new coaching until the new version is reviewed and published.
+Stale edits return 409 rather than overwriting another device's changes. Keep the editor text for recovery.
+
+`POST /api/teacher/knowledge/{unit_id}/withdraw` accepts `{ "version": 1 }`. It sets status to
+`withdrawn` and visibility to `private`, excluding the unit from new retrieval, including for its owner.
+The owner can edit it into a fresh draft. A withdrawn note cannot be reviewed or published directly.
+Historical attempt citations remain immutable. Both routes return the complete typed teaching note;
+learners receive 403, another owner receives 404, and stale versions receive 409.
+
+Teacher notes are included in account export and removed on owner erasure. Migration 7 moves
+previously auto-approved teacher notes back to draft and removes orphaned private notes.
 
 ## 11. AI question drafting
 
@@ -663,7 +693,7 @@ response has AI-only properties.
 ## Backend milestone update
 
 The authoritative current inventory is `postman/API_LIST.txt` and typed schema is
-`postman/openapi.json`. The additive backend release provides 71 application operations.
+`postman/openapi.json`. The current backend provides 100 application operations.
 See `docs/BACKEND_IMPLEMENTATION_STATUS.md` and `deploy/backend/README.md` for migration,
 submission recovery, lifecycle and deployment details.
 

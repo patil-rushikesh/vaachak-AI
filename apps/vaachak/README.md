@@ -111,7 +111,7 @@ npm run test:e2e
 
 Tests create synthetic accounts and content in that disposable database. They use fake browser microphone input, not your microphone. Traces may contain synthetic session tokens, so test-results is ignored. See `../../docs/verification/frontend/` for sanitized verification evidence.
 
-Regenerate schema declarations using `npx --package openapi-typescript@7.13.0 --package typescript@5.9.3 openapi-typescript ../../postman/openapi.json -o src/api/schema.d.ts`. `npm run api:check` detects registry drift. The registry covers all 71 API operations; that is not a claim that 71 distinct UI journeys were tested.
+Regenerate Postman/OpenAPI from the repository root with `.venv313/bin/python tools/export_postman.py` (or your configured Python environment). From this app folder run `node scripts/check-api.mjs --write-registry`, then `npx --package openapi-typescript@7.13.0 --package typescript@5.9.3 openapi-typescript ../../postman/openapi.json -o src/api/schema.d.ts`. `npm run api:check` imports the current backend schema without starting the service and checks both the saved schema and operation registry. Python with backend dependencies is required; set `PYTHON` to override interpreter discovery. The current registry has 100 operations; this is not a count of tested UI journeys.
 
 ## Release gates and bounded limitations
 
@@ -129,3 +129,25 @@ See [implementation status](../../docs/USER_VALUE_IMPLEMENTATION_STATUS.md) for 
 Native Maestro flows live in `tests/native/`. Use only disposable emulator accounts, pass `TEST_EMAIL` and `TEST_PASSWORD` at execution, and keep runner output outside source control. Current flows target Expo Go through `exp://127.0.0.1:8091`; Android requires `adb reverse tcp:8091 tcp:8091` and a reachable API URL. These smoke flows do not replace signed-build, microphone, notification, or full accessibility acceptance.
 
 For repeatable Android ATD smoke checks, run `node scripts/seed-native.mjs /tmp/new-native-account.json` against the disposable API on port 8002. Start logged out, then run `guest.yaml`, `learner.yaml`, and `practice.yaml` in that order, supplying the synthetic credentials to the learner flow. These flows target the ATD image without a software keyboard. Use a normal emulator with appropriate keyboard handling for keyboard-occlusion acceptance. Maestro 2.11.0 was verified against its official release checksum and installed under `/Users/admin/.maestro`; Java 21 was already available. Native runner logs stay outside the repository because they may contain test input values.
+
+For iOS Simulator, start an isolated API on `127.0.0.1:8008` with a new `VAACHAK_DATA` directory and blank `GROQ_API_KEY` / `VAACHAK_GROQ_KEY` for deterministic practice. From this directory, run `node scripts/seed-ios.mjs /tmp/new-ios-accounts.json`; it creates both roles and the classroom used by the iOS flows. The private output file must not be committed.
+
+```sh
+EXPO_PUBLIC_API_URL=http://127.0.0.1:8008 REACT_NATIVE_PACKAGER_HOSTNAME=127.0.0.1 npx expo start --go --lan --port 8097
+```
+
+Install SDK-compatible Expo Go, open `exp://127.0.0.1:8097` in the simulator, and dismiss its first-run developer menu. The explicit host plus `--lan` lets the simulator reach Metro over IPv4; on this Mac, `--localhost` bound only IPv6 while Expo advertised an IPv4 bundle URL. Use `maestro --device <SIMULATOR_UDID> test --test-output-dir /tmp/ios-results <flow.yaml>` with Java 21.
+
+- `tests/native/ios-guest.yaml` is a passing automated guest journey; start signed out.
+- `tests/native/ios-feedback-citation.yaml` is a passing display assertion; first sign in as the learner, open an AI attempt in Progress, and expand **Why this feedback?**. The learner must have a real persisted AI attempt for `set_id=en-present-agreement`, `item_index=0`, `transcript=She go to school.` created through multipart `POST /api/attempts` against a provider-enabled API. Verify its feedback includes a versioned citation. The deterministic API does not generate this fixture.
+- Teacher lifecycle and the full learner assignment/retry/preferences journey were checked through direct native UI interaction. Automated versions encountered iOS keyboard, system password prompts and scroll/hit-target failures and are **not** claimed as passing unattended suites. Do not use those results as an iOS CI gate.
+
+Use the software keyboard, dismiss it by tapping visible field labels or headings, and dismiss the system **Save Password?** prompt for disposable accounts. Keep raw runner logs outside the repository; publish only redacted evidence. These checks run inside Expo Go and do not certify a signed standalone build or physical microphone quality.
+
+## Current feedback and teaching-knowledge release
+
+Teachers open **Library → Teaching notes** to create a private explanation, select a skill/level, review, publish, edit or withdraw it. Published edits return to a private draft; another teacher's notes and starter notes are read-only. Save retries reuse the request identity, errors retain editor text, and stale edits require refreshing instead of overwriting another version. The library supports ownership filters and text search.
+
+Learners can expand **Why this feedback?** on both new and historical attempts to see the evaluation basis and versioned reviewed-note references when present. Optional next-line suggestions are labeled as unscored practice. Uncertain transcripts continue to show **Not scored** and allow retry without advancing completion.
+
+Current release verification is recorded in [G1/G2 release verification](../../docs/verification/G1_G2_REVIEW_FIXES.md). `tests/e2e/knowledge.spec.ts` covers the new workflows against an isolated API; only its learner citation display uses simulated provider-derived fields. `tests/native/teaching-knowledge.yaml` covers teacher note lifecycle on an Android ATD emulator with synthetic credentials.

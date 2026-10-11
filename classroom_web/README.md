@@ -1,6 +1,6 @@
 # Vaachak Classroom API
 
-FastAPI backend with SQLite storage and local audio files. No browser or Android frontend is included.
+FastAPI backend with SQLite storage and local audio files. The cross-platform Expo frontend is maintained separately in `../apps/vaachak`.
 
 Use Python 3.13 and install FFmpeg so `ffprobe` is available.
 
@@ -19,3 +19,16 @@ Copy `vaachak.env.example` to `vaachak.env` and configure the desired AI provide
 See [API contract](API_CONTRACT.md) for endpoints and authentication. Run tests with `python -m pytest tests -q`.
 
 For container deployment, logs, backup/restore and account recovery, see [the operator runbook](../deploy/backend/README.md). [Verification results](../docs/verification/backend-release-summary.json) distinguish local checks from external deployment gates.
+
+## Starter knowledge and upgrades
+
+Database initialization installs the versioned starter curriculum idempotently. Existing users,
+attempts, courses and teacher notes are preserved. To initialize/upgrade explicitly without demo
+seeding, run `.venv313/bin/python tools/install_knowledge.py` from the repository root, using the
+same `VAACHAK_DATA` as the API. Do not use `--seed` to upgrade an existing installation: it resets data.
+
+Migration 7 quarantines previously auto-approved teacher notes as drafts; review and publish them
+through the knowledge endpoints before public coaching uses them. Owner erasure removes all owned
+notes, and orphaned private notes are excluded from retrieval. Unscored attempts remain available
+in history with null scores but do not contribute to progress. The legacy numeric database column
+is retained for compatibility; new progress readers must use the `scored_attempts` view.

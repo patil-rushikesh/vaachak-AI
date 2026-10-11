@@ -1,0 +1,6 @@
+Running on Vaachak_iOS_Release_Check - iOS 26.2 - 5100DC0F-0FCF-4535-AD68-E59E2B94B5BE
+ > Flow iOS citation display assertion
+Scrolling DOWN until ".*Version 1.*" is visible with speed 20, visibility percentage 100%, timeout 20000 ms, with centering disabled... COMPLETED
+Assert that "Reviewed notes used by the coach" is visible... COMPLETED
+Assert that ".*Version 1.*" is visible... COMPLETED
+Take screenshot ios-grounded-feedback... COMPLETED

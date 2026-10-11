@@ -15,6 +15,7 @@ import { Player, AttemptScreen } from "./Player";
 import { Composer, Recordings } from "./Composer";
 import { Settings } from "./Settings";
 import { Growth } from "./Growth";
+import { Knowledge } from "./Knowledge";
 import { Empty } from "../components/ui";
 const transient = new Map<string, any>();
 export const navigation = {
@@ -69,6 +70,7 @@ export function RouteScreen({ home = false }: { home?: boolean }) {
   "teacher"
     ? {
         Library,
+        Knowledge,
         Insights,
         Student,
         Assignment,

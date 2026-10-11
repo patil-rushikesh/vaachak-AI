@@ -22,7 +22,7 @@ from typing import Any, Literal
 import contracts
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, Response
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 import ai
 import db
@@ -219,6 +219,7 @@ class Login(BaseModel):
 
 
 class KnowledgeIn(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
     skill_code: str = Field(min_length=2, max_length=40)
     title: str = Field(min_length=2, max_length=120)
     body: str = Field(min_length=2, max_length=2000)
@@ -226,6 +227,23 @@ class KnowledgeIn(BaseModel):
     level: str = Field(default="A1", pattern=r"^(A1|A2|B1|B2|C1|C2)$")
     language: str = Field(default="en", pattern=r"^[a-z]{2,3}$")
     visibility: Literal["public", "private"] = "private"
+    client_uuid: uuid.UUID | None = None
+
+    @field_validator("skill_code")
+    @classmethod
+    def known_skill(cls, value):
+        code = value.upper()
+        if code not in skills.SKILLS:
+            raise ValueError("Unknown skill code.")
+        return code
+
+
+class KnowledgeUpdateIn(KnowledgeIn):
+    version: int = Field(ge=1)
+
+
+class KnowledgeReviewIn(BaseModel):
+    version: int = Field(ge=1)
 
 
 class ClassIn(BaseModel):
@@ -337,7 +355,7 @@ def visible_assignments(conn, c, user) -> list[sqlite3.Row]:
 
 def best_scores(conn, user_id: int, assignment_id: int) -> dict[int, int]:
     rows = conn.execute(
-        "SELECT item_index, max(score) s FROM attempts WHERE user_id=? AND assignment_id=? AND disputed=0 GROUP BY item_index",
+        "SELECT item_index, max(score) s FROM scored_attempts WHERE user_id=? AND assignment_id=? AND disputed=0 GROUP BY item_index",
         (user_id, assignment_id),
     ).fetchall()
     return {r["item_index"]: r["s"] for r in rows}
@@ -826,7 +844,7 @@ def get_set(
     if not s:
         raise HTTPException(404, "Practice set not found.")
     rows = conn.execute(
-        "SELECT item_index, score, result FROM attempts WHERE user_id=? AND set_id=? AND disputed=0",
+        "SELECT item_index, score, result FROM scored_attempts WHERE user_id=? AND set_id=? AND disputed=0",
         (user["id"], set_id),
     ).fetchall()
     best = {}
@@ -1061,9 +1079,10 @@ def submit_attempt(
             target = item.get("text") if kind == "read" else item.get("answer")
             knowledge = []
             if kind in ("read", "free") and ai.configured():
-                item_skills = item.get("skill_ids") or []
-                if item_skills:
-                    knowledge = kb.retrieve(conn, item_skills[0], text=text, limit=3)
+                # Only direct catalog practice uses the legacy set mapping; a supplied
+                # set_id must not override the context of a classroom/course/session item.
+                catalog_id = set_id if assignment_id is None and lesson_id is None and practice_session_id is None else None
+                knowledge = kb.for_practice(conn, item, set_id=catalog_id, text=text)
             result = feedback.analyse_full(
                 kind, target, text, item.get("answer"), prompt=item.get("prompt"),
                 knowledge=knowledge,
@@ -1107,7 +1126,7 @@ def submit_attempt(
                 kind,
                 target,
                 text,
-                result["score"],
+                result["score"] if result["score"] is not None else 0,
                 result["accuracy"],
                 json.dumps(result),
                 audio_name,
@@ -1129,7 +1148,7 @@ def submit_attempt(
             completed_indices = {
                 r[0]
                 for r in conn.execute(
-                    "SELECT DISTINCT item_index FROM attempts WHERE user_id=? AND practice_session_id=?",
+                    "SELECT DISTINCT item_index FROM scored_attempts WHERE user_id=? AND practice_session_id=?",
                     (user["id"], practice_session_id),
                 )
             }
@@ -1187,7 +1206,7 @@ def attempt_audio(
 # ----------------------------------------------------------------------------- stats
 def summarize(conn, user_id: int, where: str = "", args: tuple = ()) -> dict:
     rows = conn.execute(
-        f"SELECT * FROM attempts WHERE user_id=? AND disputed=0 {where} ORDER BY created_at",
+        f"SELECT * FROM scored_attempts WHERE user_id=? AND disputed=0 {where} ORDER BY created_at",
         (user_id, *args),
     ).fetchall()
     tzrow = conn.execute("SELECT timezone FROM users WHERE id=?", (user_id,)).fetchone()
@@ -1356,8 +1375,9 @@ def student_detail(
                 "kind": r["kind"],
                 "target": r["target"],
                 "transcript": r["transcript"],
-                "score": r["score"],
-                "tips": res.get("tips", [])[:3],
+                "score": evidence.attempt_json(r)["score"],
+                "evaluation_status": res.get("evaluation_status", "scored"),
+                "tips": evidence.attempt_json(r).get("tips", [])[:3],
                 "has_audio": bool(r["audio_file"]),
                 "created_at": r["created_at"],
             }
@@ -1434,15 +1454,41 @@ def list_knowledge(user=Depends(teacher_only), conn: sqlite3.Connection = Depend
 
 @app.post("/api/teacher/knowledge", response_model=contracts.KnowledgeCreated)
 def add_knowledge(body: KnowledgeIn, user=Depends(teacher_only), conn: sqlite3.Connection = Depends(get_db)):
-    """Add a teaching unit. Private by default; the coach grounds explanations in these."""
-    code = skills.normalise(body.skill_code)
+    """Create a draft. Explicit review and publication are required before public use."""
+    code = body.skill_code.strip().upper()
     if code not in skills.SKILLS:
         raise HTTPException(422, "Unknown skill code.")
-    uid = kb.create(conn, skill_code=code, title=body.title, body=body.body, example=body.example,
-                    level=body.level, language=body.language, owner_id=user["id"],
-                    visibility=body.visibility)
-    conn.commit()
-    return {"id": uid, "skill_code": code, "visibility": body.visibility}
+    conn.execute("BEGIN IMMEDIATE")
+    try:
+        uid = kb.create(conn, skill_code=code, title=body.title, body=body.body, example=body.example,
+                        level=body.level, language=body.language, owner_id=user["id"],
+                        visibility=body.visibility, client_uuid=body.client_uuid)
+        result = kb._row(conn.execute("SELECT * FROM knowledge_units WHERE id=?", (uid,)).fetchone(), user["id"])
+        conn.commit()
+        return result
+    except Exception:
+        conn.rollback()
+        raise
+
+
+@app.put("/api/teacher/knowledge/{unit_id}", response_model=contracts.KnowledgeUnit)
+def update_knowledge(unit_id: str, body: KnowledgeUpdateIn, user=Depends(teacher_only), conn=Depends(get_db)):
+    return kb.update(conn, unit_id, user["id"], body.version, body.model_dump())
+
+
+@app.post("/api/teacher/knowledge/{unit_id}/review", response_model=contracts.KnowledgeUnit)
+def review_knowledge(unit_id: str, body: KnowledgeReviewIn, user=Depends(teacher_only), conn=Depends(get_db)):
+    return kb.transition(conn, unit_id, user["id"], "review", body.version)
+
+
+@app.post("/api/teacher/knowledge/{unit_id}/publish", response_model=contracts.KnowledgeUnit)
+def publish_knowledge(unit_id: str, body: KnowledgeReviewIn, user=Depends(teacher_only), conn=Depends(get_db)):
+    return kb.transition(conn, unit_id, user["id"], "publish", body.version)
+
+
+@app.post("/api/teacher/knowledge/{unit_id}/withdraw", response_model=contracts.KnowledgeUnit)
+def withdraw_knowledge(unit_id: str, body: KnowledgeReviewIn, user=Depends(teacher_only), conn=Depends(get_db)):
+    return kb.transition(conn, unit_id, user["id"], "withdraw", body.version)
 
 
 @app.post("/api/ai/items", response_model=contracts.Draft)
