@@ -1,0 +1,306 @@
+{
+ "languages": [
+  {
+   "code": "en",
+   "name": "English",
+   "native": "English",
+   "status": "available",
+   "sets": [
+    {
+     "id": "en-everyday",
+     "title": "Everyday sentences",
+     "level": "A1",
+     "skill": "Speaking",
+     "about": "Short, useful sentences. Read each one aloud.",
+     "items": [
+      {
+       "kind": "read",
+       "text": "I get up at six o'clock."
+      },
+      {
+       "kind": "read",
+       "text": "She goes to school every day."
+      },
+      {
+       "kind": "read",
+       "text": "We drink water when we are thirsty."
+      },
+      {
+       "kind": "read",
+       "text": "They play football on Sunday."
+      },
+      {
+       "kind": "read",
+       "text": "My brother likes music."
+      },
+      {
+       "kind": "read",
+       "text": "He has a small blue bag."
+      }
+     ]
+    },
+    {
+     "id": "en-present-agreement",
+     "title": "He, she, it: the -s verb",
+     "level": "A1",
+     "skill": "Grammar",
+     "about": "Practise the simple present with he, she and it.",
+     "items": [
+      {
+       "kind": "read",
+       "text": "She goes to school."
+      },
+      {
+       "kind": "read",
+       "text": "He likes music."
+      },
+      {
+       "kind": "read",
+       "text": "She has a book."
+      },
+      {
+       "kind": "read",
+       "text": "It works well."
+      },
+      {
+       "kind": "read",
+       "text": "He does not swim."
+      },
+      {
+       "kind": "read",
+       "text": "The bus stops here."
+      }
+     ]
+    },
+    {
+     "id": "en-walk-to-school",
+     "title": "A walk to school",
+     "level": "A1",
+     "skill": "Reading aloud",
+     "about": "Read the story one sentence at a time.",
+     "items": [
+      {
+       "kind": "read",
+       "text": "Riya walks to school every morning."
+      },
+      {
+       "kind": "read",
+       "text": "She carries a small blue bag."
+      },
+      {
+       "kind": "read",
+       "text": "On the way, she meets her friend."
+      },
+      {
+       "kind": "read",
+       "text": "They talk about the books they like to read."
+      }
+     ]
+    },
+    {
+     "id": "en-th-sounds",
+     "title": "The th sound",
+     "level": "A2",
+     "skill": "Pronunciation",
+     "about": "Sentences full of th. Put your tongue between your teeth.",
+     "items": [
+      {
+       "kind": "read",
+       "text": "Think about the three things we need."
+      },
+      {
+       "kind": "read",
+       "text": "This is the thing that they thought about."
+      },
+      {
+       "kind": "read",
+       "text": "Thank you for the thick book."
+      },
+      {
+       "kind": "read",
+       "text": "Both brothers love Thursday."
+      }
+     ]
+    },
+    {
+     "id": "en-w-v",
+     "title": "W and V",
+     "level": "A2",
+     "skill": "Pronunciation",
+     "about": "Keep w and v different.",
+     "items": [
+      {
+       "kind": "read",
+       "text": "We went to the village in the van."
+      },
+      {
+       "kind": "read",
+       "text": "Vivek will visit very soon."
+      },
+      {
+       "kind": "read",
+       "text": "Wash the vegetables with warm water."
+      },
+      {
+       "kind": "read",
+       "text": "Seven wet vans were on the way."
+      }
+     ]
+    },
+    {
+     "id": "en-build",
+     "title": "Build the sentence",
+     "level": "A1",
+     "skill": "Sentence building",
+     "about": "Put the words in the right order, then say it.",
+     "items": [
+      {
+       "kind": "build",
+       "words": [
+        "school",
+        "to",
+        "goes",
+        "she",
+        "every",
+        "day"
+       ],
+       "answer": "She goes to school every day."
+      },
+      {
+       "kind": "build",
+       "words": [
+        "likes",
+        "my",
+        "music",
+        "brother"
+       ],
+       "answer": "My brother likes music."
+      },
+      {
+       "kind": "build",
+       "words": [
+        "the",
+        "park",
+        "in",
+        "play",
+        "children"
+       ],
+       "answer": "The children play in the park."
+      },
+      {
+       "kind": "build",
+       "words": [
+        "is",
+        "not",
+        "he",
+        "home",
+        "at"
+       ],
+       "answer": "He is not at home."
+      },
+      {
+       "kind": "build",
+       "words": [
+        "we",
+        "yesterday",
+        "market",
+        "to",
+        "went",
+        "the"
+       ],
+       "answer": "We went to the market yesterday."
+      }
+     ]
+    },
+    {
+     "id": "en-talk",
+     "title": "Talk about yourself",
+     "level": "A2",
+     "skill": "Free speaking",
+     "about": "Answer in full sentences. We check your grammar.",
+     "items": [
+      {
+       "kind": "free",
+       "prompt": "Tell us about your family."
+      },
+      {
+       "kind": "free",
+       "prompt": "What did you do yesterday?"
+      },
+      {
+       "kind": "free",
+       "prompt": "What do you do every morning?"
+      },
+      {
+       "kind": "free",
+       "prompt": "Describe your best friend."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "code": "hi",
+   "name": "Hindi",
+   "native": "हिन्दी",
+   "status": "soon",
+   "sets": []
+  },
+  {
+   "code": "mr",
+   "name": "Marathi",
+   "native": "मराठी",
+   "status": "soon",
+   "sets": []
+  },
+  {
+   "code": "gu",
+   "name": "Gujarati",
+   "native": "ગુજરાતી",
+   "status": "soon",
+   "sets": []
+  },
+  {
+   "code": "bn",
+   "name": "Bengali",
+   "native": "বাংলা",
+   "status": "soon",
+   "sets": []
+  },
+  {
+   "code": "ta",
+   "name": "Tamil",
+   "native": "தமிழ்",
+   "status": "soon",
+   "sets": []
+  },
+  {
+   "code": "te",
+   "name": "Telugu",
+   "native": "తెలుగు",
+   "status": "soon",
+   "sets": []
+  },
+  {
+   "code": "kn",
+   "name": "Kannada",
+   "native": "ಕನ್ನಡ",
+   "status": "soon",
+   "sets": []
+  },
+  {
+   "code": "es",
+   "name": "Spanish",
+   "native": "Español",
+   "status": "soon",
+   "sets": []
+  },
+  {
+   "code": "fr",
+   "name": "French",
+   "native": "Français",
+   "status": "soon",
+   "sets": []
+  }
+ ]
+}

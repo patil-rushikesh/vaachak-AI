@@ -1,0 +1,562 @@
+[
+  {
+    "id": "third_person_go",
+    "nodeId": "grammar.simple_present_agreement",
+    "pattern": "\\b(he|she|it) go\\b",
+    "replacement": "$1 goes",
+    "explanation": "With he, she or it, use goes in the simple present.",
+    "practice": [
+      "She goes to school.",
+      "We read every day."
+    ],
+    "bad": "She go to school.",
+    "good": "She goes to school.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "third_person_like",
+    "nodeId": "grammar.simple_present_agreement",
+    "pattern": "\\b(he|she|it) like\\b",
+    "replacement": "$1 likes",
+    "explanation": "With he, she or it, add s to like.",
+    "practice": [
+      "He likes music.",
+      "We read every day."
+    ],
+    "bad": "He like music.",
+    "good": "He likes music.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "third_person_have",
+    "nodeId": "grammar.simple_present_agreement",
+    "pattern": "\\b(he|she|it) have\\b",
+    "replacement": "$1 has",
+    "explanation": "Use has with he, she or it.",
+    "practice": [
+      "She has a book.",
+      "We read every day."
+    ],
+    "bad": "She have a book.",
+    "good": "She has a book.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "plural_subject_go",
+    "nodeId": "grammar.simple_present_agreement",
+    "pattern": "\\b(we|they|you) goes\\b",
+    "replacement": "$1 go",
+    "explanation": "Use go with we, they or you.",
+    "practice": [
+      "They go home.",
+      "We read every day."
+    ],
+    "bad": "They goes home.",
+    "good": "They go home.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "do_agreement",
+    "nodeId": "grammar.simple_present_agreement",
+    "pattern": "\\b(he|she|it) do not\\b",
+    "replacement": "$1 does not",
+    "explanation": "Use does not with he, she or it.",
+    "practice": [
+      "He does not swim.",
+      "We read every day."
+    ],
+    "bad": "He do not swim.",
+    "good": "He does not swim.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "does_base",
+    "nodeId": "grammar.simple_present_agreement",
+    "pattern": "\\bdoes not (go|like|play|work)(?:es|s)\\b",
+    "replacement": "does not $1",
+    "explanation": "After does not, use the base verb.",
+    "practice": [
+      "She does not go home.",
+      "We read every day."
+    ],
+    "bad": "She does not goes home.",
+    "good": "She does not go home.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "i_be",
+    "nodeId": "grammar.simple_present_agreement",
+    "pattern": "\\bi is\\b",
+    "replacement": "I am",
+    "explanation": "Use am with I.",
+    "practice": [
+      "I am ready.",
+      "We read every day."
+    ],
+    "bad": "I is ready.",
+    "good": "I am ready.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "plural_be",
+    "nodeId": "grammar.simple_present_agreement",
+    "pattern": "\\b(we|they|you) is\\b",
+    "replacement": "$1 are",
+    "explanation": "Use are with we, they or you.",
+    "practice": [
+      "We are ready.",
+      "We read every day."
+    ],
+    "bad": "We is ready.",
+    "good": "We are ready.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "singular_be",
+    "nodeId": "grammar.simple_present_agreement",
+    "pattern": "\\b(he|she|it) are\\b",
+    "replacement": "$1 is",
+    "explanation": "Use is with he, she or it.",
+    "practice": [
+      "She is ready.",
+      "We read every day."
+    ],
+    "bad": "She are ready.",
+    "good": "She is ready.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "an_vowel",
+    "nodeId": "grammar.articles",
+    "pattern": "\\ba (apple|orange|elephant|umbrella|egg)\\b",
+    "replacement": "an $1",
+    "explanation": "Use an before a vowel sound.",
+    "practice": [
+      "I have an apple.",
+      "We read every day."
+    ],
+    "bad": "I have a apple.",
+    "good": "I have an apple.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "a_consonant",
+    "nodeId": "grammar.articles",
+    "pattern": "\\ban (book|car|dog|pen|university)\\b",
+    "replacement": "a $1",
+    "explanation": "Use a before a consonant sound; university begins with a y sound.",
+    "practice": [
+      "I have a book.",
+      "We read every day."
+    ],
+    "bad": "I have an book.",
+    "good": "I have a book.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "market_article",
+    "nodeId": "grammar.articles",
+    "pattern": "\\bto market\\b",
+    "replacement": "to the market",
+    "explanation": "Use the for a specific familiar market.",
+    "practice": [
+      "He is going to the market.",
+      "We read every day."
+    ],
+    "bad": "He is going to market.",
+    "good": "He is going to the market.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "discuss_about",
+    "nodeId": "grammar.prepositions",
+    "pattern": "\\bdiscussed about\\b",
+    "replacement": "discussed",
+    "explanation": "Discuss takes its object directly, without about.",
+    "practice": [
+      "We discussed the plan.",
+      "We read every day."
+    ],
+    "bad": "We discussed about the plan.",
+    "good": "We discussed the plan.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "discuss_present",
+    "nodeId": "grammar.prepositions",
+    "pattern": "\\bdiscuss about\\b",
+    "replacement": "discuss",
+    "explanation": "Discuss takes its object directly, without about.",
+    "practice": [
+      "We discuss books.",
+      "We read every day."
+    ],
+    "bad": "We discuss about books.",
+    "good": "We discuss books.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "married_with",
+    "nodeId": "grammar.prepositions",
+    "pattern": "\\bmarried with (him|her)\\b",
+    "replacement": "married to $1",
+    "explanation": "Use married to when naming a spouse.",
+    "practice": [
+      "She is married to him.",
+      "We read every day."
+    ],
+    "bad": "She is married with him.",
+    "good": "She is married to him.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "depend_of",
+    "nodeId": "grammar.prepositions",
+    "pattern": "\\bdepend of\\b",
+    "replacement": "depend on",
+    "explanation": "Use depend on.",
+    "practice": [
+      "We depend on rain.",
+      "We read every day."
+    ],
+    "bad": "We depend of rain.",
+    "good": "We depend on rain.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "good_in",
+    "nodeId": "grammar.prepositions",
+    "pattern": "\\bgood in (maths|mathematics|English|singing)\\b",
+    "replacement": "good at $1",
+    "explanation": "Use good at for a skill.",
+    "practice": [
+      "She is good at singing.",
+      "We read every day."
+    ],
+    "bad": "She is good in singing.",
+    "good": "She is good at singing.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "reach_to",
+    "nodeId": "grammar.prepositions",
+    "pattern": "\\breached to (school|home|Delhi)\\b",
+    "replacement": "reached $1",
+    "explanation": "Reach takes a destination directly.",
+    "practice": [
+      "We reached Delhi.",
+      "We read every day."
+    ],
+    "bad": "We reached to Delhi.",
+    "good": "We reached Delhi.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "return_back",
+    "nodeId": "grammar.prepositions",
+    "pattern": "\\breturn back\\b",
+    "replacement": "return",
+    "explanation": "Return already means go or come back.",
+    "practice": [
+      "Please return the book.",
+      "We read every day."
+    ],
+    "bad": "Please return back the book.",
+    "good": "Please return the book.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "enter_into",
+    "nodeId": "grammar.prepositions",
+    "pattern": "\\bentered into the (room|classroom|house)\\b",
+    "replacement": "entered the $1",
+    "explanation": "For a physical room or building, enter takes the object directly.",
+    "practice": [
+      "She entered the room.",
+      "We read every day."
+    ],
+    "bad": "She entered into the room.",
+    "good": "She entered the room.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "did_past",
+    "nodeId": "grammar.irregular_past",
+    "pattern": "\\bdid not went\\b",
+    "replacement": "did not go",
+    "explanation": "After did not, use the base verb go.",
+    "practice": [
+      "I did not go.",
+      "We read every day."
+    ],
+    "bad": "I did not went.",
+    "good": "I did not go.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "yesterday_go",
+    "nodeId": "grammar.irregular_past",
+    "pattern": "\\byesterday I go\\b",
+    "replacement": "yesterday I went",
+    "explanation": "Yesterday signals past time, so use went.",
+    "practice": [
+      "Yesterday I went to Delhi.",
+      "We read every day."
+    ],
+    "bad": "Yesterday I go to Delhi.",
+    "good": "Yesterday I went to Delhi.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "goed",
+    "nodeId": "grammar.irregular_past",
+    "pattern": "\\bgoed\\b",
+    "replacement": "went",
+    "explanation": "The past tense of go is went.",
+    "practice": [
+      "She went home.",
+      "We read every day."
+    ],
+    "bad": "She goed home.",
+    "good": "She went home.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "buyed",
+    "nodeId": "grammar.irregular_past",
+    "pattern": "\\bbuyed\\b",
+    "replacement": "bought",
+    "explanation": "The past tense of buy is bought.",
+    "practice": [
+      "I bought a book.",
+      "We read every day."
+    ],
+    "bad": "I buyed a book.",
+    "good": "I bought a book.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "catched",
+    "nodeId": "grammar.irregular_past",
+    "pattern": "\\bcatched\\b",
+    "replacement": "caught",
+    "explanation": "The past tense of catch is caught.",
+    "practice": [
+      "She caught the ball.",
+      "We read every day."
+    ],
+    "bad": "She catched the ball.",
+    "good": "She caught the ball.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "stative_have",
+    "nodeId": "grammar.progressive",
+    "pattern": "\\bI am having (two brothers|a car|a sister)\\b",
+    "replacement": "I have $1",
+    "explanation": "Use simple have for possession or family relationships.",
+    "practice": [
+      "I have two brothers.",
+      "We read every day."
+    ],
+    "bad": "I am having two brothers.",
+    "good": "I have two brothers.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "stative_know",
+    "nodeId": "grammar.progressive",
+    "pattern": "\\bI am knowing\\b",
+    "replacement": "I know",
+    "explanation": "Know describes a state; use the simple form.",
+    "practice": [
+      "I know the answer.",
+      "We read every day."
+    ],
+    "bad": "I am knowing the answer.",
+    "good": "I know the answer.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "stative_understand",
+    "nodeId": "grammar.progressive",
+    "pattern": "\\bI am understanding\\b",
+    "replacement": "I understand",
+    "explanation": "For present understanding, use the simple form.",
+    "practice": [
+      "I understand the lesson.",
+      "We read every day."
+    ],
+    "bad": "I am understanding the lesson.",
+    "good": "I understand the lesson.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "can_to",
+    "nodeId": "grammar.modals",
+    "pattern": "\\bcan to\\b",
+    "replacement": "can",
+    "explanation": "After can, use a base verb without to.",
+    "practice": [
+      "I can swim.",
+      "We read every day."
+    ],
+    "bad": "I can to swim.",
+    "good": "I can swim.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "should_to",
+    "nodeId": "grammar.modals",
+    "pattern": "\\bshould to\\b",
+    "replacement": "should",
+    "explanation": "After should, use a base verb without to.",
+    "practice": [
+      "We should read.",
+      "We read every day."
+    ],
+    "bad": "We should to read.",
+    "good": "We should read.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "must_to",
+    "nodeId": "grammar.modals",
+    "pattern": "\\bmust to\\b",
+    "replacement": "must",
+    "explanation": "After must, use a base verb without to.",
+    "practice": [
+      "You must wait.",
+      "We read every day."
+    ],
+    "bad": "You must to wait.",
+    "good": "You must wait.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "childrens",
+    "nodeId": "grammar.plurals",
+    "pattern": "\\bchildrens\\b",
+    "replacement": "children",
+    "explanation": "Children is already plural.",
+    "practice": [
+      "The children are here.",
+      "We read every day."
+    ],
+    "bad": "The childrens are here.",
+    "good": "The children are here.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "informations",
+    "nodeId": "grammar.plurals",
+    "pattern": "\\binformations\\b",
+    "replacement": "information",
+    "explanation": "Information is uncountable in standard English.",
+    "practice": [
+      "We need information.",
+      "We read every day."
+    ],
+    "bad": "We need informations.",
+    "good": "We need information.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "furnitures",
+    "nodeId": "grammar.plurals",
+    "pattern": "\\bthe furnitures are\\b",
+    "replacement": "the furniture is",
+    "explanation": "Furniture is uncountable in standard English.",
+    "practice": [
+      "The furniture is new.",
+      "We read every day."
+    ],
+    "bad": "The furnitures are new.",
+    "good": "The furniture is new.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "advices",
+    "nodeId": "grammar.plurals",
+    "pattern": "\\badvices\\b",
+    "replacement": "advice",
+    "explanation": "Advice is uncountable; use pieces of advice to count it.",
+    "practice": [
+      "She gave advice.",
+      "We read every day."
+    ],
+    "bad": "She gave advices.",
+    "good": "She gave advice.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "one_of",
+    "nodeId": "grammar.plurals",
+    "pattern": "\\bone of my friend\\b",
+    "replacement": "one of my friends",
+    "explanation": "One of selects one member of a plural group.",
+    "practice": [
+      "He is one of my friends.",
+      "We read every day."
+    ],
+    "bad": "He is one of my friend.",
+    "good": "He is one of my friends.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "myself_intro",
+    "nodeId": "grammar.pronouns",
+    "pattern": "^Myself ([A-Z][a-z]+)\\b",
+    "replacement": "My name is $1",
+    "explanation": "Introduce yourself with My name is.",
+    "practice": [
+      "My name is Riya.",
+      "We read every day."
+    ],
+    "bad": "Myself Riya.",
+    "good": "My name is Riya.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "cousin_brother",
+    "nodeId": "grammar.pronouns",
+    "pattern": "\\bcousin (brother|sister)\\b",
+    "replacement": "cousin",
+    "explanation": "In international standard English, cousin covers any gender.",
+    "practice": [
+      "My cousin is here.",
+      "We read every day."
+    ],
+    "bad": "My cousin brother is here.",
+    "good": "My cousin is here.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "doing_mistake",
+    "nodeId": "grammar.progressive",
+    "pattern": "\\bdoing a mistake\\b",
+    "replacement": "making a mistake",
+    "explanation": "In English we make a mistake.",
+    "practice": [
+      "I am making a mistake.",
+      "We read every day."
+    ],
+    "bad": "I am doing a mistake.",
+    "good": "I am making a mistake.",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "more_better",
+    "nodeId": "grammar.complex",
+    "pattern": "\\bmore better\\b",
+    "replacement": "better",
+    "explanation": "Better already expresses a comparison.",
+    "practice": [
+      "This is better.",
+      "We read every day."
+    ],
+    "bad": "This is more better.",
+    "good": "This is better.",
+    "reviewStatus": "draft"
+  }
+]

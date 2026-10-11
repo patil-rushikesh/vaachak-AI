@@ -1,6 +1,9 @@
 import 'teacher_cache_native.dart'
     if (dart.library.js_interop) 'teacher_cache_web.dart';
 import 'dart:async';
+import 'class_setup_dialog.dart';
+import 'lesson_recordings.dart';
+import 'teacher_recording_page.dart';
 import 'school_connection.dart';
 import 'password_sign_in.dart';
 import 'teacher_transfer_native.dart'
@@ -75,6 +78,52 @@ class _TeacherState extends State<PlatformHome> {
               'Unable to create a class code. Check your class assignment.',
         );
       }
+    }
+  }
+
+  Future<void> createClass() async {
+    if (offline) return;
+    final args = await showClassSetupDialog(context);
+    if (args == null) return;
+    try {
+      final id = await connection!.api.rpc('create_class', args);
+      selectedClass = id as String;
+      joinCode = null;
+      await refresh();
+    } catch (_) {
+      if (mounted) {
+        setState(
+          () => error =
+              'The classroom was not created. Check the details and your connection.',
+        );
+      }
+    }
+  }
+
+  Future<void> recordLesson() async {
+    if (offline || selectedClass == null) return;
+    final current = classes.firstWhere((c) => c['id'] == selectedClass);
+    final sent = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TeacherRecordingPage(
+          service: LessonRecordingService(
+            connection!.client,
+            connection!.api,
+            SchoolConnection.environment,
+          ),
+          teacherId: connection!.userId,
+          classId: selectedClass!,
+          className: classLabel(current),
+          learners: learners,
+          defaultLanguage: (current['instruction_language'] as String?) ?? 'en',
+        ),
+      ),
+    );
+    if (sent == true && mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Recording sent to learners.')));
     }
   }
 
@@ -168,7 +217,8 @@ class _TeacherState extends State<PlatformHome> {
 
   Future<void> loadRemote() async {
     final schema = client!.schema(environment);
-    final roster = await schema.from('classes').select('id,name').order('name');
+    final roster = await schema.from('classes').select('id,name,standard,section,pincode,state,district,instruction_language')
+        .order('name');
     if (!roster.any((c) => c['id'] == selectedClass)) {
       selectedClass = roster.isEmpty ? null : roster.first['id'] as String;
     }
@@ -503,7 +553,7 @@ class _TeacherState extends State<PlatformHome> {
                             .map(
                               (c) => DropdownMenuItem(
                                 value: c['id'] as String,
-                                child: Text(c['name'] as String),
+                                child: Text(classLabel(c)),
                               ),
                             )
                             .toList(),
@@ -523,6 +573,17 @@ class _TeacherState extends State<PlatformHome> {
                   ],
                 ),
                 const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: busy || offline ? null : createClass,
+                  icon: const Icon(Icons.add),
+                  label: const Text('Create classroom'),
+                ),
+                if (selectedClass != null)
+                  OutlinedButton.icon(
+                    onPressed: busy || offline ? null : recordLesson,
+                    icon: const Icon(Icons.mic),
+                    label: const Text('Record lesson and assign'),
+                  ),
                 if (selectedClass != null)
                   OutlinedButton(
                     onPressed: busy || offline ? null : createCode,
