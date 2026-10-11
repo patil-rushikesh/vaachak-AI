@@ -153,9 +153,15 @@ test("course details, visibility, ordering, unit management and deletion dialogs
   await button(page, "Cancel").click();
   await button(page, "Delete unused unit").last().click();
   await button(page, "Confirm").click();
+  const deleted = page.waitForResponse(
+    (response) =>
+      response.request().method() === "DELETE" &&
+      new URL(response.url()).pathname === `/api/courses/${c.id}`,
+  );
   await confirm(page, "Delete unused course");
+  expect((await deleted).status()).toBe(200);
   await expect(
-    page.getByRole("tab", { name: "Library", exact: true }),
+    page.getByRole("heading", { name: "A home for your teaching.", exact: true }),
   ).toBeVisible();
   expect(
     (
