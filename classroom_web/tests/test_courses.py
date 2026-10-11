@@ -223,6 +223,7 @@ def test_review_surfaces_weak_items_with_their_source(client, world):
 
 
 def test_old_database_is_upgraded_in_place(tmp_path, monkeypatch):
+    monkeypatch.delenv("DATABASE_URL", raising=False)
     monkeypatch.setenv("VAACHAK_DATA", str(tmp_path))
     conn = sqlite3.connect(tmp_path / "classroom.db")
     conn.executescript("""CREATE TABLE users(id INTEGER PRIMARY KEY, role TEXT, name TEXT, email TEXT, pw_hash TEXT, created_at TEXT);

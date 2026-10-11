@@ -78,6 +78,9 @@ def enqueue(body: JobIn, user=Depends(teacher_only), conn=Depends(get_db)):
             (key, user["id"], digest, json.dumps(payload), "queued", evidence.now()),
         )
         conn.commit()
+        if os.getenv("VAACHAK_RUN_WORKER") == "inline":
+            from inline_worker import wake
+            wake()
         return read_job(body.client_uuid, user, conn)
     except Exception:
         conn.rollback()

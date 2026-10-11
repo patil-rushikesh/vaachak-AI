@@ -3,6 +3,11 @@ import sys
 import tempfile
 from pathlib import Path
 
+if os.getenv("VAACHAK_TEST_DATABASE_URL"):
+    os.environ["DATABASE_URL"] = os.environ["VAACHAK_TEST_DATABASE_URL"]
+else:
+    os.environ.pop("DATABASE_URL", None)
+
 os.environ["VAACHAK_DATA"] = tempfile.mkdtemp(prefix="vaachak_test_")
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "server"))
 
@@ -20,6 +25,19 @@ def isolate_local_ai_configuration(monkeypatch):
     monkeypatch.setenv("GROQ_API_KEY", "")
     monkeypatch.setenv("VAACHAK_GROQ_KEY", "")
     monkeypatch.setenv("VAACHAK_WHISPER_MODEL", "")
+
+
+@pytest.fixture(autouse=True)
+def isolated_postgres_database():
+    url = os.getenv("VAACHAK_TEST_DATABASE_URL")
+    if url:
+        from urllib.parse import urlsplit
+        parsed = urlsplit(url)
+        if parsed.hostname not in ("127.0.0.1", "localhost") or not parsed.path.endswith("_test"):
+            pytest.fail("Database reset is restricted to a local disposable *_test database")
+        import psycopg
+        with psycopg.connect(url, autocommit=True) as conn:
+            conn.execute("DROP SCHEMA public CASCADE; CREATE SCHEMA public")
 
 
 @pytest.fixture()
@@ -111,7 +129,7 @@ def endpoint_coverage_report():
                     }
                 )
     root = Path(__file__).resolve().parents[2]
-    target = root / "docs/verification/backend-endpoint-coverage.json"
+    target = root / "docs/verification" / ("backend-endpoint-coverage-postgres.json" if os.getenv("VAACHAK_TEST_DATABASE_URL") else "backend-endpoint-coverage.json")
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(
         json.dumps(

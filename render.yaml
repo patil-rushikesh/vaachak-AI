@@ -1,32 +1,40 @@
-# One paid service owns the SQLite database, audio, and draft worker.
-# Do not add instances or a separate Render worker against this disk.
+# Free demonstration deployment: durable database and private audio live in Neon.
+# Free instances sleep; use one instance and the request-woken inline job runner.
 services:
   - type: web
     name: vaachak-api
     runtime: docker
     branch: main
-    region: singapore
-    plan: 0.5c-512mb
+    region: ohio
+    plan: free
     numInstances: 1
     dockerfilePath: ./deploy/backend/Dockerfile
     dockerContext: .
     autoDeployTrigger: checksPass
     healthCheckPath: /api/ready
-    disk:
-      name: vaachak-data
-      mountPath: /data
-      sizeGB: 5
     envVars:
       - key: PORT
         value: "10000"
       - key: VAACHAK_ENV
         value: production
-      - key: VAACHAK_DATA
-        value: /data
       - key: VAACHAK_RUN_WORKER
-        value: "1"
+        value: inline
+      - key: VAACHAK_AUDIO_STORAGE
+        value: s3
+      - key: VAACHAK_AUDIO_BUCKET
+        value: vaachak-audio
+      - key: AWS_REGION
+        value: us-east-2
       - key: VAACHAK_TEACHER_INVITE
         generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: AWS_ENDPOINT_URL_S3
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
       - key: GROQ_API_KEY
         sync: false
       - key: VAACHAK_CORS_ORIGINS

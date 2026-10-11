@@ -217,7 +217,7 @@ def test_immediate_repeats_do_not_advance_retention(client, world):
     for _ in range(8):
         post(client, world["a"])
     with db.connect() as conn:
-        conn.execute("UPDATE attempts SET created_at=datetime('now','-2 days')")
+        conn.execute("UPDATE attempts SET created_at=?", ((datetime.now(timezone.utc)-timedelta(days=2)).isoformat(),))
         conn.commit()
         due = insights.due_for_review(
             conn, client.get("/api/me", headers=world["a"]).json()["id"]
@@ -434,6 +434,8 @@ def test_request_logs_and_errors_do_not_leak(client, world, monkeypatch, caplog)
 
 
 def test_migrations_idempotent_backup_restore(client, world, tmp_path):
+    if db.is_postgres():
+        pytest.skip("SQLite backup format; Postgres uses pg_dump and Neon recovery")
     import backend_admin
 
     post(client, world["a"])
@@ -450,6 +452,11 @@ def test_migrations_idempotent_backup_restore(client, world, tmp_path):
 
 
 def test_invitation_and_quotas(client, world, monkeypatch):
+    if db.is_postgres():
+        import postgres
+        # This test changes auth policy, while its disposable local DB has no TLS.
+        # Production URL validation is exercised separately in test_cloud_storage.
+        monkeypatch.setattr(postgres, "validate_url", lambda url: None)
     monkeypatch.setenv("VAACHAK_ENV", "production")
     monkeypatch.setenv("VAACHAK_TEACHER_INVITE", "instructor-invite")
     body = {

@@ -82,7 +82,15 @@ def data_dir() -> Path:
     return d
 
 
-def connect() -> sqlite3.Connection:
+def is_postgres() -> bool:
+    return bool(os.getenv("DATABASE_URL"))
+
+
+def connect():
+    if is_postgres():
+        from postgres import Connection, validate_url
+        validate_url(os.environ["DATABASE_URL"])
+        return Connection(os.environ["DATABASE_URL"])
     conn = sqlite3.connect(
         data_dir() / "classroom.db", check_same_thread=False, timeout=15
     )
@@ -93,6 +101,10 @@ def connect() -> sqlite3.Connection:
 
 
 def init() -> None:
+    if is_postgres():
+        from postgres import init as init_postgres
+        init_postgres(os.environ["DATABASE_URL"])
+        return
     conn = connect()
     conn.executescript(SCHEMA)
     # Databases made before courses existed have no attempts.lesson_id; add it in place.

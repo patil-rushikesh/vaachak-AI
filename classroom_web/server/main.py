@@ -1,4 +1,4 @@
-"""VaachakAI classroom: FastAPI backend (SQLite + local audio files)."""
+"""VaachakAI classroom: FastAPI backend with local or Neon database and audio storage."""
 
 from __future__ import annotations
 
@@ -26,6 +26,7 @@ from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 import ai
 import db
+import audio_store
 import feedback
 import insights
 import knowledge as kb
@@ -58,10 +59,19 @@ SESSION_DAYS = 30
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     ai.load_env_file()
+    audio_store.validate_config()
     db.init()
     with db.connect() as conn:
         evidence.recover_interrupted(conn)
-    yield
+    run_inline_worker = os.getenv("VAACHAK_RUN_WORKER") == "inline"
+    if run_inline_worker:
+        import inline_worker
+        inline_worker.start()
+    try:
+        yield
+    finally:
+        if run_inline_worker:
+            inline_worker.stop()
 
 
 app = FastAPI(
@@ -545,7 +555,7 @@ def join_class(
         _failures[f"join:{user['id']}"].append(time.time())
         raise HTTPException(404, "No class has that code. Check it with your teacher.")
     conn.execute(
-        "INSERT OR IGNORE INTO enrollments(class_id,student_id) VALUES(?,?)",
+        "INSERT INTO enrollments(class_id,student_id) VALUES(?,?) ON CONFLICT DO NOTHING",
         (c["id"], user["id"]),
     )
     conn.commit()
@@ -619,7 +629,7 @@ def _save_upload(
 
     validate_audio(data, mime)
     name = f"{uuid.uuid4().hex}.{ext}"
-    (db.data_dir() / subdir / name).write_bytes(data)
+    audio_store.put(name, data, mime)
     return name, mime
 
 
@@ -632,11 +642,16 @@ def upload_recording(
     conn: sqlite3.Connection = Depends(get_db),
 ):
     name, mime = _save_upload(file, MAX_RECORDING)
-    cur = conn.execute(
-        "INSERT INTO recordings(teacher_id,title,filename,mime,duration_ms) VALUES(?,?,?,?,?)",
-        (user["id"], title.strip(), name, mime, duration_ms),
-    )
-    conn.commit()
+    try:
+        cur = conn.execute(
+            "INSERT INTO recordings(teacher_id,title,filename,mime,duration_ms) VALUES(?,?,?,?,?)",
+            (user["id"], title.strip(), name, mime, duration_ms),
+        )
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        audio_store.discard(name)
+        raise
     return {"id": cur.lastrowid, "title": title.strip(), "duration_ms": duration_ms}
 
 
@@ -672,10 +687,7 @@ def recording_audio(
             ) or courses.can_hear_lesson_recording(conn, user, rec_id)
     if not allowed:
         raise HTTPException(404, "Recording not found.")
-    path = db.data_dir() / "audio" / r["filename"]
-    if not path.is_file():
-        raise HTTPException(404, "Audio file is no longer available.")
-    return FileResponse(path, media_type=r["mime"])
+    return audio_store.response(r["filename"], r["mime"])
 
 
 # ----------------------------------------------------------------------------- assignments
@@ -1030,15 +1042,11 @@ def submit_attempt(
             if audio is not None and audio.filename:
                 audio_name, audio_mime = _save_upload(audio, MAX_ATTEMPT_AUDIO)
             if confirmed:
-                import shutil
                 from uuid import uuid4
 
                 audio_name = str(uuid4()) + Path(confirmed["audio_file"]).suffix
                 audio_mime = confirmed["mime"]
-                shutil.copyfile(
-                    db.data_dir() / "audio" / confirmed["audio_file"],
-                    db.data_dir() / "audio" / audio_name,
-                )
+                audio_store.copy(confirmed["audio_file"], audio_name, audio_mime)
             text = transcript.strip()
             mode = "assembled" if kind == "build" else "typed"
             origin = "client_text"
@@ -1051,9 +1059,8 @@ def submit_attempt(
                             "message": "Speech transcription is unavailable. Your answer was not graded.",
                         },
                     )
-                text = feedback.transcribe_file(
-                    str(db.data_dir() / "audio" / audio_name), audio_mime
-                )
+                with audio_store.local_path(audio_name) as audio_path:
+                    text = feedback.transcribe_file(str(audio_path), audio_mime)
                 mode, origin = "recorded", "server_asr"
                 if not text:
                     raise HTTPException(
@@ -1173,7 +1180,7 @@ def submit_attempt(
     except Exception as exc:
         conn.rollback()
         if audio_name:
-            (db.data_dir() / "audio" / audio_name).unlink(missing_ok=True)
+            audio_store.discard(audio_name)
         if client_uuid:
             conn.execute(
                 "UPDATE submissions SET status='failed',error_code=?,updated_at=? WHERE user_id=? AND client_uuid=?",
@@ -1197,10 +1204,9 @@ def attempt_audio(
     conn: sqlite3.Connection = Depends(get_db),
 ):
     a = evidence.accessible_attempt(conn, user, attempt_id)
-    path = db.data_dir() / "audio" / (a["audio_file"] or "missing")
-    if not a["audio_file"] or not path.is_file():
+    if not a["audio_file"]:
         raise HTTPException(404, "Recording not found.")
-    return FileResponse(path, media_type=a["audio_mime"])
+    return audio_store.response(a["audio_file"], a["audio_mime"])
 
 
 # ----------------------------------------------------------------------------- stats
@@ -1418,7 +1424,7 @@ def dismiss_insight(
     """The teacher says this flag was not useful, so it never comes back for that learner."""
     need_class(conn, user, class_id)
     conn.execute(
-        "INSERT OR REPLACE INTO insight_dismissals(class_id,student_id,reason,teacher_id) VALUES(?,?,?,?)",
+        "INSERT INTO insight_dismissals(class_id,student_id,reason,teacher_id) VALUES(?,?,?,?) ON CONFLICT(class_id,student_id,reason) DO UPDATE SET teacher_id=excluded.teacher_id",
         (class_id, body.student_id, body.reason, user["id"]),
     )
     conn.commit()

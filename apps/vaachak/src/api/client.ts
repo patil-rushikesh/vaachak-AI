@@ -39,7 +39,7 @@ export async function request<T = any>(
       path.includes("/transcriptions") ||
       path.includes("/ai/")
       ? 150000
-      : 20000,
+      : 90000,
   );
   try {
     const response = await fetch(`${API_URL}/api${path}`, {
@@ -78,7 +78,7 @@ export async function request<T = any>(
     throw new ApiError(
       0,
       "connection",
-      "We could not reach Vaachak. Check your connection, then try again. Your answer is still here.",
+      "Vaachak may be waking up. Please try again in a moment, or check your connection. Your answer is still here.",
     );
   } finally {
     clearTimeout(timer);

@@ -1,6 +1,6 @@
 # Release deployment and operations
 
-The supported target is one FastAPI instance on one Linux host, backed by persistent SQLite and private local audio storage. Do not horizontally replicate this deployment or place its database on a network filesystem. The existing Dart/Supabase components are separate and are not needed to run this service.
+The cloud target is one FastAPI instance on Render Free, Neon Postgres, and private Neon S3-compatible audio storage. Local Docker Compose still supports SQLite and local audio. Keep one API instance for the current submission-recovery lifecycle. The existing Dart/Supabase components are separate and are not needed to run this service.
 
 ## Render backend, Vercel web, and mobile release
 
@@ -8,13 +8,16 @@ This configuration packages the current G1/G2 release. Later generative-AI miles
 
 ### Render
 
-1. Create a Blueprint from this repository's `main` branch using the root `render.yaml`. Leave the repository root unchanged; the Dockerfile path is already configured. It specifies **one paid service with a 5 GB persistent disk**. Review Render's current cost before provisioning.
-2. Enter `GROQ_API_KEY` as a Render secret and `VAACHAK_CORS_ORIGINS` as a comma-separated list of exact Vercel/custom HTTPS origins. No `/api`, paths, queries, or wildcards. If the Vercel origin is not assigned yet, add it after creating that project and redeploy the API.
-3. The Blueprint generates `VAACHAK_TEACHER_INVITE`. Retrieve it privately from Render and share it only with approved instructors. Production startup requires at least 24 characters. Learner registration remains public.
-4. Wait for `/api/ready` to return 200 and save the actual Render HTTPS origin. `/api/health` reports configured capabilities; readiness checks storage, SQLite, and FFmpeg without making paid provider requests. Test real AI separately before launch.
-5. Check logs for `service_child_started` events for `api` and `worker`, along with structured request/job events. The API uses `PORT` (10000 in the Blueprint). The entrypoint prepares a fresh disk and drops to UID 10001 before starting the application.
+1. Create a Neon Free project with Postgres 18 and a **private** `vaachak-audio` bucket. The current provisioned project is `wild-surf-71001769`, production branch `br-shy-bonus-b4v1hayw`, AWS Ohio. Keep all credentials out of Git.
+2. Create a Render Blueprint from `main` and `render.yaml`. It selects **Free**, Ohio, and no persistent disk. Set `DATABASE_URL` to Neon's pooled connection string with TLS. Supply the bucket's `AWS_ENDPOINT_URL_S3`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION`. Object keys remain private; authenticated API routes authorize every download.
+3. Set `GROQ_API_KEY` as a Render secret, and `VAACHAK_CORS_ORIGINS` to exact Vercel/custom HTTPS origins. The Blueprint generates a private `VAACHAK_TEACHER_INVITE` for approved instructor registration. Never put these secrets in the frontend.
+4. Wait for `/api/ready` to return 200. Migrations run transactionally on startup with a Postgres advisory lock; a fresh database receives the schema equivalent to SQLite versions 1–7. Built-in curriculum is installed idempotently. **Existing local accounts and recordings are not imported automatically.**
+5. Keep **one instance, one Uvicorn worker, `VAACHAK_RUN_WORKER=inline`**. Enqueuing a draft wakes the in-process runner; it does not continuously poll an idle Neon database. Jobs are durable, leased, and recovered after expiry. Sleeping/restarting Render can delay jobs; this free deployment is suitable for a project demonstration, not an always-on SLA.
+6. The frontend allows 90 seconds for ordinary requests and 150 seconds for speech/AI, accommodating Render cold starts. Requests are not automatically replayed: mutation retries retain the application's submission identity rules.
 
-Keep **one Render instance, one Uvicorn worker, and `VAACHAK_RUN_WORKER=1`**. The API and draft worker run in the same service and share `/data/classroom.db` and `/data/audio`. A child process failure stops the service for platform restart. Do not create a separate Render worker: it cannot share this disk. Migrations run at startup when storage is mounted; do not move them to a build or pre-deploy command. Disk-backed deployments have a short interruption. Back up before upgrades; the Blueprint deploys after GitHub checks pass.
+Render Free can discard all local files and sleep after inactivity. Only temporary ffmpeg/ASR/playback files use its filesystem. The API retains current upload caps (8 MB attempts, 20 MB teacher recordings). Monitor Neon storage/compute and Groq quotas; free hosting does not mean unlimited provider calls.
+
+For cloud backups, use **Neon Backup & Restore / branches or `pg_dump`**, and export the private bucket separately. SQLite backup/restore commands below apply only to local deployments; the CLI rejects SQLite backup against Postgres. Free-tier recovery windows are short: keep independent operator-controlled exports. `backend_admin.py cleanup` supports both local and remote audio; run it from a trusted operator environment with cloud secrets, because Render Free has no shell or scheduled jobs. Do not point local test runners at the hosted production database.
 
 ### Vercel
 

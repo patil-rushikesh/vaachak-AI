@@ -425,7 +425,7 @@ def event(body: EventIn, user=Depends(learner_only), conn=Depends(get_db)):
         ((datetime.now(timezone.utc) - timedelta(days=90)).isoformat(),),
     )
     conn.execute(
-        "INSERT OR IGNORE INTO product_events VALUES(?,?,?,?)",
+        "INSERT INTO product_events VALUES(?,?,?,?) ON CONFLICT DO NOTHING",
         (str(body.id), user["id"], body.name, evidence.now()),
     )
     conn.commit()
@@ -534,6 +534,7 @@ def turn(
 
 from fastapi import UploadFile, File, Form
 import db
+import audio_store
 import feedback
 from main import _save_upload, MAX_ATTEMPT_AUDIO
 
@@ -567,7 +568,8 @@ def transcribe(
     name = None
     try:
         name, mime = _save_upload(audio, MAX_ATTEMPT_AUDIO)
-        text = feedback.transcribe_file(str(db.data_dir() / "audio" / name), mime)
+        with audio_store.local_path(name) as audio_path:
+            text = feedback.transcribe_file(str(audio_path), mime)
         if not text or len(text) > 1000:
             raise HTTPException(
                 422, "No usable transcript. Record a shorter answer or type it."
@@ -578,8 +580,9 @@ def transcribe(
         )
         conn.commit()
     except Exception:
+        conn.rollback()
         if name:
-            (db.data_dir() / "audio" / name).unlink(missing_ok=True)
+            audio_store.discard(name)
         conn.execute("UPDATE transcriptions SET status=? WHERE id=?", ("failed", key))
         conn.commit()
         raise

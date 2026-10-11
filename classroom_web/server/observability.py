@@ -4,6 +4,8 @@ import json
 import logging
 import os
 import sqlite3
+import psycopg
+from audio_store import StorageUnavailable
 import time
 import uuid
 from datetime import datetime, timezone
@@ -95,6 +97,9 @@ def install(app):
             headers={"Retry-After": "2"},
         )
 
+    app.add_exception_handler(psycopg.IntegrityError, integrity_error)
+    app.add_exception_handler(psycopg.OperationalError, database_error)
+    app.add_exception_handler(StorageUnavailable, database_error)
     app.add_middleware(RequestLogMiddleware)
 
 
@@ -181,19 +186,20 @@ class RequestLogMiddleware:
 
             await self.app(scope, limited_receive, wrapped_send)
         except Exception as exc:
-            scope["error_code"] = "internal_error"
+            unavailable = isinstance(exc, (sqlite3.OperationalError, psycopg.OperationalError, StorageUnavailable))
+            scope["error_code"] = "service_unavailable" if unavailable else "internal_error"
             scope["exception_type"] = type(exc).__name__
             if not sent:
                 response = JSONResponse(
                     {
-                        "detail": "An unexpected error occurred.",
+                        "detail": "Storage is temporarily unavailable." if unavailable else "An unexpected error occurred.",
                         "error": {
-                            "code": "internal_error",
-                            "message": "An unexpected error occurred.",
+                            "code": scope["error_code"],
+                            "message": "Storage is temporarily unavailable." if unavailable else "An unexpected error occurred.",
                             "request_id": request_id,
                         },
                     },
-                    status_code=500,
+                    status_code=503 if unavailable else 500,
                 )
                 await response(scope, receive, wrapped_send)
             else:

@@ -35,7 +35,7 @@ def public_versioned(items):
 def limit(conn, bucket, maximum, seconds=60):
     window = int(time.time()) // seconds
     conn.execute(
-        "INSERT INTO rate_limits VALUES(?,?,1) ON CONFLICT(bucket,window) DO UPDATE SET count=count+1",
+        "INSERT INTO rate_limits VALUES(?,?,1) ON CONFLICT(bucket,window) DO UPDATE SET count=rate_limits.count+1",
         (bucket, window),
     )
     count = conn.execute(

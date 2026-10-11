@@ -15,9 +15,12 @@ from datetime import datetime, timedelta, timezone
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "classroom_web/server"))
 import db
+import audio_store
 
 
 def backup(destination):
+    if db.is_postgres():
+        raise ValueError("Use pg_dump plus an object-storage export for Neon backups; local SQLite backup is disabled.")
     destination = Path(destination)
     if destination.exists():
         raise ValueError("Backup destination already exists.")
@@ -48,6 +51,8 @@ def backup(destination):
 
 
 def restore(source, destination):
+    if db.is_postgres():
+        raise ValueError("Use PostgreSQL and object-storage restore tools for Neon; local SQLite restore is disabled.")
     source, destination = Path(source), Path(destination)
     if destination.exists() and any(destination.iterdir()):
         raise ValueError("Restore requires an empty destination and a stopped server.")
@@ -118,21 +123,15 @@ def cleanup(days=30):
         live = {
             r[0]
             for r in conn.execute(
-                "SELECT audio_file FROM attempts WHERE audio_file IS NOT NULL UNION SELECT filename FROM recordings UNION SELECT audio_file FROM transcriptions WHERE audio_file IS NOT NULL AND expires_at > CURRENT_TIMESTAMP"
+                "SELECT audio_file FROM attempts WHERE audio_file IS NOT NULL UNION SELECT filename FROM recordings UNION SELECT audio_file FROM transcriptions WHERE audio_file IS NOT NULL AND expires_at > ?",
+                (datetime.now(timezone.utc).isoformat(),),
             )
         }
     count = 0
-    for p in (db.data_dir() / "audio").iterdir():
-        # Leave recent in-flight files alone. Expired referenced files can be removed now.
-        if (
-            p.is_file()
-            and p.name not in live
-            and (
-                p.name in expired
-                or p.stat().st_mtime < datetime.now().timestamp() - 86400
-            )
-        ):
-            p.unlink()
+    for name, modified in audio_store.objects():
+        # Keep recently uploaded files until any in-flight transaction has settled.
+        if name not in live and (name in expired or modified < datetime.now().timestamp()-86400):
+            audio_store.delete(name)
             count += 1
     return {"removed_audio_files": count}
 

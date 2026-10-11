@@ -10,6 +10,7 @@ import contracts
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
 import db
+import audio_store
 import evidence
 from main import (
     current_user,
@@ -308,10 +309,10 @@ def delete_account(
             (user["id"],),
         )
     ]
+    for name in files:
+        audio_store.delete(name)
     conn.execute("DELETE FROM users WHERE id=?", (user["id"],))
     conn.commit()
-    for name in files:
-        (db.data_dir() / "audio" / name).unlink(missing_ok=True)
     return {"ok": True}
 
 
@@ -501,9 +502,9 @@ def delete_recording(rec_id: int, user=Depends(teacher_only), conn=Depends(get_d
     ).fetchone()
     if not row:
         raise HTTPException(404, "Recording not found.")
+    audio_store.delete(row["filename"])
     conn.execute("DELETE FROM recordings WHERE id=?", (rec_id,))
     conn.commit()
-    (db.data_dir() / "audio" / row["filename"]).unlink(missing_ok=True)
     return {"ok": True}
 
 

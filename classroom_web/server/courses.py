@@ -723,7 +723,7 @@ def enroll(
     if not c or not learner_reach(conn, user, c):
         raise HTTPException(404, "Course not found.")
     conn.execute(
-        "INSERT OR IGNORE INTO course_enrollments(course_id,user_id) VALUES(?,?)",
+        "INSERT INTO course_enrollments(course_id,user_id) VALUES(?,?) ON CONFLICT DO NOTHING",
         (course_id, user["id"]),
     )
     conn.commit()
@@ -756,7 +756,7 @@ def assign_course(
     if c["status"] != "published":
         raise HTTPException(422, "Publish the course before giving it to a class.")
     conn.execute(
-        "INSERT OR IGNORE INTO class_courses(class_id,course_id) VALUES(?,?)",
+        "INSERT INTO class_courses(class_id,course_id) VALUES(?,?) ON CONFLICT DO NOTHING",
         (class_id, body.course_id),
     )
     conn.commit()

@@ -19,9 +19,9 @@ def install(conn) -> int:
     stamp = now()
     for code, title, body, example in UNITS:
         conn.execute(
-            "INSERT OR IGNORE INTO knowledge_units "
+            "INSERT INTO knowledge_units "
             "(id,skill_code,title,body,example,source,visibility,status,version,created_at,reviewed_at,published_at) "
-            "VALUES(?,?,?,?,?,?,'public','published',1,?,?,?)",
+            "VALUES(?,?,?,?,?,?,'public','published',1,?,?,?) ON CONFLICT DO NOTHING",
             (f"builtin-{code.lower()}-v1", code, title, body, example,
              "Vaachak starter curriculum v1", stamp, stamp, stamp),
         )

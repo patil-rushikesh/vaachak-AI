@@ -66,6 +66,7 @@ def main():
     import ai
     import db
     import deployment
+    import audio_store
 
     ai.load_env_file()
     production = os.getenv("VAACHAK_ENV") == "production"
@@ -75,6 +76,7 @@ def main():
     port = int(os.getenv("PORT", "8000"))
     if not 1 <= port <= 65535:
         raise ValueError("PORT must be between 1 and 65535")
+    audio_store.validate_config()
     # Complete migrations before either process can open the database.
     db.init()
     commands = {
