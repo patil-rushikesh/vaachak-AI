@@ -27,6 +27,13 @@ MIGRATIONS = [
         ],
     ),
     (
+        6,
+        [
+            "CREATE TABLE knowledge_units(id TEXT PRIMARY KEY, skill_code TEXT NOT NULL, level TEXT NOT NULL DEFAULT 'A1', language TEXT NOT NULL DEFAULT 'en', title TEXT NOT NULL, body TEXT NOT NULL, example TEXT, source TEXT NOT NULL DEFAULT 'Vaachak reviewed', owner_id INTEGER REFERENCES users(id) ON DELETE SET NULL, visibility TEXT NOT NULL DEFAULT 'public', status TEXT NOT NULL DEFAULT 'approved', version INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL)",
+            "CREATE INDEX ix_knowledge_skill ON knowledge_units(skill_code,status,visibility)",
+        ],
+    ),
+    (
         5,
         [
             "CREATE TABLE generation_jobs(id TEXT PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, request_hash TEXT NOT NULL, payload TEXT NOT NULL, status TEXT NOT NULL, items TEXT NOT NULL DEFAULT '[]', lease_until TEXT, tries INTEGER NOT NULL DEFAULT 0, error_code TEXT, created_at TEXT NOT NULL, model TEXT)",

@@ -339,6 +339,10 @@ Every attempt response also carries G1 fair-feedback fields:
   exact match, free = rubric). Label it so a learner understands what was judged.
 - Word-boundary differences (`every day` vs `everyday`, `log in` vs `login`) are **not** mistakes:
   they score as correct. Genuine mispronunciations still flag.
+- **`sources`** (G2 grounded coaching): when AI feedback was grounded in reviewed teaching units,
+  this lists the cited units as `[{ "id", "title", "source" }]`. The server validates every id the
+  model returns against the units it actually sent, so a source is never invented. Absent/empty
+  when there was no grounding. Show the titles as "Based on: …" under the explanation.
 
 Field notes:
 
@@ -579,6 +583,29 @@ most ten minutes. Re-record or re-export files whose container metadata cannot b
 Do not infer playback support solely from the filename extension.
 
 ---
+
+## 11a. Reviewed knowledge base (grounded coaching)
+
+The coach grounds its explanations in short, skill-tagged teaching units and cites the ones it used
+(see `sources` on the attempt response). A base set is seeded; teachers can add their own.
+
+### `GET /api/teacher/knowledge` — teacher only
+```json
+{ "units": [ { "id": "9bb1e3c4...", "skill_code": "MORPH.AGREEMENT", "title": "He, she, it verbs",
+               "body": "With he, she or it, the verb takes an s...", "example": "She goes to school.",
+               "source": "Vaachak reviewed", "version": 1, "level": "A1" } ] }
+```
+Returns the public base plus the teacher's own units. A teacher never sees another teacher's private units.
+
+### `POST /api/teacher/knowledge` — teacher only
+```json
+{ "skill_code": "MORPH.AGREEMENT", "title": "My verb note",
+  "body": "With he, she or it, add s.", "example": "she goes",
+  "level": "A1", "language": "en", "visibility": "private" }
+```
+→ `{ "id": "...", "skill_code": "MORPH.AGREEMENT", "visibility": "private" }`. `skill_code` must be a
+real skill (`422` otherwise). `visibility` is `private` (default, only this teacher) or `public`
+(everyone, including learners' grounded coaching). Learners cannot call these.
 
 ## 11. AI question drafting
 

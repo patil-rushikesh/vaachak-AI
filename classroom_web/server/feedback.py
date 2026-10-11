@@ -288,7 +288,7 @@ def _as_tips(ai_result: dict) -> list[str]:
 
 
 def analyse_full(kind: str, target: str | None, transcript: str, answer: str | None = None,
-                 prompt: str | None = None, level: str = "A1") -> dict:
+                 prompt: str | None = None, level: str = "A1", knowledge: list[dict] | None = None) -> dict:
     """Score an attempt with the rules, then let the model improve the explanation.
 
     The rules always run, so a learner still gets feedback with no internet and no key.
@@ -301,11 +301,15 @@ def analyse_full(kind: str, target: str | None, transcript: str, answer: str | N
     base["source"] = "rules"
     if kind == "build" or not ai.configured():
         return base
-    coached = ai.coach(kind, target, transcript, prompt=prompt, level=level)
+    coached = ai.coach(kind, target, transcript, prompt=prompt, level=level, knowledge=knowledge)
     if not coached:
         return base
 
     base["source"] = "ai"
+    if knowledge:
+        by_id = {u["id"]: u for u in knowledge}
+        base["sources"] = [{"id": s, "title": by_id[s]["title"], "source": by_id[s]["source"]}
+                           for s in coached.get("source_ids", []) if s in by_id]
     base["next_line"] = coached.get("next_line") or ""
     base["verdict"] = coached.get("verdict") or ""
     base["strengths"] = list(coached.get("strengths") or [])
