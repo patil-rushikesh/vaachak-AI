@@ -309,3 +309,50 @@ def test_generation_caps_the_count(monkeypatch):
     wire(monkeypatch, chat_reply(json.dumps(many)))
     assert len(ai.generate_items("x", count=4, kinds=["read"])) == 4
     assert len(ai.generate_items("x", count=99, kinds=["read"])) == 12   # hard ceiling
+
+
+# ----------------------------------------------------------------------------- model selection
+def test_guard_and_moderation_models_are_never_chosen_for_feedback():
+    """These answer the models endpoint but cannot write feedback, so offering one looks fine
+    in the check script and then fails in the app. This is the real list from a live account."""
+    account = ["meta-llama/llama-prompt-guard-2-22m", "meta-llama/llama-prompt-guard-2-86m",
+               "openai/gpt-oss-120b", "openai/gpt-oss-20b", "openai/gpt-oss-safeguard-20b",
+               "qwen/qwen3.8-27b", "whisper-large-v3", "whisper-large-v3-turbo"]
+    usable = [m for m in account if not any(w in m.lower() for w in ai.NOT_CHAT)]
+    assert usable == ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"]
+    assert not any(any(w in m.lower() for w in ai.NOT_CHAT) for m in ai.CHAT_MODELS)
+    assert not any("whisper" in m for m in ai.CHAT_MODELS)
+    assert all("whisper" in m for m in ai.ASR_MODELS)
+
+
+def test_a_model_that_refuses_json_mode_is_asked_again_plainly(monkeypatch):
+    """Not every model supports response_format. Rather than giving up, ask again without it."""
+    seen = []
+
+    def handler(req):
+        body = json.loads(req.content)
+        seen.append(body)
+        if "response_format" in body:
+            return httpx.Response(400, json={"error": {"message": "response_format is not supported"}})
+        return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps(GOOD)}}]})
+
+    wire(monkeypatch, handler)
+    out = ai.coach("free", None, "he like music")
+    assert out is not None and out["score"] == 72
+    assert len(seen) == 2 and "response_format" in seen[0] and "response_format" not in seen[1]
+    assert seen[0]["model"] == seen[1]["model"], "the retry must use the same model"
+
+
+def test_a_400_that_is_not_about_json_still_moves_to_the_next_model(monkeypatch):
+    calls = []
+
+    def handler(req):
+        body = json.loads(req.content)
+        calls.append(body["model"])
+        if body["model"] == ai.CHAT_MODELS[0]:
+            return httpx.Response(400, json={"error": {"message": "model_not_found"}})
+        return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps(GOOD)}}]})
+
+    wire(monkeypatch, handler)
+    assert ai.coach("free", None, "he like music")["score"] == 72
+    assert calls[0] == ai.CHAT_MODELS[0] and calls[-1] != ai.CHAT_MODELS[0]

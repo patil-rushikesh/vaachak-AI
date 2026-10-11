@@ -39,6 +39,8 @@ whatever the learner actually said.
 1. Make a file called **`vaachak.env`** in this folder containing one line:
    `GROQ_API_KEY=gsk_your_key_here` (get one free at <https://console.groq.com/keys>).
 2. Run `python check_ai.py`. It tells you whether the key works and which models you have.
+   Groq renames models from time to time; if it says none are available, it prints the exact line
+   to add to `vaachak.env` (for example `VAACHAK_CHAT_MODEL=openai/gpt-oss-120b`).
 3. Restart the app.
 
 `vaachak.env` is in `.gitignore`, so your key is never committed.
@@ -153,3 +155,6 @@ code if a teacher gives you one.
 pip install -r requirements-dev.txt
 python -m pytest
 ```
+
+> In Git Bash rather than PowerShell, activate the environment with
+> `source .venv/Scripts/activate`. `.venv\Scripts\Activate.ps1` is PowerShell-only.

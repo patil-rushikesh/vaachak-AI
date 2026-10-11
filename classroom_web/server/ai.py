@@ -28,7 +28,13 @@ log = logging.getLogger("vaachak.ai")
 BASE = "https://api.groq.com/openai/v1"
 # Model ids change; these are the defaults and the app falls back through the list.
 ASR_MODELS = ["whisper-large-v3-turbo", "whisper-large-v3"]
-CHAT_MODELS = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "llama3-70b-8192"]
+# Groq's catalogue changes. These are tried in order and a model the account does not have is
+# skipped automatically, so a stale name here costs one wasted request, not a broken app.
+CHAT_MODELS = ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openai/gpt-oss-20b",
+               "llama-3.3-70b-versatile", "llama-3.1-8b-instant"]
+# Classifiers and moderation models. They answer the models endpoint but cannot write feedback,
+# so they must never be chosen as a chat model.
+NOT_CHAT = ("prompt-guard", "safeguard", "guard", "whisper", "tts", "embed", "rerank")
 TRANSCRIBE_TIMEOUT = 45.0
 COACH_TIMEOUT = 30.0
 MAX_AUDIO_BYTES = 20 * 1024 * 1024
@@ -245,6 +251,25 @@ def _clean(raw: dict, transcript: str) -> dict:
     return out
 
 
+def _chat(model: str, system: str, user: str, *, temperature: float, max_tokens: int,
+          timeout: float = COACH_TIMEOUT) -> dict:
+    """One chat call, retried without response_format for models that reject it.
+
+    Not every model on the service supports JSON mode. When one refuses it, asking again
+    plainly still works, because _extract_json copes with a fenced or chatty reply.
+    """
+    body = {"model": model, "temperature": temperature, "max_tokens": max_tokens,
+            "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
+    try:
+        return _post("/chat/completions", timeout, json={**body, "response_format": {"type": "json_object"}})
+    except AIUnavailable as e:
+        msg = str(e).lower()
+        if "http 400" not in msg or not any(w in msg for w in ("json", "response_format")):
+            raise
+        log.info("%s rejected JSON mode; asking again without it", model)
+        return _post("/chat/completions", timeout, json=body)
+
+
 def coach(kind: str, target: str | None, transcript: str, prompt: str | None = None, level: str = "A1") -> dict | None:
     """Ask the model for feedback. Returns None whenever the model cannot be used."""
     transcript = (transcript or "").strip()
@@ -261,11 +286,7 @@ def coach(kind: str, target: str | None, transcript: str, prompt: str | None = N
     last = ""
     for model in _models("chat"):
         try:
-            payload = _post("/chat/completions", COACH_TIMEOUT, json={
-                "model": model, "temperature": 0.2, "max_tokens": 700,
-                "response_format": {"type": "json_object"},
-                "messages": [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}],
-            })
+            payload = _chat(model, SYSTEM, user, temperature=0.2, max_tokens=700)
             content = payload["choices"][0]["message"]["content"]
             return _clean(_extract_json(content), transcript)
         except AIUnavailable as e:
@@ -339,11 +360,8 @@ def generate_items(topic: str, count: int = 6, kinds: list[str] | None = None,
     last = ""
     for model in _models("chat"):
         try:
-            payload = _post("/chat/completions", COACH_TIMEOUT + 30, json={
-                "model": model, "temperature": 0.7, "max_tokens": 2000,
-                "response_format": {"type": "json_object"},
-                "messages": [{"role": "system", "content": GEN_SYSTEM}, {"role": "user", "content": ask}],
-            })
+            payload = _chat(model, GEN_SYSTEM, ask, temperature=0.7, max_tokens=2000,
+                            timeout=COACH_TIMEOUT + 30)
             raw = _extract_json(payload["choices"][0]["message"]["content"])
         except AIUnavailable as e:
             last = str(e)

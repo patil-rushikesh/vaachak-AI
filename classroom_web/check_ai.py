@@ -57,7 +57,9 @@ def main() -> None:
     print(f"{OK} Key works. {len(available)} models available to you.")
 
     asr_here = [m for m in available if "whisper" in m]
-    chat_here = [m for m in available if any(w in m for w in ("llama", "gpt", "qwen", "gemma", "kimi"))]
+    # Guard and moderation models answer this endpoint but cannot write feedback, so they are
+    # not offered as candidates. Suggesting one would look fine here and fail in the app.
+    chat_here = [m for m in available if not any(w in m.lower() for w in ai.NOT_CHAT)]
     print(f"{INFO} speech-to-text: {', '.join(asr_here) or 'none found'}")
     print(f"{INFO} chat: {', '.join(chat_here[:8]) or 'none found'}")
 
@@ -67,10 +69,12 @@ def main() -> None:
         if not any(w in available for w in wanted):
             label = "speech-to-text" if kind == "asr" else "feedback"
             env = "VAACHAK_ASR_MODEL" if kind == "asr" else "VAACHAK_CHAT_MODEL"
+            pick = found[0] if found else None
             fail(f"None of the {label} models this app knows about are available to you.",
                  f"The app would try: {', '.join(wanted)}",
                  f"Your account has: {', '.join(found[:6]) or 'none'}",
-                 f"Add a line to vaachak.env: {env}=<one of yours above>")
+                 (f"Add this line to vaachak.env:  {env}={pick}" if pick
+                  else f"Your account has no usable {label} model."))
         picked = next(w for w in wanted if w in available)
         print(f"{OK} Will use for {'speech-to-text' if kind == 'asr' else 'feedback'}: {picked}")
 

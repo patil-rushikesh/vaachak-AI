@@ -60,6 +60,16 @@ python check_ai.py                          # key, models, and a real feedback c
 python check_ai.py path\to\a\recording.m4a  # also test speech-to-text on real audio
 ```
 
+Groq renames models from time to time. If the check reports that none of the feedback models are
+available, it prints the exact line to paste into `vaachak.env`, for example:
+
+```
+VAACHAK_CHAT_MODEL=openai/gpt-oss-120b
+```
+
+The check never suggests a guard or moderation model: those answer the models endpoint but cannot
+write feedback.
+
 With a key present:
 - **Speech-to-text runs on the server** (Whisper), not in the browser. The learner taps Record, taps Stop, and the feedback appears. No typing step, no dependence on Chrome's speech engine, and it handles Indian accents far better.
 - **Feedback comes from a language model.** It judges whatever the learner actually said, not a fixed list of patterns, and returns corrections in the learner's own words plus a sentence to try next.
