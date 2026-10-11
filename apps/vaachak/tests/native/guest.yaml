@@ -1,0 +1,24 @@
+appId: host.exp.exponent
+name: Guest receives useful feedback without an account
+---
+- openLink: exp://127.0.0.1:8091
+- tapOn:
+    text: Continue
+    optional: true
+- runFlow:
+    when:
+      visible: Toggle performance monitor
+    commands:
+      - back
+- extendedWaitUntil:
+    visible: Try a free 2-minute sample
+    timeout: 45000
+- tapOn: Try a free 2-minute sample
+- tapOn: practise
+- assertVisible: One useful correction.
+- assertVisible: Use practises with she in the present simple.
+- tapOn: Next sample
+- assertVisible: Choose a polite request.
+- tapOn: Could you explain that again, please?
+- assertVisible: You got it.
+- tapOn: Continue to sign in

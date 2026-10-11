@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-11",
+  "web": {
+    "passed": 66,
+    "failed": 0,
+    "projects": [
+      "desktop",
+      "mobile-web"
+    ],
+    "additional_rerecord_regressions_passed": 2
+  },
+  "backend": {
+    "passed": 152
+  },
+  "frontend_units": {
+    "passed": 19
+  },
+  "physical_android_additional_flows": {
+    "passed": 6,
+    "failed": 0,
+    "runtime": "Expo Go 57.0.9",
+    "model": "realme 15 5G",
+    "os": "Android 16"
+  },
+  "live_provider": {
+    "passed": 1,
+    "includes": [
+      "synchronous teacher generation",
+      "queued generation worker",
+      "approval gate"
+    ]
+  },
+  "inventory": {
+    "declarations": 191,
+    "literal_labels": 129,
+    "browser_literal_labels_interacted": 125,
+    "remaining_labels_in_live_provider_journey": 4
+  },
+  "release_certified": false,
+  "limitations": [
+    "Incomplete full iOS regression",
+    "Signed native builds and notification delivery",
+    "Real SMTP delivery",
+    "Full physical permission/interruption/accessibility matrix",
+    "Known ASR word-boundary scoring quality defect"
+  ],
+  "test_setup": {
+    "isolated_data": true,
+    "functional_ai_enabled": false,
+    "functional_auth_per_minute": 1000,
+    "normal_app_settings_changed": false,
+    "controlled_cases": [
+      "lost response",
+      "network failure",
+      "malformed response",
+      "ASR preview editor"
+    ]
+  },
+  "typecheck": "passed",
+  "lint": {
+    "errors": 0,
+    "existing_warnings": 11
+  }
+}

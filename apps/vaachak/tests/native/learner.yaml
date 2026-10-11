@@ -1,0 +1,42 @@
+appId: host.exp.exponent
+name: Learner signs in and chooses a personal learning goal
+---
+- stopApp
+- openLink: exp://127.0.0.1:8091
+- runFlow:
+    when:
+      visible: Email
+    commands:
+      - scrollUntilVisible:
+          element: Email
+      - tapOn:
+          id: field-email
+      - inputText: ${TEST_EMAIL}
+      - tapOn:
+          id: field-password
+      - inputText: ${TEST_PASSWORD}
+      - scrollUntilVisible:
+          element: Let’s practise
+      - tapOn: Let’s practise
+- extendedWaitUntil:
+    visible: Hello, Native.*
+    timeout: 30000
+- scrollUntilVisible:
+    element: My goals & continuous practice
+- tapOn: My goals & continuous practice
+- scrollUntilVisible:
+    element: Interview confidence
+- tapOn: Interview confidence
+- assertVisible: ✓ Interview confidence
+- scrollUntilVisible:
+    element: Start a guided conversation
+- tapOn: Start a guided conversation
+- scrollUntilVisible:
+    element: Your conversation reply
+- tapOn:
+    id: field-your-conversation-reply
+- inputText: I build useful projects with my team.
+- scrollUntilVisible:
+    element: Continue conversation
+- tapOn: Continue conversation
+- assertVisible: I build useful projects with my team.

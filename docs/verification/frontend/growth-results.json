@@ -1,0 +1,138 @@
+{
+  "date": "2026-10-11",
+  "runner": "Playwright",
+  "stats": {
+    "startTime": "2026-10-11T09:19:24.594Z",
+    "duration": 63168.662000000004,
+    "expected": 24,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "projects": [
+    "desktop",
+    "mobile-web"
+  ],
+  "tests": [
+    {
+      "title": "learner completes all six task formats, sees journal and settings",
+      "project": "desktop",
+      "status": "expected"
+    },
+    {
+      "title": "teacher creates, reviews and publishes a lesson",
+      "project": "desktop",
+      "status": "expected"
+    },
+    {
+      "title": "lost submission response is reconciled without a duplicate",
+      "project": "desktop",
+      "status": "expected"
+    },
+    {
+      "title": "invalid sign-in is readable and never exposes server internals",
+      "project": "desktop",
+      "status": "expected"
+    },
+    {
+      "title": "teacher sees class evidence and publishes a targeted follow-up",
+      "project": "desktop",
+      "status": "expected"
+    },
+    {
+      "title": "learner joins a class from a code and can recover a failed query",
+      "project": "desktop",
+      "status": "expected"
+    },
+    {
+      "title": "pending practice survives browser reload and sign-in",
+      "project": "desktop",
+      "status": "expected"
+    },
+    {
+      "title": "teacher records synthetic browser audio and saves a valid voice reference",
+      "project": "desktop",
+      "status": "expected"
+    },
+    {
+      "title": "unsent submission can be edited after status confirms absence",
+      "project": "desktop",
+      "status": "expected"
+    },
+    {
+      "title": "goal preferences, offline download, guided conversation and feedback",
+      "project": "desktop",
+      "status": "expected"
+    },
+    {
+      "title": "teacher draft survives navigation and reopens with the saved title",
+      "project": "desktop",
+      "status": "expected"
+    },
+    {
+      "title": "guest can get a useful correction without signing up",
+      "project": "desktop",
+      "status": "expected"
+    },
+    {
+      "title": "learner completes all six task formats, sees journal and settings",
+      "project": "mobile-web",
+      "status": "expected"
+    },
+    {
+      "title": "teacher creates, reviews and publishes a lesson",
+      "project": "mobile-web",
+      "status": "expected"
+    },
+    {
+      "title": "lost submission response is reconciled without a duplicate",
+      "project": "mobile-web",
+      "status": "expected"
+    },
+    {
+      "title": "invalid sign-in is readable and never exposes server internals",
+      "project": "mobile-web",
+      "status": "expected"
+    },
+    {
+      "title": "teacher sees class evidence and publishes a targeted follow-up",
+      "project": "mobile-web",
+      "status": "expected"
+    },
+    {
+      "title": "learner joins a class from a code and can recover a failed query",
+      "project": "mobile-web",
+      "status": "expected"
+    },
+    {
+      "title": "pending practice survives browser reload and sign-in",
+      "project": "mobile-web",
+      "status": "expected"
+    },
+    {
+      "title": "teacher records synthetic browser audio and saves a valid voice reference",
+      "project": "mobile-web",
+      "status": "expected"
+    },
+    {
+      "title": "unsent submission can be edited after status confirms absence",
+      "project": "mobile-web",
+      "status": "expected"
+    },
+    {
+      "title": "goal preferences, offline download, guided conversation and feedback",
+      "project": "mobile-web",
+      "status": "expected"
+    },
+    {
+      "title": "teacher draft survives navigation and reopens with the saved title",
+      "project": "mobile-web",
+      "status": "expected"
+    },
+    {
+      "title": "guest can get a useful correction without signing up",
+      "project": "mobile-web",
+      "status": "expected"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+# Run after audio-upload.yaml; submits the unchanged speech transcript.
+appId: host.exp.exponent
+name: Native recorded answer evaluation and practice completion
+---
+- tapOn: Check my answer
+- extendedWaitUntil:
+    visible: .*task score
+    timeout: 45000
+- scrollUntilVisible:
+    element: AI-assisted feedback.*
+- assertVisible: AI-assisted feedback.*
+- scrollUntilVisible:
+    element: Finish practice
+- tapOn: Finish practice
+- assertVisible: A little more confident.

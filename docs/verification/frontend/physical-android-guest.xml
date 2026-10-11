@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="physical-android-device" tests="1" failures="0" time="37.365" timestamp="2026-10-11T15:26:20">
+    <testcase id="Guest receives useful feedback without an account" name="Guest receives useful feedback without an account" classname="Guest receives useful feedback without an account" file="/tmp/vaachak-phone-flows/guest.yaml" time="37.347" timestamp="2026-10-11T15:26:20" status="SUCCESS"/>
+  </testsuite>
+</testsuites>

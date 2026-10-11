@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-11",
+  "unit_tests": {
+    "passed": 12,
+    "failed": 0
+  },
+  "browser_tests": {
+    "startTime": "2026-10-11T08:27:51.691Z",
+    "duration": 71717.694,
+    "expected": 18,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "api_contract_operations": 71,
+  "expo_doctor_checks_passed": 21,
+  "exports": [
+    "web",
+    "ios",
+    "android"
+  ],
+  "docker": {
+    "image": "vaachak-web:local",
+    "root_status": 200,
+    "proxied_ready_status": 200
+  },
+  "ios_simulator": "Expo Go sign-in, practice and live feedback verified",
+  "android_simulator": "Blocked by insufficient disk space for initial userdata allocation"
+}

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="emulator-5554" tests="1" failures="0" time="23.746" timestamp="2026-10-11T14:55:46">
+    <testcase id="Guest receives useful feedback without an account" name="Guest receives useful feedback without an account" classname="Guest receives useful feedback without an account" file="tests/native/guest.yaml" time="23.729" timestamp="2026-10-11T14:55:46" status="SUCCESS"/>
+  </testsuite>
+</testsuites>

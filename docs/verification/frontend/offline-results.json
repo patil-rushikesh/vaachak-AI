@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-11",
+  "runner": "Playwright",
+  "scope": "Downloaded public practice with network offline, followed by online conversation",
+  "stats": {
+    "startTime": "2026-10-11T09:25:50.586Z",
+    "duration": 8493.65,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "Vaachak",
+    "slug": "vaachak",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vaachak.learning"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#237A50",
+        "foregroundImage": "./assets/icon.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.vaachak.learning"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow Vaachak to record your English practice when you tap Record.",
+          "recordAudioAndroid": true
+        }
+      ],
+      "expo-secure-store",
+      "expo-sharing",
+      "expo-font",
+      "expo-asset",
+      "expo-router",
+      "expo-notifications"
+    ],
+    "scheme": "vaachak"
+  }
+}

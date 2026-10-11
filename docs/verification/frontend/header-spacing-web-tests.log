@@ -1,0 +1,13 @@
+
+Running 4 tests using 1 worker
+
+(node:56771) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/e2e/journeys.spec.ts:75:5 › learner completes all six task formats, sees journal and settings (2.1s)
+  ✓  2 [desktop] › tests/e2e/journeys.spec.ts:127:5 › teacher creates, reviews and publishes a lesson (850ms)
+(node:56809) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [mobile-web] › tests/e2e/journeys.spec.ts:75:5 › learner completes all six task formats, sees journal and settings (1.7s)
+  ✓  4 [mobile-web] › tests/e2e/journeys.spec.ts:127:5 › teacher creates, reviews and publishes a lesson (807ms)
+
+  4 passed (7.1s)

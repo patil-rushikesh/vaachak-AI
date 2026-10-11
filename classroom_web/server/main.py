@@ -841,10 +841,12 @@ def submit_attempt(
     assignment_id: int | None = Form(None),
     set_id: str | None = Form(None),
     lesson_id: int | None = Form(None),
+    practice_session_id: str | None = Form(None, max_length=36),
     client_uuid: str | None = Form(None, pattern=r"^[a-zA-Z0-9_-]{8,80}$"),
     item_version: str | None = Form(None, max_length=64),
     retry_of_attempt_id: int | None = Form(None),
     audio: UploadFile | None = File(None),
+    transcription_id: str | None = Form(None, max_length=36),
     user=Depends(learner_only),
     conn: sqlite3.Connection = Depends(get_db),
 ):
@@ -853,9 +855,20 @@ def submit_attempt(
         f"attempt:{user['id']}",
         int(os.getenv("VAACHAK_ATTEMPTS_PER_MINUTE", "30")),
     )
-    if sum(x is not None for x in (assignment_id, set_id, lesson_id)) != 1:
+    if (
+        sum(
+            x is not None
+            for x in (assignment_id, set_id, lesson_id, practice_session_id)
+        )
+        != 1
+    ):
         raise HTTPException(
-            422, "Send exactly one of: an assignment, a practice set, or a lesson."
+            422,
+            "Send exactly one of: an assignment, a practice set, a lesson, or a personal session.",
+        )
+    if transcription_id and audio:
+        raise HTTPException(
+            422, "Use a confirmed transcript or a new recording, not both."
         )
     audio_hash = None
     if audio is not None:
@@ -869,6 +882,7 @@ def submit_attempt(
             assignment_id,
             set_id,
             lesson_id,
+            practice_session_id,
             item_index,
             transcript,
             choice,
@@ -876,6 +890,7 @@ def submit_attempt(
             item_version,
             retry_of_attempt_id,
             audio.content_type if audio else None,
+            transcription_id,
         ]
     )
     # Reconcile completed submissions even after their task was edited/archived.
@@ -895,7 +910,12 @@ def submit_attempt(
                 ).fetchone()
             )
     revision = 1
-    if assignment_id is not None:
+    if practice_session_id is not None:
+        import growth
+
+        session = growth.owned_session(conn, user, practice_session_id)
+        items = json.loads(session["items"])
+    elif assignment_id is not None:
         source = need_assignment(conn, user, assignment_id)
         items, revision = json.loads(source["items"]), source["revision"]
     elif lesson_id is not None:
@@ -930,8 +950,9 @@ def submit_attempt(
                 previous["set_id"],
                 previous["lesson_id"],
                 previous["item_index"],
+                previous["practice_session_id"],
             )
-            != (assignment_id, set_id, lesson_id, item_index)
+            != (assignment_id, set_id, lesson_id, item_index, practice_session_id)
             or previous["content_version"] != revision
             or json.loads(previous["result"]).get("item_version")
             != evidence.version(item)
@@ -949,6 +970,20 @@ def submit_attempt(
             )
     audio_name = audio_mime = None
     try:
+        confirmed = None
+        if transcription_id:
+            confirmed = conn.execute(
+                "SELECT * FROM transcriptions WHERE id=? AND user_id=? AND status='completed' AND expires_at>?",
+                (transcription_id, user["id"], evidence.now()),
+            ).fetchone()
+            if not confirmed:
+                raise HTTPException(
+                    422, "Transcript unavailable or expired. Record again."
+                )
+            if item["kind"] in QUIZ_KINDS:
+                raise HTTPException(
+                    422, "This activity expects an option, not a recording."
+                )
         kind = item["kind"]
         if kind in QUIZ_KINDS:
             if choice is None or audio is not None or transcript.strip():
@@ -965,6 +1000,16 @@ def submit_attempt(
         else:
             if audio is not None and audio.filename:
                 audio_name, audio_mime = _save_upload(audio, MAX_ATTEMPT_AUDIO)
+            if confirmed:
+                import shutil
+                from uuid import uuid4
+
+                audio_name = str(uuid4()) + Path(confirmed["audio_file"]).suffix
+                audio_mime = confirmed["mime"]
+                shutil.copyfile(
+                    db.data_dir() / "audio" / confirmed["audio_file"],
+                    db.data_dir() / "audio" / audio_name,
+                )
             text = transcript.strip()
             mode = "assembled" if kind == "build" else "typed"
             origin = "client_text"
@@ -995,6 +1040,13 @@ def submit_attempt(
                 raise HTTPException(
                     422, "Nothing was heard. Speak again, or type what you said."
                 )
+            if confirmed:
+                mode = "recorded_confirmed"
+                origin = (
+                    "server_asr_confirmed"
+                    if text == confirmed["transcript"]
+                    else "learner_corrected_asr"
+                )
             target = item.get("text") if kind == "read" else item.get("answer")
             result = feedback.analyse_full(
                 kind, target, text, item.get("answer"), prompt=item.get("prompt")
@@ -1008,6 +1060,8 @@ def submit_attempt(
             policy_version=evidence.POLICY_VERSION,
             item_version=evidence.version(item),
         )
+        if confirmed:
+            result["original_asr_transcript"] = confirmed["transcript"]
         skill_ids = item.get("skill_ids", [])
         result["assessed_skills"] = skill_ids if len(skill_ids) == 1 else []
         if kind in QUIZ_KINDS and result["score"] < 80 and len(skill_ids) == 1:
@@ -1050,6 +1104,25 @@ def submit_attempt(
                 json.dumps(skill_ids),
             ),
         )
+        if practice_session_id:
+            conn.execute(
+                "UPDATE attempts SET practice_session_id=? WHERE id=?",
+                (practice_session_id, cur.lastrowid),
+            )
+            completed_indices = {
+                r[0]
+                for r in conn.execute(
+                    "SELECT DISTINCT item_index FROM attempts WHERE user_id=? AND practice_session_id=?",
+                    (user["id"], practice_session_id),
+                )
+            }
+            position = next(
+                (i for i in range(len(items)) if i not in completed_indices), len(items)
+            )
+            conn.execute(
+                "UPDATE practice_sessions SET position=?,completed=?,revision=revision+1,draft='{}' WHERE id=?",
+                (position, position == len(items), practice_session_id),
+            )
         if client_uuid:
             conn.execute(
                 "UPDATE submissions SET status='completed',attempt_id=?,updated_at=? WHERE user_id=? AND client_uuid=?",
@@ -1367,6 +1440,12 @@ app.include_router(courses.router)
 import operations
 
 app.include_router(operations.router)
+import growth
+
+app.include_router(growth.router)
+import generation_jobs
+
+app.include_router(generation_jobs.router)
 import observability
 
 observability.install(app)

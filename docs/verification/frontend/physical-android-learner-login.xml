@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="physical-android-redacted" tests="1" failures="0" time="87.124" timestamp="2026-10-11T16:21:59">
+    <testcase id="Physical learner sign in after teacher checks" name="Physical learner sign in after teacher checks" classname="Physical learner sign in after teacher checks" file="learner-login.yaml" time="87.115" timestamp="2026-10-11T16:21:59" status="SUCCESS" />
+  </testsuite>
+</testsuites>

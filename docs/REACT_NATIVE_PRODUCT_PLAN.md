@@ -1,5 +1,8 @@
 # VaachakAI M.Tech final year project and deployment plan
 
+> Follow-on execution plan: [User value, retention and continuous learning](USER_VALUE_IMPLEMENTATION_PLAN.md) maps the implemented app to the next milestones. Existing verification reports remain the source of completed-work claims.
+
+
 Reframed: 11 October 2026. Proposed project title: **VaachakAI: An Explainable Adaptive English Practice System with Teacher-Guided Intervention**.
 
 This is the final-year project specification for incrementally enhancing the existing VaachakAI implementation and delivering a deployable React Native application. It replaces the earlier startup-oriented launch plan. The intended outcome is a working, evaluated software system with a defensible technical contribution, a hosted backend, an installable Android release, and reproducible academic evidence.

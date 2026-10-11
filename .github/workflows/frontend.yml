@@ -1,0 +1,40 @@
+name: React Native frontend
+on:
+  pull_request:
+    paths: ['apps/vaachak/**', 'classroom_web/**', 'postman/openapi.json', '.github/workflows/frontend.yml']
+  push:
+    paths: ['apps/vaachak/**', 'classroom_web/**', 'postman/openapi.json', '.github/workflows/frontend.yml']
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/vaachak
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/vaachak/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: npm ci
+      - run: npm run lint && npm run typecheck && npm run api:check && npm test && npm run build:all
+      - run: npx playwright install --with-deps chromium
+      - run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+          pip install -r classroom_web/requirements-dev.txt
+          VAACHAK_DATA="$RUNNER_TEMP/vaachak-e2e" GROQ_API_KEY='' VAACHAK_GROQ_KEY='' PYTHONPATH=classroom_web/server python -m uvicorn main:app --port 8002 > /tmp/vaachak-e2e-api.log 2>&1 &
+        working-directory: .
+      - run: |
+          API_PORT=8002 PORT=8082 node scripts/serve.mjs > /tmp/vaachak-e2e-web.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8082/api/ready && break || sleep 1; done
+          npm run test:e2e
+      - run: docker build -t vaachak-web:ci .
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-test-results
+          path: apps/vaachak/test-results/e2e-results.json

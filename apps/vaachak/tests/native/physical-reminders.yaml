@@ -1,0 +1,18 @@
+# Start on Growth; tests Expo Go unsupported reminders and pause feedback.
+appId: host.exp.exponent
+name: Physical reminder unsupported and pause handling
+---
+- scrollUntilVisible:
+    element: Enable daily reminder
+    direction: UP
+- tapOn: Enable daily reminder
+- scrollUntilVisible:
+    element: .*Reminders require.*
+- assertVisible: .*Reminders require.*
+- scrollUntilVisible:
+    element: Pause reminders
+    direction: UP
+- tapOn: Pause reminders
+- scrollUntilVisible:
+    element: Practice reminders are off.
+- assertVisible: Practice reminders are off.

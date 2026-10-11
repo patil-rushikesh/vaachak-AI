@@ -4,7 +4,7 @@ WORKDIR /app
 COPY classroom_web/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt && useradd --uid 10001 --create-home vaachak
 COPY classroom_web/server /app/classroom_web/server
-COPY tools/backend_admin.py /app/tools/backend_admin.py
+COPY tools/backend_admin.py tools/learning_worker.py /app/tools/
 RUN mkdir -p /data/audio && chown -R vaachak:vaachak /data /app
 ENV PYTHONPATH=/app/classroom_web/server VAACHAK_DATA=/data PYTHONUNBUFFERED=1
 USER vaachak

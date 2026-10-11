@@ -1,0 +1,122 @@
+[
+  {
+    "kind": "choice",
+    "prompt": "She ___ English every day.",
+    "options": [
+      "practise",
+      "practises"
+    ],
+    "correct": 1,
+    "explain": "Use practises with she in the present simple."
+  },
+  {
+    "kind": "choice",
+    "prompt": "I worked ___ this project.",
+    "options": [
+      "on",
+      "at"
+    ],
+    "correct": 0,
+    "explain": "We work on a project."
+  },
+  {
+    "kind": "choice",
+    "prompt": "Choose a polite request.",
+    "options": [
+      "Explain again now.",
+      "Could you explain that again, please?"
+    ],
+    "correct": 1,
+    "explain": "Could you\u2026please? makes a request polite."
+  },
+  {
+    "kind": "choice",
+    "prompt": "We ___ a meeting yesterday.",
+    "options": [
+      "have",
+      "had"
+    ],
+    "correct": 1,
+    "explain": "Yesterday refers to the past: had."
+  },
+  {
+    "kind": "choice",
+    "prompt": "There ___ three people in my team.",
+    "options": [
+      "is",
+      "are"
+    ],
+    "correct": 1,
+    "explain": "Use are with a plural noun."
+  },
+  {
+    "kind": "choice",
+    "prompt": "I have ___ idea.",
+    "options": [
+      "a",
+      "an"
+    ],
+    "correct": 1,
+    "explain": "Use an before the vowel sound in idea."
+  },
+  {
+    "kind": "choice",
+    "prompt": "Could we meet ___ Monday?",
+    "options": [
+      "on",
+      "in"
+    ],
+    "correct": 0,
+    "explain": "Use on with a day of the week."
+  },
+  {
+    "kind": "choice",
+    "prompt": "I look forward to ___ from you.",
+    "options": [
+      "hear",
+      "hearing"
+    ],
+    "correct": 1,
+    "explain": "The phrase look forward to is followed by an -ing form."
+  },
+  {
+    "kind": "choice",
+    "prompt": "Choose a clear project introduction.",
+    "options": [
+      "My project helps students practise English.",
+      "Project me students English."
+    ],
+    "correct": 0,
+    "explain": "A clear introduction has a subject and a verb."
+  },
+  {
+    "kind": "choice",
+    "prompt": "I ___ in Pune.",
+    "options": [
+      "live",
+      "lives"
+    ],
+    "correct": 0,
+    "explain": "Use live with I."
+  },
+  {
+    "kind": "choice",
+    "prompt": "Please let me know ___ you need help.",
+    "options": [
+      "if",
+      "than"
+    ],
+    "correct": 0,
+    "explain": "If introduces a condition."
+  },
+  {
+    "kind": "choice",
+    "prompt": "This task is ___ than the previous one.",
+    "options": [
+      "easier",
+      "easy"
+    ],
+    "correct": 0,
+    "explain": "Use a comparative before than."
+  }
+]

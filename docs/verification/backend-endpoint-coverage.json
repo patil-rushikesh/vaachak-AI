@@ -1,13 +1,13 @@
 {
-  "operations": 71,
-  "covered": 71,
-  "successful": 71,
+  "operations": 94,
+  "covered": 94,
+  "successful": 92,
   "items": [
     {
       "method": "POST",
       "path": "/api/auth/register",
       "statuses": {
-        "200": 255,
+        "200": 282,
         "409": 1,
         "422": 3,
         "403": 1
@@ -78,7 +78,7 @@
       "method": "POST",
       "path": "/api/classes",
       "statuses": {
-        "200": 79,
+        "200": 88,
         "403": 1,
         "422": 2
       },
@@ -89,7 +89,7 @@
       "method": "POST",
       "path": "/api/classes/join",
       "statuses": {
-        "200": 158,
+        "200": 176,
         "404": 2
       },
       "covered": true,
@@ -237,8 +237,8 @@
       "method": "POST",
       "path": "/api/attempts",
       "statuses": {
-        "200": 52,
-        "422": 6,
+        "200": 58,
+        "422": 7,
         "404": 1,
         "415": 1,
         "409": 3,
@@ -553,7 +553,7 @@
       "method": "GET",
       "path": "/api/me/submissions/{client_uuid}",
       "statuses": {
-        "200": 3,
+        "200": 4,
         "404": 1
       },
       "covered": true,
@@ -563,7 +563,7 @@
       "method": "PATCH",
       "path": "/api/attempts/{attempt_id}/dispute",
       "statuses": {
-        "200": 1
+        "200": 2
       },
       "covered": true,
       "successful_response_tested": true
@@ -600,8 +600,8 @@
       "method": "POST",
       "path": "/api/auth/reset-password",
       "statuses": {
-        "200": 1,
-        "400": 1
+        "200": 2,
+        "400": 2
       },
       "covered": true,
       "successful_response_tested": true
@@ -610,7 +610,7 @@
       "method": "GET",
       "path": "/api/me/export",
       "statuses": {
-        "200": 1
+        "200": 2
       },
       "covered": true,
       "successful_response_tested": true
@@ -696,6 +696,220 @@
     {
       "method": "GET",
       "path": "/api/me/recommendations",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/learning-profile",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "PUT",
+      "path": "/api/me/learning-profile",
+      "statuses": {
+        "200": 3
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/review-queue",
+      "statuses": {
+        "200": 2
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/practice-sessions",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/me/practice-sessions",
+      "statuses": {
+        "200": 6,
+        "409": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/practice-sessions/{session_id}",
+      "statuses": {
+        "404": 1,
+        "200": 2
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/me/practice-sessions/{session_id}",
+      "statuses": {
+        "200": 1,
+        "409": 1,
+        "404": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "PUT",
+      "path": "/api/teacher/drafts/{draft_id}",
+      "statuses": {
+        "403": 1,
+        "200": 1,
+        "409": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/teacher/drafts/{draft_id}",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/teacher/drafts",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/teacher/archives",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/feedback-reports",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/events",
+      "statuses": {
+        "200": 3
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/conversations",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/conversations/{conversation_id}",
+      "statuses": {
+        "404": 1
+      },
+      "covered": true,
+      "successful_response_tested": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/conversations/{conversation_id}/turns",
+      "statuses": {
+        "200": 8
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/transcriptions",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/transcriptions/{transcription_id}",
+      "statuses": {
+        "404": 1
+      },
+      "covered": true,
+      "successful_response_tested": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/practice-download",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/password-reset-request",
+      "statuses": {
+        "200": 2
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai/jobs",
+      "statuses": {
+        "200": 1
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/ai/jobs",
+      "statuses": {
+        "403": 1,
+        "200": 2
+      },
+      "covered": true,
+      "successful_response_tested": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai/jobs/{job_id}",
       "statuses": {
         "200": 1
       },

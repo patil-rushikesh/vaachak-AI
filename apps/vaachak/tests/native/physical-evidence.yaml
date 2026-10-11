@@ -1,0 +1,31 @@
+# Start signed in as the test learner with the retained 75% recorded attempt; EXPO_URL identifies the Metro server.
+appId: host.exp.exponent
+name: Physical saved audio playback and evidence dispute lifecycle
+---
+- tapOn: Progress
+- scrollUntilVisible:
+    element: 75% task score
+    timeout: 60000
+- tapOn: 75% task score
+- assertVisible: Your practice, revisited.
+- scrollUntilVisible:
+    element: The transcript isn’t what I said
+    timeout: 60000
+- tapOn: The transcript isn’t what I said
+- assertVisible: Restore this evidence
+- tapOn: Restore this evidence
+- assertVisible: The transcript isn’t what I said
+- scrollUntilVisible:
+    element: Play recording
+    timeout: 60000
+- tapOn: Play recording
+- assertVisible: Pause recording
+- tapOn: Pause recording
+- assertVisible: Play recording
+- tapOn: Today
+- stopApp
+- openLink: ${EXPO_URL}
+- extendedWaitUntil:
+    visible: Progress
+    timeout: 30000
+- assertVisible: Progress

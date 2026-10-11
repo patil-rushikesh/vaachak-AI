@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="emulator-5554" tests="1" failures="0" time="55.799" timestamp="2026-10-11T15:02:53">
+    <testcase id="Learner signs in and chooses a personal learning goal" name="Learner signs in and chooses a personal learning goal" classname="Learner signs in and chooses a personal learning goal" file="tests/native/learner.yaml" time="55.728" timestamp="2026-10-11T15:02:53" status="SUCCESS"/>
+  </testsuite>
+</testsuites>

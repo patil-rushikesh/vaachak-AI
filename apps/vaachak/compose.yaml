@@ -1,0 +1,48 @@
+services:
+  api:
+    build:
+      context: ../..
+      dockerfile: deploy/backend/Dockerfile
+    environment:
+      VAACHAK_DATA: /data
+      VAACHAK_ENV: production
+      VAACHAK_TEACHER_INVITE: ${VAACHAK_TEACHER_INVITE:?Set a teacher invitation code}
+      VAACHAK_SMTP_HOST: ${VAACHAK_SMTP_HOST:-}
+      VAACHAK_SMTP_PORT: ${VAACHAK_SMTP_PORT:-587}
+      VAACHAK_SMTP_FROM: ${VAACHAK_SMTP_FROM:-}
+      VAACHAK_SMTP_USER: ${VAACHAK_SMTP_USER:-}
+      VAACHAK_SMTP_PASSWORD: ${VAACHAK_SMTP_PASSWORD:-}
+      VAACHAK_GENERATION_DAILY_JOBS: ${VAACHAK_GENERATION_DAILY_JOBS:-50}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+    volumes:
+      - backend_data:/data
+    restart: unless-stopped
+    logging:
+      options: { max-size: "10m", max-file: "3" }
+  worker:
+    build:
+      context: ../..
+      dockerfile: deploy/backend/Dockerfile
+    command: ["python", "tools/learning_worker.py"]
+    environment:
+      VAACHAK_DATA: /data
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      VAACHAK_GENERATION_DAILY_JOBS: ${VAACHAK_GENERATION_DAILY_JOBS:-50}
+    volumes: ["backend_data:/data"]
+    depends_on:
+      api: { condition: service_healthy }
+    restart: unless-stopped
+    healthcheck:
+      disable: true
+    logging:
+      options: { max-size: "10m", max-file: "3" }
+  web:
+    build: .
+    ports: ["127.0.0.1:8090:8080"]
+    depends_on:
+      api: { condition: service_healthy }
+    restart: unless-stopped
+    logging:
+      options: { max-size: "10m", max-file: "3" }
+volumes:
+  backend_data:

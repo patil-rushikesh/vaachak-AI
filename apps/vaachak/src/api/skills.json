@@ -1,0 +1,100 @@
+[
+  {
+    "code": "SYN.ARTICLE",
+    "label": "A, an and the",
+    "domain": "Sentence building",
+    "hint": "Putting a, an or the in the right place",
+    "accent_only": false
+  },
+  {
+    "code": "SYN.PREPOSITION",
+    "label": "In, on, at, about",
+    "domain": "Sentence building",
+    "hint": "Choosing the right small word after a verb",
+    "accent_only": false
+  },
+  {
+    "code": "SYN.QUESTION",
+    "label": "Asking questions",
+    "domain": "Sentence building",
+    "hint": "Word order in questions",
+    "accent_only": false
+  },
+  {
+    "code": "SYN.WORDORDER",
+    "label": "Word order",
+    "domain": "Sentence building",
+    "hint": "Putting the words in the usual order",
+    "accent_only": false
+  },
+  {
+    "code": "SYN.AUXILIARY",
+    "label": "Is, are, do, does",
+    "domain": "Sentence building",
+    "hint": "The small helping verb in a sentence",
+    "accent_only": false
+  },
+  {
+    "code": "MORPH.AGREEMENT",
+    "label": "He, she, it verbs",
+    "domain": "Word endings",
+    "hint": "Adding s with he, she and it",
+    "accent_only": false
+  },
+  {
+    "code": "MORPH.TENSE",
+    "label": "Past and present",
+    "domain": "Word endings",
+    "hint": "Choosing the right time of the verb",
+    "accent_only": false
+  },
+  {
+    "code": "MORPH.PROGRESSIVE",
+    "label": "-ing verbs",
+    "domain": "Word endings",
+    "hint": "When to use am, is or are with -ing",
+    "accent_only": false
+  },
+  {
+    "code": "MORPH.PLURAL",
+    "label": "One and many",
+    "domain": "Word endings",
+    "hint": "Making words plural the right way",
+    "accent_only": false
+  },
+  {
+    "code": "MORPH.COMPARATIVE",
+    "label": "Bigger, better",
+    "domain": "Word endings",
+    "hint": "Comparing two things",
+    "accent_only": false
+  },
+  {
+    "code": "LEX.CHOICE",
+    "label": "Word choice",
+    "domain": "Word choice",
+    "hint": "Picking the word that fits",
+    "accent_only": false
+  },
+  {
+    "code": "LEX.QUANTITY",
+    "label": "Much, many, few",
+    "domain": "Word choice",
+    "hint": "Words for how much and how many",
+    "accent_only": false
+  },
+  {
+    "code": "FLU.LENGTH",
+    "label": "Full answers",
+    "domain": "Speaking",
+    "hint": "Answering in a whole sentence, not one word",
+    "accent_only": false
+  },
+  {
+    "code": "FLU.CLARITY",
+    "label": "Being understood",
+    "domain": "Speaking",
+    "hint": "Saying the sentence so it is clear",
+    "accent_only": false
+  }
+]

@@ -1,0 +1,20 @@
+# Start signed in as the synthetic teacher with an empty voice library.
+appId: host.exp.exponent
+name: Physical teacher save editor and remaining pages
+---
+- tapOn: Library
+- scrollUntilVisible:
+    element: Voice reference library
+    direction: UP
+    timeout: 60000
+- tapOn: Voice reference library
+- scrollUntilVisible:
+    element: Your voice library starts here
+- assertVisible: Your voice library starts here
+- tapOn: Open my account
+- scrollUntilVisible:
+    element: Saved drafts & archives
+    direction: UP
+    timeout: 60000
+- tapOn: Saved drafts & archives
+- assertVisible: Saved work

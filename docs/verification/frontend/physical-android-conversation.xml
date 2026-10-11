@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="physical-android-device" tests="1" failures="0" time="33.578" timestamp="2026-10-11T15:30:31">
+    <testcase id="Physical phone submits a conversation reply" name="Physical phone submits a conversation reply" classname="Physical phone submits a conversation reply" file="/tmp/vaachak-phone-flows/conversation.yaml" time="33.569" timestamp="2026-10-11T15:30:31" status="SUCCESS"/>
+  </testsuite>
+</testsuites>

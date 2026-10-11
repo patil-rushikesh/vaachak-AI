@@ -1,0 +1,54 @@
+# Start signed in as the synthetic learner, with Progress and Today tabs available.
+appId: host.exp.exponent
+name: Physical learner navigation and preferences
+---
+- tapOn: Progress
+- scrollUntilVisible:
+    element: Your practice journal
+    timeout: 60000
+- assertVisible: Your practice journal
+- tapOn: Practice
+- tapOn:
+    id: field-find-your-practice
+- inputText: impossible-search-no-results
+- hideKeyboard
+- tapOn:
+    id: field-find-your-practice
+- eraseText: 50
+- hideKeyboard
+- tapOn: Today
+- tapOn: Open my account
+- assertVisible: Your space. Your choices.
+- scrollUntilVisible:
+    element: Use device timezone
+- tapOn: Use device timezone
+- tapOn: Save preferences
+- scrollUntilVisible:
+    element: Your preferences are saved.
+    direction: UP
+- assertVisible: Your preferences are saved.
+- scrollUntilVisible:
+    element: Export my data
+- tapOn: Export my data
+- back
+- tapOn: Today
+- scrollUntilVisible:
+    element: My goals & continuous practice
+    direction: UP
+- tapOn: My goals & continuous practice
+- tapOn: Download public practice
+- assertVisible: Refresh practice download
+- tapOn: Remove download
+- assertVisible: No saved practice available yet.
+- scrollUntilVisible:
+    element: Enable daily reminder
+- tapOn: Enable daily reminder
+- scrollUntilVisible:
+    element: .*Reminders require.*
+- scrollUntilVisible:
+    element: Pause reminders
+    direction: UP
+- tapOn: Pause reminders
+- scrollUntilVisible:
+    element: Practice reminders are off.
+- assertVisible: Practice reminders are off.

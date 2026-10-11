@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-11",
+  "device": "realme 15 5G",
+  "android": "16",
+  "runtime": "Expo Go 57.0.9",
+  "upload_preview": "passed",
+  "feedback_rendered": "passed",
+  "practice_completion": "passed",
+  "attempt": {
+    "kind": "read",
+    "score": 75,
+    "input_mode": "recorded_confirmed",
+    "transcript_origin": "server_asr_confirmed",
+    "audio_mime": "audio/mp4",
+    "original_asr_preserved": true,
+    "provider_model": "openai/gpt-oss-120b",
+    "feedback_source": "ai"
+  },
+  "known_issue": "ASR word-boundary rendering everyday versus every day unfairly reduced score; not a pronunciation assessment.",
+  "limits": [
+    "Not a signed release build",
+    "Permission denial, background interruptions, offline audio and iOS remain unverified by this run"
+  ]
+}

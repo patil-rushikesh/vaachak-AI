@@ -124,6 +124,7 @@ def attempt_json(a):
         "assignment_id": a["assignment_id"],
         "lesson_id": a["lesson_id"],
         "set_id": a["set_id"],
+        "practice_session_id": a["practice_session_id"],
         "item_index": a["item_index"],
         "content_version": a["content_version"],
         "item_snapshot": json.loads(a["item_snapshot"]),
@@ -151,6 +152,7 @@ def protect_delete(conn, condition, args):
 
 
 def recover_interrupted(conn):
+    conn.execute("UPDATE transcriptions SET status='interrupted' WHERE status='processing'")
     # Supported deployment is one application instance. Startup marks abandoned claims explicitly.
     conn.execute(
         "UPDATE submissions SET status='interrupted',error_code='server_restarted',updated_at=? WHERE status='processing'",

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="physical-android-redacted" tests="1" failures="0" time="40.512" timestamp="2026-10-11T16:00:50">
+    <testcase id="Physical reminder unsupported and pause handling" name="Physical reminder unsupported and pause handling" classname="Physical reminder unsupported and pause handling" file="reminders.yaml" time="40.503" timestamp="2026-10-11T16:00:50" status="SUCCESS" />
+  </testsuite>
+</testsuites>

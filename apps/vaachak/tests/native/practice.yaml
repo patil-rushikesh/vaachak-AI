@@ -1,0 +1,35 @@
+appId: host.exp.exponent
+name: Learner completes an assigned choice and typed reading task
+---
+- tapOn: Class
+- extendedWaitUntil:
+    visible: Native practice
+    timeout: 15000
+- tapOn: Native practice
+- scrollUntilVisible:
+    element: Start practice
+- tapOn: Start practice
+- tapOn: B.*practises
+- scrollUntilVisible:
+    element: Check my answer
+- tapOn: Check my answer
+- extendedWaitUntil:
+    visible: 100% task score
+    timeout: 15000
+- scrollUntilVisible:
+    element: Next small step
+- tapOn: Next small step
+- scrollUntilVisible:
+    element: Type instead
+- tapOn: Type instead
+- tapOn:
+    id: field-your-answer
+- inputText: I learn something new every day.
+- scrollUntilVisible:
+    element: Check my answer
+- tapOn: Check my answer
+- scrollUntilVisible:
+    element: Finish practice
+    timeout: 20000
+- tapOn: Finish practice
+- assertVisible: A little more confident.

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="physical-android-device" tests="1" failures="0" time="5.691" timestamp="2026-10-11T15:50:18">
+    <testcase id="Native speech feedback and practice completion" name="Native speech feedback and practice completion" classname="Native speech feedback and practice completion" file="/tmp/vaachak-phone-flows/finish.yaml" time="5.683" timestamp="2026-10-11T15:50:18" status="SUCCESS"/>
+  </testsuite>
+</testsuites>

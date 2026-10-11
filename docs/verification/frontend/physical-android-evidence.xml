@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="physical-android-redacted" tests="1" failures="0" time="48.854" timestamp="2026-10-11T16:26:58">
+    <testcase id="Physical saved audio playback and evidence dispute lifecycle" name="Physical saved audio playback and evidence dispute lifecycle" classname="Physical saved audio playback and evidence dispute lifecycle" file="evidence.yaml" time="48.847" timestamp="2026-10-11T16:26:58" status="SUCCESS" />
+  </testsuite>
+</testsuites>

@@ -1,0 +1,16 @@
+# Requires an authenticated learner in a reading activity with a real recorded sample.
+appId: host.exp.exponent
+name: Native audio upload and transcription preview
+---
+- scrollUntilVisible:
+    element: Check my answer
+- tapOn: Check my answer
+- extendedWaitUntil:
+    visible: Did we hear you correctly?
+    timeout: 45000
+- scrollUntilVisible:
+    element:
+      id: field-confirm-your-transcript
+    centerElement: true
+- assertVisible:
+    id: field-confirm-your-transcript

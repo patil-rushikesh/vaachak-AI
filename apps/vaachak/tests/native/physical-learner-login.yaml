@@ -1,0 +1,27 @@
+# Start signed in as the teacher; TEST_EMAIL and TEST_PASSWORD identify the synthetic learner.
+appId: host.exp.exponent
+name: Physical learner sign in after teacher checks
+---
+- tapOn: Open my account
+- scrollUntilVisible:
+    element: Sign out
+    timeout: 60000
+- tapOn: Sign out
+- scrollUntilVisible:
+    element:
+      id: field-email
+    direction: UP
+- tapOn:
+    id: field-email
+- eraseText: 200
+- inputText: ${TEST_EMAIL}
+- assertVisible: ${TEST_EMAIL}
+- tapOn:
+    id: field-password
+- eraseText: 200
+- inputText: ${TEST_PASSWORD}
+- hideKeyboard
+- scrollUntilVisible:
+    element: Let’s practise
+- tapOn: Let’s practise
+- assertVisible: Progress

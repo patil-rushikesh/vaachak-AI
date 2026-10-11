@@ -204,6 +204,24 @@ def export_data(user=Depends(current_user), conn=Depends(get_db)):
         ]
     return {
         "profile": profile,
+        "learning_data": {
+            table: [
+                dict(r)
+                for r in conn.execute(
+                    f"SELECT * FROM {table} WHERE user_id=?", (user["id"],)
+                )
+            ]
+            for table in (
+                "learning_profiles",
+                "practice_sessions",
+                "teacher_drafts",
+                "feedback_reports",
+                "product_events",
+                "conversations",
+                "transcriptions",
+                "generation_jobs",
+            )
+        },
         "attempts": attempts,
         "owned_content": owned,
         "enrollments": [
@@ -278,6 +296,13 @@ def delete_account(
         r[0]
         for r in conn.execute(
             "SELECT filename FROM recordings WHERE teacher_id=?", (user["id"],)
+        )
+    ]
+    files += [
+        r[0]
+        for r in conn.execute(
+            "SELECT audio_file FROM transcriptions WHERE user_id=? AND audio_file IS NOT NULL",
+            (user["id"],),
         )
     ]
     conn.execute("DELETE FROM users WHERE id=?", (user["id"],))

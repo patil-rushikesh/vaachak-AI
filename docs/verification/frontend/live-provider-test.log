@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+(node:38337) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/e2e/provider.spec.ts:2:5 › live teacher AI generation, queued draft and human approval gate (17.9s)
+
+  1 passed (20.6s)

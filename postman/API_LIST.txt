@@ -73,6 +73,29 @@ PATCH   /api/lessons/{lesson_id}/archive                           Teacher
 DELETE  /api/recordings/{rec_id}                                   Teacher
 GET     /api/ready                                                 Public
 GET     /api/me/recommendations                                    Learner (student or learner)
+GET     /api/me/learning-profile                                   Public
+PUT     /api/me/learning-profile                                   Public
+GET     /api/me/review-queue                                       Learner (student or learner)
+GET     /api/me/practice-sessions                                  Public
+POST    /api/me/practice-sessions                                  Public
+GET     /api/me/practice-sessions/{session_id}                     Public
+PATCH   /api/me/practice-sessions/{session_id}                     Public
+PUT     /api/teacher/drafts/{draft_id}                             Public
+DELETE  /api/teacher/drafts/{draft_id}                             Public
+GET     /api/teacher/drafts                                        Public
+GET     /api/teacher/archives                                      Public
+POST    /api/feedback-reports                                      Public
+POST    /api/events                                                Public
+POST    /api/conversations                                         Public
+GET     /api/conversations/{conversation_id}                       Public
+POST    /api/conversations/{conversation_id}/turns                 Public
+POST    /api/transcriptions                                        Public
+GET     /api/transcriptions/{transcription_id}                     Public
+GET     /api/practice-download                                     Public
+POST    /api/auth/password-reset-request                           Public
+GET     /api/ai/jobs                                               Public
+POST    /api/ai/jobs                                               Public
+GET     /api/ai/jobs/{job_id}                                      Public
 
 Documentation endpoints (not application operations):
 GET /api/docs

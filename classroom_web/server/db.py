@@ -107,4 +107,7 @@ def init() -> None:
     from migrations import migrate
 
     migrate(conn)
+    from growth_migrations import migrate as migrate_growth
+
+    migrate_growth(conn)
     conn.close()

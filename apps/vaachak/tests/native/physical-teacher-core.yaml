@@ -1,0 +1,53 @@
+# Start signed in as the synthetic teacher with Phone QA classroom/course fixtures.
+appId: host.exp.exponent
+name: Physical teacher insights classroom and draft
+---
+- tapOn: Today
+- scrollUntilVisible:
+    element: Open class insights
+- tapOn: Open class insights
+- assertVisible: Evidence into encouragement.
+- scrollUntilVisible:
+    element: See evidence
+- tapOn: See evidence
+- assertVisible: Set personal follow-up
+- back
+- tapOn: Classes
+- tapOn: Phone QA classroom
+- assertVisible: Create assignment
+- tapOn: Create assignment
+- scrollUntilVisible:
+    element:
+      id: field-title
+- tapOn:
+    id: field-title
+- inputText: Phone draft
+- hideKeyboard
+- tapOn: Save draft
+- scrollUntilVisible:
+    element: Draft saved.*
+    direction: UP
+- assertVisible: Draft saved.*
+- tapOn: Library
+- scrollUntilVisible:
+    element: Phone QA course
+    timeout: 60000
+- tapOn: Phone QA course
+- scrollUntilVisible:
+    element: Course progress
+    direction: UP
+- tapOn: Course progress
+- assertVisible: How your course is growing.
+- back
+- scrollUntilVisible:
+    element: Edit lesson
+- tapOn: Edit lesson
+- scrollUntilVisible:
+    element: Save lesson
+    timeout: 60000
+- tapOn: Save lesson
+- scrollUntilVisible:
+    element: Phone QA course
+    direction: UP
+    timeout: 60000
+- assertVisible: Phone QA course

@@ -106,11 +106,19 @@ def cleanup(days=30):
             "DELETE FROM rate_limits WHERE window < ?",
             (int(datetime.now(timezone.utc).timestamp()) // 60 - 1440,),
         )
+        conn.execute(
+            "DELETE FROM transcriptions WHERE expires_at<?",
+            (datetime.now(timezone.utc).isoformat(),),
+        )
+        conn.execute(
+            "DELETE FROM product_events WHERE created_at<?",
+            ((datetime.now(timezone.utc) - timedelta(days=90)).isoformat(),),
+        )
         conn.commit()
         live = {
             r[0]
             for r in conn.execute(
-                "SELECT audio_file FROM attempts WHERE audio_file IS NOT NULL UNION SELECT filename FROM recordings"
+                "SELECT audio_file FROM attempts WHERE audio_file IS NOT NULL UNION SELECT filename FROM recordings UNION SELECT audio_file FROM transcriptions WHERE audio_file IS NOT NULL AND expires_at > CURRENT_TIMESTAMP"
             )
         }
     count = 0

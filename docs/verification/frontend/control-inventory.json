@@ -1,0 +1,1530 @@
+[
+  {
+    "file": "src/components/Audio.tsx",
+    "line": 39,
+    "tag": "Button",
+    "label": "{state.playing ? \"Pause recording\" : \"Play recording\"}",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/components/FeedbackRating.tsx",
+    "line": 35,
+    "tag": "Button",
+    "label": "\"Yes, useful\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/components/FeedbackRating.tsx",
+    "line": 41,
+    "tag": "Button",
+    "label": "\"Needs improvement\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/components/PendingSubmissions.tsx",
+    "line": 25,
+    "tag": "Button",
+    "label": "\"Recover pending practice\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/components/ui.tsx",
+    "line": 60,
+    "tag": "Pressable",
+    "label": "(dynamic/child text)",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/components/ui.tsx",
+    "line": 87,
+    "tag": "Pressable",
+    "label": "{title}",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/components/ui.tsx",
+    "line": 223,
+    "tag": "Button",
+    "label": "\"Try again\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/components/ui.tsx",
+    "line": 327,
+    "tag": "Button",
+    "label": "{title}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/components/ui.tsx",
+    "line": 343,
+    "tag": "Button",
+    "label": "{label}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/components/ui.tsx",
+    "line": 359,
+    "tag": "Button",
+    "label": "\"Cancel\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/AuthScreen.tsx",
+    "line": 63,
+    "tag": "Button",
+    "label": "\"Try a free 2-minute sample\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/AuthScreen.tsx",
+    "line": 71,
+    "tag": "Field",
+    "label": "\"Recovery email\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/AuthScreen.tsx",
+    "line": 77,
+    "tag": "Button",
+    "label": "\"Email me reset instructions\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/AuthScreen.tsx",
+    "line": 188,
+    "tag": "Field",
+    "label": "\"Your name\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/AuthScreen.tsx",
+    "line": 191,
+    "tag": "Button",
+    "label": "{\n                      r === \"student\"\n                        ? \"Class learner\"\n                        : r === \"teacher\"\n                          ? \"Teacher\"\n                          : \"Independent\"\n                    }",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/AuthScreen.tsx",
+    "line": 208,
+    "tag": "Field",
+    "label": "\"Reset token\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/AuthScreen.tsx",
+    "line": 210,
+    "tag": "Field",
+    "label": "\"Email\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/AuthScreen.tsx",
+    "line": 217,
+    "tag": "Field",
+    "label": "{mode === \"reset\" ? \"New password\" : \"Password\"}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/AuthScreen.tsx",
+    "line": 224,
+    "tag": "Field",
+    "label": "\"Teacher invite (if required)\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/AuthScreen.tsx",
+    "line": 233,
+    "tag": "Button",
+    "label": "{\n              mode === \"login\"\n                ? \"Let’s practise\"\n                : mode === \"reset\"\n                  ? \"Reset password\"\n                  : \"Create account\"\n            }",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/AuthScreen.tsx",
+    "line": 249,
+    "tag": "Button",
+    "label": "{\n              mode === \"login\"\n                ? \"New here? Create an account\"\n                : \"Already learning? Sign in\"\n            }",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/AuthScreen.tsx",
+    "line": 262,
+    "tag": "Button",
+    "label": "\"Forgot password?\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 37,
+    "tag": "Field",
+    "label": "{teacher ? \"Class name\" : \"Class code\"}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 48,
+    "tag": "Button",
+    "label": "{teacher ? \"Create class\" : \"Join class\"}",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 77,
+    "tag": "Card",
+    "label": "(dynamic/child text)",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 130,
+    "tag": "Confirm",
+    "label": "\"Refresh joining code\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 140,
+    "tag": "Button",
+    "label": "\"Create assignment\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 144,
+    "tag": "Button",
+    "label": "\"Learner insights\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 149,
+    "tag": "Button",
+    "label": "\"Assign a course\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 178,
+    "tag": "Button",
+    "label": "{teacher ? \"View & manage\" : \"Start practice\"}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 210,
+    "tag": "Confirm",
+    "label": "\"Unassign course\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 235,
+    "tag": "Button",
+    "label": "\"View learning evidence\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 242,
+    "tag": "Confirm",
+    "label": "\"Remove from class\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 257,
+    "tag": "Confirm",
+    "label": "\"Archive class\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 299,
+    "tag": "Button",
+    "label": "\"Create my first class\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 333,
+    "tag": "Button",
+    "label": "\"Open class insights\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 359,
+    "tag": "Button",
+    "label": "\"See evidence\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 366,
+    "tag": "Button",
+    "label": "\"Set a follow-up\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 379,
+    "tag": "Confirm",
+    "label": "\"Snooze for a day\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 394,
+    "tag": "Confirm",
+    "label": "\"Mark resolved\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 421,
+    "tag": "Card",
+    "label": "(dynamic/child text)",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 470,
+    "tag": "Button",
+    "label": "\"Open learner\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 499,
+    "tag": "Button",
+    "label": "\"Set personal follow-up\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 505,
+    "tag": "Card",
+    "label": "(dynamic/child text)",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 547,
+    "tag": "Field",
+    "label": "\"New title\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 549,
+    "tag": "Button",
+    "label": "\"Update title\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 566,
+    "tag": "Confirm",
+    "label": "\"Archive assignment\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Classes.tsx",
+    "line": 579,
+    "tag": "Confirm",
+    "label": "\"Delete unused assignment\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 202,
+    "tag": "Button",
+    "label": "\"Save draft\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 218,
+    "tag": "Button",
+    "label": "\"Return and check saved work\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 227,
+    "tag": "Field",
+    "label": "\"Title\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 228,
+    "tag": "Field",
+    "label": "{p.classId ? \"Instructions\" : \"Introduction\"}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 235,
+    "tag": "Field",
+    "label": "\"Due date (optional)\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 248,
+    "tag": "Button",
+    "label": "\"None\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 254,
+    "tag": "Button",
+    "label": "{r.title}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 273,
+    "tag": "Field",
+    "label": "\"Topic\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 274,
+    "tag": "Button",
+    "label": "\"Draft three tasks\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 307,
+    "tag": "Button",
+    "label": "\"Queue AI draft\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 331,
+    "tag": "Button",
+    "label": "\"Check queued draft\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 381,
+    "tag": "Button",
+    "label": "{`+ ${kind}`}",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 402,
+    "tag": "Button",
+    "label": "{\n          p.lessonId\n            ? \"Save lesson\"\n            : p.unitId\n              ? \"Save lesson draft\"\n              : \"Publish assignment\"\n        }",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 422,
+    "tag": "Confirm",
+    "label": "\"Archive lesson\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 435,
+    "tag": "Confirm",
+    "label": "\"Delete unused lesson\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 468,
+    "tag": "Button",
+    "label": "\"Remove task\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 471,
+    "tag": "Field",
+    "label": "{\n            item.kind === \"listen\"\n              ? \"Sentence to speak aloud\"\n              : \"Sentence to read\"\n          }",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 482,
+    "tag": "Field",
+    "label": "\"Words (separate with |)\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 487,
+    "tag": "Field",
+    "label": "\"Correct sentence\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 494,
+    "tag": "Field",
+    "label": "{\n            item.kind === \"fill\"\n              ? \"Prompt (include ___ for the blank)\"\n              : \"Prompt\"\n          }",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 508,
+    "tag": "Field",
+    "label": "{`Option ${i + 1}`}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 518,
+    "tag": "Button",
+    "label": "{\n                  item.correct === i\n                    ? \"✓ Correct answer\"\n                    : \"Set as correct answer\"\n                }",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 530,
+    "tag": "Button",
+    "label": "\"Add option\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 536,
+    "tag": "Button",
+    "label": "\"Remove last option\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 550,
+    "tag": "Field",
+    "label": "\"Explanation\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 561,
+    "tag": "Button",
+    "label": "{skill.label}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 580,
+    "tag": "Switch",
+    "label": "{`Approve task ${index + 1}`}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 604,
+    "tag": "Field",
+    "label": "\"Recording title\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 606,
+    "tag": "Button",
+    "label": "{\n            r.recording\n              ? `Stop · ${Math.floor(r.duration / 1000)}s`\n              : \"Record a voice reference\"\n          }",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 623,
+    "tag": "Audio",
+    "label": "(dynamic/child text)",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 624,
+    "tag": "Button",
+    "label": "\"Save recording\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 656,
+    "tag": "Audio",
+    "label": "(dynamic/child text)",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Composer.tsx",
+    "line": 657,
+    "tag": "Confirm",
+    "label": "\"Delete reference recording\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 40,
+    "tag": "Field",
+    "label": "\"New course title\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 46,
+    "tag": "Button",
+    "label": "\"Create a draft course\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 70,
+    "tag": "Button",
+    "label": "\"Voice reference library\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 84,
+    "tag": "Confirm",
+    "label": "\"Assign to this class\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 151,
+    "tag": "Button",
+    "label": "\"Add to my learning\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 160,
+    "tag": "Button",
+    "label": "{\n                      d.status === \"published\"\n                        ? \"Unpublish course\"\n                        : \"Publish course\"\n                    }",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 173,
+    "tag": "Button",
+    "label": "\"Course progress\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 181,
+    "tag": "Field",
+    "label": "\"Updated title\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 187,
+    "tag": "Field",
+    "label": "\"Updated summary\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 196,
+    "tag": "Button",
+    "label": "\"Save details\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 213,
+    "tag": "Button",
+    "label": "{\n                        d.visibility === \"public\"\n                          ? \"Limit to assigned classes\"\n                          : \"Make publicly discoverable\"\n                      }",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 232,
+    "tag": "Button",
+    "label": "{\n                        d.sequential\n                          ? \"Allow any lesson order\"\n                          : \"Require lesson order\"\n                      }",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 275,
+    "tag": "Button",
+    "label": "{\n                        d.mode === \"owner\"\n                          ? \"Edit lesson\"\n                          : l.status === \"locked\"\n                            ? \"Finish the previous lesson\"\n                            : l.status === \"done\"\n                              ? \"Practise again\"\n                              : \"Start lesson\"\n                      }",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 301,
+    "tag": "Button",
+    "label": "\"Move up\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 309,
+    "tag": "Button",
+    "label": "\"Move down\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 325,
+    "tag": "Button",
+    "label": "\"Add lesson\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 350,
+    "tag": "Field",
+    "label": "\"New unit title\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 355,
+    "tag": "Button",
+    "label": "\"Add unit\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 365,
+    "tag": "Confirm",
+    "label": "\"Archive course\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 378,
+    "tag": "Confirm",
+    "label": "\"Delete unused course\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 392,
+    "tag": "Confirm",
+    "label": "\"Leave course\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 413,
+    "tag": "Field",
+    "label": "\"Rename unit\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 420,
+    "tag": "Button",
+    "label": "\"Rename\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 427,
+    "tag": "Button",
+    "label": "\"Move unit up\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 433,
+    "tag": "Button",
+    "label": "\"Move unit down\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Courses.tsx",
+    "line": 440,
+    "tag": "Confirm",
+    "label": "\"Delete unused unit\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Downloads.tsx",
+    "line": 52,
+    "tag": "Button",
+    "label": "{\n            pack ? \"Refresh practice download\" : \"Download public practice\"\n          }",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Downloads.tsx",
+    "line": 67,
+    "tag": "Button",
+    "label": "{o}",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Downloads.tsx",
+    "line": 85,
+    "tag": "Button",
+    "label": "\"Next offline activity\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Downloads.tsx",
+    "line": 94,
+    "tag": "Button",
+    "label": "\"Remove download\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 74,
+    "tag": "Field",
+    "label": "\"Reminder hour (07–21, device local time)\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 79,
+    "tag": "Button",
+    "label": "\"Enable daily reminder\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 92,
+    "tag": "Button",
+    "label": "\"Pause reminders\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 131,
+    "tag": "Button",
+    "label": "\"Resume draft\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 149,
+    "tag": "Button",
+    "label": "{(data.goal === key ? \"✓ \" : \"\") + label}",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 168,
+    "tag": "Button",
+    "label": "{\n                        (data.difficulty === d ? \"✓ \" : \"\") +\n                        (d === \"starter\"\n                          ? \"Build foundations\"\n                          : \"Stretch myself\")\n                      }",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 197,
+    "tag": "Button",
+    "label": "{`${days} days`}",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 216,
+    "tag": "Switch",
+    "label": "\"Share optional usage events\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 240,
+    "tag": "Button",
+    "label": "\"Start my next practice\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 245,
+    "tag": "Button",
+    "label": "\"Try a starting check\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 251,
+    "tag": "Button",
+    "label": "\"Practise due revision\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 265,
+    "tag": "Button",
+    "label": "\"Start a guided conversation\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 290,
+    "tag": "Button",
+    "label": "\"Try another conversation\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 298,
+    "tag": "Field",
+    "label": "\"Your conversation reply\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 305,
+    "tag": "Button",
+    "label": "\"Continue conversation\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 323,
+    "tag": "Button",
+    "label": "\"Reload conversation status\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 353,
+    "tag": "Button",
+    "label": "{`Restore ${a.title}`}",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 380,
+    "tag": "Button",
+    "label": "{`Resume ${s.title} · ${s.position}/${s.items.length}`}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 397,
+    "tag": "Field",
+    "label": "\"Your feedback\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Growth.tsx",
+    "line": 407,
+    "tag": "Button",
+    "label": "\"Send product feedback\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/GuestPractice.tsx",
+    "line": 35,
+    "tag": "Button",
+    "label": "{o}",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/GuestPractice.tsx",
+    "line": 49,
+    "tag": "Button",
+    "label": "{\n              index === sample.length - 1\n                ? \"Try the sample again\"\n                : \"Next sample\"\n            }",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/GuestPractice.tsx",
+    "line": 63,
+    "tag": "Button",
+    "label": "\"Continue to sign in\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 42,
+    "tag": "Button",
+    "label": "\"My goals & continuous practice\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 85,
+    "tag": "Button",
+    "label": "{\n                  review.data?.items?.length\n                    ? \"Start your review\"\n                    : \"Find my next practice\"\n                }",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 106,
+    "tag": "Button",
+    "label": "\"See all\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 128,
+    "tag": "Button",
+    "label": "\"Explore practice\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 145,
+    "tag": "Button",
+    "label": "{\n                        r.reason === \"delayed_check_due\"\n                          ? \"Time for a fresh check\"\n                          : \"Revisit a recent correction\"\n                      }",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 238,
+    "tag": "Button",
+    "label": "\"Open my classes\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 251,
+    "tag": "Card",
+    "label": "(dynamic/child text)",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 283,
+    "tag": "Field",
+    "label": "\"Find your practice\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 298,
+    "tag": "Card",
+    "label": "(dynamic/child text)",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 376,
+    "tag": "Button",
+    "label": "{`Start ${data.items.length} review tasks`}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 402,
+    "tag": "Button",
+    "label": "\"See earlier attempt\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 418,
+    "tag": "Button",
+    "label": "\"Explore practice\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 467,
+    "tag": "Button",
+    "label": "\"Visit review\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 483,
+    "tag": "Card",
+    "label": "(dynamic/child text)",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 502,
+    "tag": "Button",
+    "label": "\"Newest attempts\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Learning.tsx",
+    "line": 509,
+    "tag": "Button",
+    "label": "\"Older attempts\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 80,
+    "tag": "Audio",
+    "label": "(dynamic/child text)",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 94,
+    "tag": "Button",
+    "label": "\"Keep practising\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 95,
+    "tag": "Button",
+    "label": "\"Back to my day\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 96,
+    "tag": "Button",
+    "label": "\"See my progress\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 117,
+    "tag": "Audio",
+    "label": "(dynamic/child text)",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 136,
+    "tag": "Button",
+    "label": "{\n                index === items.length - 1\n                  ? \"Finish practice\"\n                  : \"Next small step\"\n              }",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 149,
+    "tag": "Button",
+    "label": "\"Try this again\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 429,
+    "tag": "Button",
+    "label": "\"Listen to the sentence\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 450,
+    "tag": "Pressable",
+    "label": "(dynamic/child text)",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 478,
+    "tag": "Button",
+    "label": "{words[wordIndex].word}",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 495,
+    "tag": "Button",
+    "label": "{entry.word}",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 508,
+    "tag": "Button",
+    "label": "\"Speak\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 514,
+    "tag": "Button",
+    "label": "\"Type instead\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 523,
+    "tag": "Field",
+    "label": "\"Your answer\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 542,
+    "tag": "Button",
+    "label": "{\n                  recorder.recording\n                    ? `Stop recording · ${Math.floor(recorder.duration / 1000)}s`\n                    : recorder.uri\n                      ? \"Record again\"\n                      : \"Tap to record\"\n                }",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 572,
+    "tag": "Audio",
+    "label": "(dynamic/child text)",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 576,
+    "tag": "Field",
+    "label": "\"Confirm your transcript\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 602,
+    "tag": "Button",
+    "label": "\"Check submission status\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 608,
+    "tag": "Button",
+    "label": "{busy ? \"Checking your answer…\" : \"Check my answer\"}",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 671,
+    "tag": "Button",
+    "label": "{\n              disputed\n                ? \"Restore this evidence\"\n                : \"The transcript isn’t what I said\"\n            }",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 719,
+    "tag": "Audio",
+    "label": "(dynamic/child text)",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 729,
+    "tag": "Button",
+    "label": "\"Compare the first attempt\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Player.tsx",
+    "line": 738,
+    "tag": "Button",
+    "label": "{`See follow-up attempt ${id}`}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Settings.tsx",
+    "line": 51,
+    "tag": "Button",
+    "label": "{\n          user?.role === \"teacher\"\n            ? \"Saved drafts & archives\"\n            : \"My goals & continuous practice\"\n        }",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Settings.tsx",
+    "line": 66,
+    "tag": "Button",
+    "label": "\"Sign out\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Settings.tsx",
+    "line": 79,
+    "tag": "Field",
+    "label": "\"Timezone\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Settings.tsx",
+    "line": 85,
+    "tag": "Button",
+    "label": "\"Use device timezone\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Settings.tsx",
+    "line": 96,
+    "tag": "Switch",
+    "label": "\"Optional research consent\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Settings.tsx",
+    "line": 109,
+    "tag": "Button",
+    "label": "\"Save preferences\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Settings.tsx",
+    "line": 129,
+    "tag": "Field",
+    "label": "\"Current password\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Settings.tsx",
+    "line": 135,
+    "tag": "Field",
+    "label": "\"New password (at least 8 characters)\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Settings.tsx",
+    "line": 141,
+    "tag": "Button",
+    "label": "\"Change password & sign out\"",
+    "conditional": true,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Settings.tsx",
+    "line": 163,
+    "tag": "Button",
+    "label": "\"Export my data\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Settings.tsx",
+    "line": 203,
+    "tag": "Field",
+    "label": "\"Password to confirm deletion\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "src/features/Settings.tsx",
+    "line": 210,
+    "tag": "Confirm",
+    "label": "\"Delete my account\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "App.tsx",
+    "line": 53,
+    "tag": "Button",
+    "label": "\"Reload this screen\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "App.tsx",
+    "line": 99,
+    "tag": "Pressable",
+    "label": "{title}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "App.tsx",
+    "line": 168,
+    "tag": "Button",
+    "label": "\"My review\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "App.tsx",
+    "line": 174,
+    "tag": "Button",
+    "label": "{teacher ? \"Saved work\" : \"My learning goals\"}",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "App.tsx",
+    "line": 179,
+    "tag": "Button",
+    "label": "\"My account\"",
+    "conditional": false,
+    "status": "requires evidence"
+  },
+  {
+    "file": "App.tsx",
+    "line": 210,
+    "tag": "Pressable",
+    "label": "\"Open my account\"",
+    "conditional": false,
+    "status": "requires evidence"
+  }
+]

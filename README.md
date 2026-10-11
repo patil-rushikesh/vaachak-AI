@@ -66,3 +66,7 @@ instructor follow-up, account lifecycle operations, structured logs and uniform 
 See [implementation and test status](docs/BACKEND_IMPLEMENTATION_STATUS.md) and the
 [deployment/operator runbook](deploy/backend/README.md). The supported release runtime is
 Python 3.13 with FFmpeg. Container/HTTPS configuration is in `deploy/backend`.
+
+## React Native application
+
+The new iOS, Android and web application lives in [`apps/vaachak`](apps/vaachak/README.md), with learner/teacher journeys, API integration, isolated dependencies, automated tests and a Dockerized web deployment. See its README for local startup, verification evidence and remaining release gates.

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="emulator-5554" tests="1" failures="0" time="33.391" timestamp="2026-10-11T15:05:35">
+    <testcase id="Learner completes an assigned choice and typed reading task" name="Learner completes an assigned choice and typed reading task" classname="Learner completes an assigned choice and typed reading task" file="tests/native/practice.yaml" time="33.376" timestamp="2026-10-11T15:05:35" status="SUCCESS"/>
+  </testsuite>
+</testsuites>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="physical-android-device" tests="1" failures="0" time="34.243" timestamp="2026-10-11T15:40:18">
+    <testcase id="Learner completes a choice and reaches the recording task" name="Learner completes a choice and reaches the recording task" classname="Learner completes a choice and reaches the recording task" file="/tmp/vaachak-phone-flows/recording-ready.yaml" time="34.233" timestamp="2026-10-11T15:40:18" status="SUCCESS"/>
+  </testsuite>
+</testsuites>

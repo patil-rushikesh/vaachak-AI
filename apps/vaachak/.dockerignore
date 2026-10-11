@@ -1,0 +1,11 @@
+node_modules
+.expo
+dist
+android
+ios
+.env*
+test-results
+test-results-*
+playwright-report
+.claude
+.git

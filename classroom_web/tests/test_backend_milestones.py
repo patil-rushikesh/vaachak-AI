@@ -443,7 +443,7 @@ def test_migrations_idempotent_backup_restore(client, world, tmp_path):
     restored = backend_admin.restore(backup, tmp_path / "restored")
     with sqlite3.connect(restored / "classroom.db") as conn:
         assert conn.execute("SELECT count(*) FROM attempts").fetchone()[0] == 1
-        assert conn.execute("SELECT count(*) FROM schema_migrations").fetchone()[0] == 1
+        assert [r[0] for r in conn.execute("SELECT version FROM schema_migrations ORDER BY version")] == [1, 2, 3, 4, 5]
     (backup / "classroom.db").write_bytes(b"corrupted")
     with pytest.raises(ValueError):
         backend_admin.restore(backup, tmp_path / "bad")
