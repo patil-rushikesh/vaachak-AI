@@ -4,7 +4,16 @@ The cloud target is one FastAPI instance on Render Free, Neon Postgres, and priv
 
 ## Render backend, Vercel web, and mobile release
 
-This configuration packages the current G1/G2 release. Later generative-AI milestones remain separate. A checked-in deployment configuration is not evidence of a live deployment or a signed mobile binary.
+This configuration packages the current G1/G2 release. Later generative-AI milestones remain separate.
+
+Live deployment verified on 2026-10-11:
+- Web: https://vaachak-ai.vercel.app (Vercel Hobby).
+- Backend: https://vaachak-api.onrender.com (Render Free, Ohio).
+- Readiness: https://vaachak-api.onrender.com/api/ready.
+- Database: Neon Postgres 18, with private `vaachak-audio` object storage.
+- Verification: `docs/verification/hosted-release-2026-10-11.json`. Synthetic instructor/learner testing exercised live speech transcription, AI draft generation, private audio ranges, CORS, access controls, and persistence after a Render restart. This is deployment smoke coverage; the isolated SQLite/Postgres suites cover all 100 API operations.
+
+Instructor signup requires `VAACHAK_TEACHER_INVITE` from the Render Environment page; share it privately with approved instructors. Do not paste it into a public document. Web sessions intentionally remain in tab memory, so a full reload requires sign-in again. Email recovery is **not configured**; the API reports this explicitly and an operator can issue a reset token using the administrative CLI. Android APK and signed iOS distribution artifacts remain a separate release step.
 
 ### Render
 
@@ -17,7 +26,7 @@ This configuration packages the current G1/G2 release. Later generative-AI miles
 
 Render Free can discard all local files and sleep after inactivity. Only temporary ffmpeg/ASR/playback files use its filesystem. The API retains current upload caps (8 MB attempts, 20 MB teacher recordings). Monitor Neon storage/compute and Groq quotas; free hosting does not mean unlimited provider calls.
 
-For cloud backups, use **Neon Backup & Restore / branches or `pg_dump`**, and export the private bucket separately. SQLite backup/restore commands below apply only to local deployments; the CLI rejects SQLite backup against Postgres. Free-tier recovery windows are short: keep independent operator-controlled exports. `backend_admin.py cleanup` supports both local and remote audio; run it from a trusted operator environment with cloud secrets, because Render Free has no shell or scheduled jobs. Do not point local test runners at the hosted production database.
+For cloud backups, use **Neon Backup & Restore / branches or `pg_dump`**, and export the private bucket separately. SQLite backup/restore commands below apply only to local deployments; the CLI rejects SQLite backup/restore against Postgres. Free-tier recovery windows are short: keep independent operator-controlled exports. `backend_admin.py cleanup` supports both local and remote audio; run it from a trusted operator environment with cloud secrets, because Render Free has no shell or scheduled jobs. Do not point local test runners at the hosted production database.
 
 ### Vercel
 

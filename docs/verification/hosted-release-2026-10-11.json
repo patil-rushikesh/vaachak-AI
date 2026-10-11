@@ -1,0 +1,334 @@
+{
+  "backend": "https://vaachak-api.onrender.com",
+  "frontend": "https://vaachak-ai.vercel.app",
+  "checks": [
+    {
+      "check": "ready",
+      "method": "GET",
+      "path": "/api/ready",
+      "status": 200,
+      "passed": true,
+      "request_id": "2cbdebe075334a579e9c354c4d4e7f9a"
+    },
+    {
+      "check": "health and provider configured",
+      "method": "GET",
+      "path": "/api/health",
+      "status": 200,
+      "passed": true,
+      "request_id": "36b823ccca974f84aa16ac4a87909a9b"
+    },
+    {
+      "check": "CORS preflight",
+      "method": "OPTIONS",
+      "path": "/api/me",
+      "status": 200,
+      "passed": true,
+      "request_id": null
+    },
+    {
+      "check": "anonymous rejected with correlated error",
+      "method": "GET",
+      "path": "/api/me",
+      "status": 401,
+      "passed": true,
+      "request_id": "64d39af4cf904c9f96a648ef256c8578"
+    },
+    {
+      "check": "instructor login",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "passed": true,
+      "request_id": "baf4a69f890441daacdcd83f593280c2"
+    },
+    {
+      "check": "instructor profile",
+      "method": "GET",
+      "path": "/api/me",
+      "status": 200,
+      "passed": true,
+      "request_id": "8a8ed31d1b7d45109024c7d64e880577"
+    },
+    {
+      "check": "learner login",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "passed": true,
+      "request_id": "5d38e9e1a89d4905b1f2593e95f4e086"
+    },
+    {
+      "check": "instructor endpoint rejects learner",
+      "method": "POST",
+      "path": "/api/classes",
+      "status": 403,
+      "passed": true,
+      "request_id": "611b4283b2e14c9d974b922f233722dd"
+    },
+    {
+      "check": "create private classroom",
+      "method": "POST",
+      "path": "/api/classes",
+      "status": 200,
+      "passed": true,
+      "request_id": "4c3a20655270420399bacc6fda4f891b"
+    },
+    {
+      "check": "join classroom",
+      "method": "POST",
+      "path": "/api/classes/join",
+      "status": 200,
+      "passed": true,
+      "request_id": "df2d13db15764284ab8a4b719035f844"
+    },
+    {
+      "check": "class roster",
+      "method": "GET",
+      "path": "/api/classes/1",
+      "status": 200,
+      "passed": true,
+      "request_id": "3492f6c38c504f31b1c821afe7b68009"
+    },
+    {
+      "check": "assign reading practice",
+      "method": "POST",
+      "path": "/api/classes/1/assignments",
+      "status": 200,
+      "passed": true,
+      "request_id": "5c435e03ff374d40a10fd7c76f99c497"
+    },
+    {
+      "check": "learner sees assignment",
+      "method": "GET",
+      "path": "/api/assignments/1",
+      "status": 200,
+      "passed": true,
+      "request_id": "5e9e2941ea764364969c979b197c9028"
+    },
+    {
+      "check": "private Neon audio upload",
+      "method": "POST",
+      "path": "/api/recordings",
+      "status": 200,
+      "passed": true,
+      "request_id": "06d5e1e1cdfc4dd5b53da50fedb5a6dc"
+    },
+    {
+      "check": "private Neon audio playback",
+      "method": "GET",
+      "path": "/api/recordings/1/audio",
+      "status": 200,
+      "passed": true,
+      "request_id": "31cb741398f44502960061e2687e3524"
+    },
+    {
+      "check": "audio byte range",
+      "method": "GET",
+      "path": "/api/recordings/1/audio",
+      "status": 206,
+      "passed": true,
+      "request_id": "1f12581f92474cbf8577c1122ec139a7"
+    },
+    {
+      "check": "anonymous audio denied",
+      "method": "GET",
+      "path": "/api/recordings/1/audio",
+      "status": 401,
+      "passed": true,
+      "request_id": "8170ef01f3574e8f861913ae5203ab05"
+    },
+    {
+      "check": "learner cannot access instructor audio",
+      "method": "GET",
+      "path": "/api/recordings/1/audio",
+      "status": 404,
+      "passed": true,
+      "request_id": "12e83506408c43b7969bd91735f1e1bc"
+    },
+    {
+      "check": "live Groq speech transcription",
+      "method": "POST",
+      "path": "/api/transcriptions",
+      "status": 200,
+      "passed": true,
+      "request_id": "b2ab4b74f3ca425d9dc97d97933fb0e6"
+    },
+    {
+      "check": "stored transcription retrieval",
+      "method": "GET",
+      "path": "/api/transcriptions/d839809a-749b-491b-a704-9ac240706179",
+      "status": 200,
+      "passed": true,
+      "request_id": "9461d6d5f1324f1fb5db7ebe1496e476"
+    },
+    {
+      "check": "graded reading attempt",
+      "method": "POST",
+      "path": "/api/attempts",
+      "status": 200,
+      "passed": true,
+      "request_id": "6a876afc2f694681b6b31729d99e8315"
+    },
+    {
+      "check": "learner statistics",
+      "method": "GET",
+      "path": "/api/me/stats",
+      "status": 200,
+      "passed": true,
+      "request_id": "dba9a821162c4f53802ca37ef597fd32"
+    },
+    {
+      "check": "attempt history",
+      "method": "GET",
+      "path": "/api/me/attempts",
+      "status": 200,
+      "passed": true,
+      "request_id": "4e82dea3d2ab4469a0625143622f141d"
+    },
+    {
+      "check": "recommendations",
+      "method": "GET",
+      "path": "/api/me/recommendations",
+      "status": 200,
+      "passed": true,
+      "request_id": "2318a0bcb9294f7fbb7e1d731cc65947"
+    },
+    {
+      "check": "catalog",
+      "method": "GET",
+      "path": "/api/catalog",
+      "status": 200,
+      "passed": true,
+      "request_id": "2a6dd579206347c2a7b465484f87c746"
+    },
+    {
+      "check": "offline practice bundle",
+      "method": "GET",
+      "path": "/api/practice-download",
+      "status": 200,
+      "passed": true,
+      "request_id": "cb7da46c79cd4fea91166aa195cc78b9"
+    },
+    {
+      "check": "learning profile",
+      "method": "GET",
+      "path": "/api/me/learning-profile",
+      "status": 200,
+      "passed": true,
+      "request_id": "1f07d0b14c6646f9b7e8bf99834fa870"
+    },
+    {
+      "check": "review queue",
+      "method": "GET",
+      "path": "/api/me/review-queue",
+      "status": 200,
+      "passed": true,
+      "request_id": "faf9e6204950428696214d59ee0c2d14"
+    },
+    {
+      "check": "teacher performance",
+      "method": "GET",
+      "path": "/api/classes/1/performance",
+      "status": 200,
+      "passed": true,
+      "request_id": "3e489f0a3cd44dc9a55c24c92fb2cc22"
+    },
+    {
+      "check": "teacher skill grid",
+      "method": "GET",
+      "path": "/api/classes/1/skill-grid",
+      "status": 200,
+      "passed": true,
+      "request_id": "012d52ed19b24699b262e74dc85cf232"
+    },
+    {
+      "check": "teacher knowledge",
+      "method": "GET",
+      "path": "/api/teacher/knowledge",
+      "status": 200,
+      "passed": true,
+      "request_id": "827c6116316c4575a5c3df7eae0f2e14"
+    },
+    {
+      "check": "enqueue durable AI draft",
+      "method": "POST",
+      "path": "/api/ai/jobs",
+      "status": 200,
+      "passed": true,
+      "request_id": "f03a35ca2b7c4b4daf474f8723e4a43a"
+    },
+    {
+      "check": "live AI job completed by inline worker",
+      "passed": true,
+      "items": 1
+    },
+    {
+      "check": "remove synthetic audio",
+      "method": "DELETE",
+      "path": "/api/recordings/1",
+      "status": 200,
+      "passed": true,
+      "request_id": "9277c1493498498281384de544ec8894"
+    },
+    {
+      "check": "removed audio inaccessible",
+      "method": "GET",
+      "path": "/api/recordings/1/audio",
+      "status": 404,
+      "passed": true,
+      "request_id": "75711a8286c7420eb151d5d29cd67dce"
+    },
+    {
+      "check": "explicit email recovery limitation",
+      "method": "POST",
+      "path": "/api/auth/password-reset-request",
+      "status": 503,
+      "passed": true,
+      "request_id": "b95afc73e5cb4642ac4597bb314c8ca1"
+    },
+    {
+      "check": "learner logout",
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200,
+      "passed": true,
+      "request_id": "372d0399b936497c91c3ce1b12161efe"
+    },
+    {
+      "check": "revoked session rejected",
+      "method": "GET",
+      "path": "/api/me",
+      "status": 401,
+      "passed": true,
+      "request_id": "8d113899d9de4bddb0c3aee744725d9a"
+    },
+    {
+      "check": "Render restart preserves login sessions, classrooms, completed AI jobs, and exact Neon audio bytes",
+      "passed": true
+    },
+    {
+      "check": "Synthetic persistence audio cleaned up",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "synthetic_data": "Release verification classroom and two synthetic accounts; no real learner data used.",
+  "limitations": [
+    "Email recovery is not configured.",
+    "Free Render instances sleep when idle."
+  ],
+  "verified_at": "2026-10-11T17:37:03.982644+00:00",
+  "application_commit": "2a98006616975fd10605fa591690bff1c14be0b4",
+  "browser_checks": [
+    "Production HTTPS loads without a Vercel login",
+    "Instructor registration and instructor dashboard",
+    "Library navigation and nested SPA route reload",
+    "Learner sign-in and role-protected route rejection",
+    "Practice catalog and sentence-builder word controls",
+    "Submit answer and display persisted 100% task feedback",
+    "Feedback explanation and usefulness confirmation",
+    "Next exercise navigation"
+  ],
+  "checks_count": 40
+}
