@@ -28,6 +28,7 @@ import ai
 import db
 import feedback
 import insights
+import knowledge as kb
 import skills
 from items import QUIZ_KINDS, ItemIn, clean_item, grade_quiz
 
@@ -215,6 +216,16 @@ class Register(BaseModel):
 class Login(BaseModel):
     email: str = Field(max_length=120)
     password: str = Field(max_length=128)
+
+
+class KnowledgeIn(BaseModel):
+    skill_code: str = Field(min_length=2, max_length=40)
+    title: str = Field(min_length=2, max_length=120)
+    body: str = Field(min_length=2, max_length=2000)
+    example: str | None = Field(default=None, max_length=300)
+    level: str = Field(default="A1", pattern=r"^(A1|A2|B1|B2|C1|C2)$")
+    language: str = Field(default="en", pattern=r"^[a-z]{2,3}$")
+    visibility: Literal["public", "private"] = "private"
 
 
 class ClassIn(BaseModel):
@@ -1048,8 +1059,14 @@ def submit_attempt(
                     else "learner_corrected_asr"
                 )
             target = item.get("text") if kind == "read" else item.get("answer")
+            knowledge = []
+            if kind in ("read", "free") and ai.configured():
+                item_skills = item.get("skill_ids") or []
+                if item_skills:
+                    knowledge = kb.retrieve(conn, item_skills[0], text=text, limit=3)
             result = feedback.analyse_full(
-                kind, target, text, item.get("answer"), prompt=item.get("prompt")
+                kind, target, text, item.get("answer"), prompt=item.get("prompt"),
+                knowledge=knowledge,
             )
             if kind == "build":
                 result["answer"] = item["answer"]
@@ -1407,6 +1424,25 @@ class GenerateIn(BaseModel):
     )
     level: str = Field(default="A1", pattern=r"^(A1|A2|B1|B2|C1|C2)$")
     context: str | None = Field(default=None, max_length=4000)
+
+
+@app.get("/api/teacher/knowledge", response_model=contracts.KnowledgeList)
+def list_knowledge(user=Depends(teacher_only), conn: sqlite3.Connection = Depends(get_db)):
+    """Reviewed teaching units this teacher can use: the public base plus their own."""
+    return {"units": kb.list_for_teacher(conn, user["id"])}
+
+
+@app.post("/api/teacher/knowledge", response_model=contracts.KnowledgeCreated)
+def add_knowledge(body: KnowledgeIn, user=Depends(teacher_only), conn: sqlite3.Connection = Depends(get_db)):
+    """Add a teaching unit. Private by default; the coach grounds explanations in these."""
+    code = skills.normalise(body.skill_code)
+    if code not in skills.SKILLS:
+        raise HTTPException(422, "Unknown skill code.")
+    uid = kb.create(conn, skill_code=code, title=body.title, body=body.body, example=body.example,
+                    level=body.level, language=body.language, owner_id=user["id"],
+                    visibility=body.visibility)
+    conn.commit()
+    return {"id": uid, "skill_code": code, "visibility": body.visibility}
 
 
 @app.post("/api/ai/items", response_model=contracts.Draft)

@@ -83,6 +83,7 @@ class Attempt(Response):
     basis: str | None = None
     feedback_version: str | None = None
     normalization_version: str | None = None
+    sources: list[dict] = []
 
 
 class History(Response):
@@ -178,6 +179,16 @@ class Export(Response):
     profile: dict[str, JsonValue]
     attempts: list[Attempt]
     enrollments: list[dict[str, JsonValue]]
+
+
+class KnowledgeList(Response):
+    units: list[dict]
+
+
+class KnowledgeCreated(Response):
+    id: str
+    skill_code: str
+    visibility: str
 
 
 class Items(Response):

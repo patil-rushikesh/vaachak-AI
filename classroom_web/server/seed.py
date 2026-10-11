@@ -150,12 +150,27 @@ def seed(reset: bool = False) -> None:
     do("aarav@demo.test", "Introduce yourself", 1, pick=1, days_ago=0)
     do("diya@demo.test", "Saying hello", 0, days_ago=2)
     do("diya@demo.test", "Saying hello", 1, pick=2, days_ago=2)
+    # Reviewed teaching units for grounded coaching (G2).
+    import knowledge as _kb
+    _KB = [
+        ("MORPH.AGREEMENT", "He, she, it verbs", "With he, she or it, the verb takes an s: she goes, he likes, it works. With I, you, we and they, no s.", "She goes to school."),
+        ("MORPH.TENSE", "Talking about yesterday", "For the past, change the verb: go becomes went, eat becomes ate, is becomes was. Do not add -ed to these.", "Yesterday I went home."),
+        ("MORPH.PROGRESSIVE", "-ing with am, is, are", "Use am, is or are with an -ing verb for something happening now. Not with have, like or know.", "I am reading now."),
+        ("SYN.ARTICLE", "A, an and the", "Use a before a consonant sound, an before a vowel sound, the when both people know which one.", "a banana, an apple, the sun."),
+        ("SYN.PREPOSITION", "In, on, at for time", "Use at for a time, on for a day, in for a month or year.", "at nine on Monday in June."),
+        ("SYN.QUESTION", "Asking a question", "In a question the helping word comes before the person: Where are you going? What does she want?", "Where do you live?"),
+        ("PHON.TH", "The th sound", "Put your tongue between your teeth and blow softly: think, three, thanks, this, that.", "Think about three things."),
+        ("PHON.VW", "V and W", "For v the top teeth touch the lip. For w the lips make a round shape and teeth do not touch.", "very, we, vine, wine."),
+    ]
+    for _c, _t, _b, _e in _KB:
+        _kb.create(conn, skill_code=_c, title=_t, body=_b, example=_e)
     conn.commit()
     conn.close()
     print(f"Seeded. Password for every demo account: {PASSWORD}")
     for _, name, email in PEOPLE:
         print(f"  {email:22} {name}")
     print(f"Class join code (English speaking): {code}")
+    print(f"Reviewed knowledge base: {len(_KB)} teaching units for grounded coaching")
     print("Sana has gone quiet and Omkar never started, so the teacher's Needs you tab has something to show.")
     print("Sample course: Spoken English: first steps (given to the English speaking class)")
 
