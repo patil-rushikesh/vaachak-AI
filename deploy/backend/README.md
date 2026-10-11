@@ -13,7 +13,7 @@ Live deployment verified on 2026-10-11:
 - Database: Neon Postgres 18, with private `vaachak-audio` object storage.
 - Verification: `docs/verification/hosted-release-2026-10-11.json`. Synthetic instructor/learner testing exercised live speech transcription, AI draft generation, private audio ranges, CORS, access controls, and persistence after a Render restart. This is deployment smoke coverage; the isolated SQLite/Postgres suites cover all 100 API operations.
 
-Instructor signup requires `VAACHAK_TEACHER_INVITE` from the Render Environment page; share it privately with approved instructors. Do not paste it into a public document. Web sessions intentionally remain in tab memory, so a full reload requires sign-in again. Email recovery is **not configured**; the API reports this explicitly and an operator can issue a reset token using the administrative CLI. Android APK and signed iOS distribution artifacts remain a separate release step.
+Instructor signup requires `VAACHAK_TEACHER_INVITE` from the Render Environment page; share it privately with approved instructors. Do not paste it into a public document. Web sessions intentionally remain in tab memory, so a full reload requires sign-in again. Email recovery is **not configured**; the API reports this explicitly and an operator can issue a reset token using the administrative CLI. The signed Android APK and free iPhone web distribution are described below; a native iOS IPA still requires paid Apple signing access.
 
 ### Render
 
@@ -39,11 +39,19 @@ Release builds reject missing, HTTP, local/test, or path-suffixed API origins. T
 
 ### Android and iOS distribution
 
-The app is linked to the EAS project `@patilrushikesh/vaachak`. Its public project ID is committed in `apps/vaachak/app.json`; signing credentials remain in EAS. After the backend is reachable, run from `apps/vaachak`:
+The Android 1.0.0 release (version code 2) was built from commit `275d22923187126d8519daf29742c81ef0381233` with EAS profile `apk` and the production API `https://vaachak-api.onrender.com`:
+
+- [Download the signed APK](https://expo.dev/artifacts/eas/9YG7pZ75BlqR1eSvHWKpLwTyxdr_VotZI68-qJVuVqk.apk).
+- [Build and installation page](https://expo.dev/accounts/patilrushikesh/projects/vaachak/builds/df405374-a296-4bb4-920d-17ae914827e6).
+- Share the APK using Drive or email the installation link. Download and open it on Android, then permit installation from the downloading app when prompted. Expo Go and a development server are not needed.
+
+The user selected free distribution for iPhone: share [the hosted web app](https://vaachak-ai.vercel.app). In Safari, use Share → Add to Home Screen → Add (enable Open as Web App if offered). This is the web client, not an IPA; web session and reminder limitations still apply. [Apple's instructions](https://support.apple.com/guide/iphone/iphea86e5236/ios).
+
+The app is linked to the EAS project `@patilrushikesh/vaachak`. Its public project ID is committed in `apps/vaachak/app.json`; signing credentials remain in EAS. The production EAS environment already contains `EXPO_PUBLIC_API_URL=https://vaachak-api.onrender.com`. For the next release, run from `apps/vaachak`:
 
 ```sh
 npx eas-cli@latest login
-npx eas-cli@latest env:create --environment production --name EXPO_PUBLIC_API_URL --value https://YOUR-ACTUAL-API.onrender.com --visibility plaintext
+npx eas-cli@latest env:list --environment production
 npx eas-cli@latest build --platform android --profile apk
 ```
 

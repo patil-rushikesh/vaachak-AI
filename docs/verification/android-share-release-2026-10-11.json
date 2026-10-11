@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-11",
+  "android": {
+    "status": "ready",
+    "version": "1.0.0",
+    "version_code": 2,
+    "package": "com.vaachak.learning",
+    "source_commit": "275d22923187126d8519daf29742c81ef0381233",
+    "build_id": "df405374-a296-4bb4-920d-17ae914827e6",
+    "build_profile": "apk",
+    "build_status": "FINISHED",
+    "download_url": "https://expo.dev/artifacts/eas/9YG7pZ75BlqR1eSvHWKpLwTyxdr_VotZI68-qJVuVqk.apk",
+    "api_origin": "https://vaachak-api.onrender.com",
+    "api_origin_verified_in_compiled_bundle": true,
+    "size_bytes": 102737302,
+    "sha256": "5c0fff242fb4bf87f792a212a2917686febed86e27671b8aa70aac6d150adbf4",
+    "signature_verification": "passed (APK Signature Scheme v2)",
+    "certificate_sha256": "32b0cc04e2390766ea879ab9e976ca73a412212c48bf0122fd27a58ee792c846",
+    "debuggable": false,
+    "min_sdk": 24,
+    "target_sdk": 36,
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "x86",
+      "x86_64"
+    ]
+  },
+  "verification": {
+    "expo_doctor": "21/21 passed on EAS",
+    "frontend_unit_tests": "41 passed",
+    "typecheck": "passed",
+    "lint": "0 errors, 11 existing warnings",
+    "device": "Android 11 / API 30 / arm64-v8a emulator",
+    "installed_release_apk": "passed",
+    "guest_sample_flow": "passed (12.834 seconds)",
+    "hosted_learner_flow": "passed (33.253 seconds)",
+    "hosted_learner_checks": [
+      "sign in against production API",
+      "Practice screen",
+      "Progress journal",
+      "force stop and relaunch restores secure session",
+      "account screen",
+      "sign out"
+    ],
+    "visual_check": "Settings screen rendered and inspected after enabling ATD drawing",
+    "temporary_account_cleanup": "DELETE /api/me returned 200",
+    "scope_limit": "Release smoke tests, not a new full feature audit or physical-device microphone test",
+    "harness_notes": [
+      "Removed hideKeyboard because ATD has no software keyboard and Back exited the activity",
+      "Passed test credentials through Maestro -e rather than unimported shell variables",
+      "Enabled debug.hwui.drawing_enabled on ATD emulator for visual evidence"
+    ]
+  },
+  "ios": {
+    "distribution": "free hosted web client, per user preference",
+    "url": "https://vaachak-ai.vercel.app",
+    "installation": "Safari > Share > Add to Home Screen",
+    "native_ipa_created": false,
+    "reason": "Shareable native IPA requires Apple Developer signing; user chose free distribution",
+    "limitations": [
+      "Web sessions are held in tab memory",
+      "Native scheduled reminders are unavailable on web",
+      "No new physical iPhone verification performed in this build task"
+    ]
+  }
+}

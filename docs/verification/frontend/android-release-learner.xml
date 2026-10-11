@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="emulator-5554" tests="1" failures="0" time="33.27" timestamp="2026-10-11T23:51:56">
+    <testcase id="Signed Android release connects to the hosted API and restores its session" name="Signed Android release connects to the hosted API and restores its session" classname="Signed Android release connects to the hosted API and restores its session" file="apps/vaachak/tests/native/release-learner.yaml" time="33.253" timestamp="2026-10-11T23:51:56" status="SUCCESS"/>
+  </testsuite>
+</testsuites>

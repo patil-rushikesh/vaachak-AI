@@ -1,0 +1,45 @@
+# Use a disposable learner created on the configured API.
+appId: com.vaachak.learning
+name: Signed Android release connects to the hosted API and restores its session
+---
+- launchApp
+- scrollUntilVisible:
+    element:
+      id: field-email
+- tapOn:
+    id: field-email
+- inputText: ${TEST_EMAIL}
+- tapOn:
+    id: field-password
+- inputText: ${TEST_PASSWORD}
+- scrollUntilVisible:
+    element: Let’s practise
+- tapOn: Let’s practise
+- extendedWaitUntil:
+    visible: Hello, Release.*
+    timeout: 120000
+- tapOn: Practice
+- extendedWaitUntil:
+    visible:
+      id: field-find-your-practice
+    timeout: 90000
+- tapOn: Progress
+- scrollUntilVisible:
+    element: Your practice journal
+    timeout: 90000
+- assertVisible: Your practice journal
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: Hello, Release.*
+    timeout: 120000
+- tapOn: Open my account
+- extendedWaitUntil:
+    visible: Your space. Your choices.
+    timeout: 90000
+- scrollUntilVisible:
+    element: Sign out
+- tapOn: Sign out
+- extendedWaitUntil:
+    visible: Welcome back
+    timeout: 90000

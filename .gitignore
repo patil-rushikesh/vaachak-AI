@@ -15,7 +15,7 @@ build/
 *.task
 *.litertlm
 __pycache__/
-.venv/
+.venv*/
 .DS_Store
 
 *.pem

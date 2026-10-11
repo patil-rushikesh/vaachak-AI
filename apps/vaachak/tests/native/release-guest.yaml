@@ -1,0 +1,17 @@
+appId: com.vaachak.learning
+name: Signed Android release works without Expo Go or a development server
+---
+- launchApp
+- extendedWaitUntil:
+    visible: Try a free 2-minute sample
+    timeout: 90000
+- tapOn: Try a free 2-minute sample
+- tapOn: practise
+- assertVisible: One useful correction.
+- assertVisible: Use practises with she in the present simple.
+- tapOn: Next sample
+- assertVisible: Choose a polite request.
+- tapOn: Could you explain that again, please?
+- assertVisible: You got it.
+- tapOn: Continue to sign in
+- assertVisible: Welcome back

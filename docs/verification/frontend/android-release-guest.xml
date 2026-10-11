@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="emulator-5554" tests="1" failures="0" time="12.845" timestamp="2026-10-11T23:45:59">
+    <testcase id="Signed Android release works without Expo Go or a development server" name="Signed Android release works without Expo Go or a development server" classname="Signed Android release works without Expo Go or a development server" file="apps/vaachak/tests/native/release-guest.yaml" time="12.834" timestamp="2026-10-11T23:45:59" status="SUCCESS"/>
+  </testsuite>
+</testsuites>
