@@ -20,6 +20,10 @@ def main():
         os.initgroups(user.pw_name, user.pw_gid)
         os.setgid(user.pw_gid)
         os.setuid(user.pw_uid)
+        # libpq resolves default TLS files under HOME; root's home is inaccessible
+        # after dropping privileges, even when no client certificate is needed.
+        os.environ["HOME"] = user.pw_dir
+        os.environ["USER"] = user.pw_name
     os.execvp(sys.argv[1], sys.argv[1:])
 
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Single-instance API and optional worker on the same persistent Render disk."""
+"""Single-instance API with an optional worker and local or cloud storage."""
 
 import json
 import os
@@ -20,11 +20,13 @@ def supervise(commands, grace_seconds=25):
     """Stop the whole service if a child exits; let the platform restart it."""
     children = {}
     stopping = False
+    received_signal = None
 
     def stop(signum, _frame):
-        nonlocal stopping
+        nonlocal stopping, received_signal
+        # Signal handlers must not re-enter logging while stdout is flushing.
+        received_signal = signum
         stopping = True
-        event("service_stopping", signal=signum)
 
     previous = {s: signal.signal(s, stop) for s in (signal.SIGTERM, signal.SIGINT)}
     result = 0
@@ -43,6 +45,8 @@ def supervise(commands, grace_seconds=25):
             if not stopping:
                 time.sleep(0.2)
     finally:
+        if received_signal is not None:
+            event("service_stopping", signal=received_signal)
         for process in children.values():
             if process.poll() is None:
                 try:

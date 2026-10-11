@@ -65,6 +65,10 @@ def run(image):
         status = docker("exec", name, "cat", "/proc/1/status")
         assert "Uid:\t10001\t10001\t10001\t10001" in status
         checks["root_owned_disk_initialized_and_privileges_dropped"] = True
+        # Inspect PID 1, because docker exec does not inherit entrypoint env changes.
+        docker("exec", "--user", "10001", name, "python", "-c",
+            "from pathlib import Path; env=Path('/proc/1/environ').read_bytes().split(b'\\0'); assert b'HOME=/home/vaachak' in env")
+        checks["non_root_home_supports_postgres_tls"] = True
         body = {"name": "Release teacher", "email": "release-check@example.invalid",
             "password": "Synthetic-Release-482!", "role": "teacher"}
         assert request("/api/auth/register", "POST", body)[0] == 403

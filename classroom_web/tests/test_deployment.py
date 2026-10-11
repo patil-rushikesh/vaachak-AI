@@ -97,3 +97,40 @@ def test_supervisor_stops_sibling_on_failure_or_platform_shutdown(crash):
         if process.poll() is None:
             process.kill()
             process.wait()
+
+
+def test_shutdown_signal_during_log_write_is_not_reentrant():
+    # Deterministically reproduce SIGTERM arriving inside a startup log write.
+    code = f"""
+import sys, signal
+sys.path.insert(0, {str(ROOT / 'tools')!r})
+import run_service
+original = run_service.event
+writing = False
+pids = []
+def interrupted_event(name, **fields):
+    global writing
+    assert not writing, 'Signal handler re-entered logging'
+    writing = True
+    try:
+        if name == 'service_child_started':
+            pids.append(fields['pid'])
+            signal.raise_signal(signal.SIGTERM)
+        original(name, **fields)
+    finally:
+        writing = False
+run_service.event = interrupted_event
+result = run_service.supervise({{'api': [sys.executable, '-c', 'import time; time.sleep(30)']}}, grace_seconds=1)
+import os
+for pid in pids:
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        pass
+    else:
+        raise AssertionError('Child was not reaped')
+sys.exit(result)
+"""
+    result = subprocess.run([sys.executable, '-c', code], capture_output=True, text=True, timeout=10)
+    assert result.returncode == 0, result.stderr
+    assert 'service_stopping' in result.stdout
