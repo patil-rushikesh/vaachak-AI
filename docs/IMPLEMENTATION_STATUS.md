@@ -1,64 +1,61 @@
-> Historical reference: the web and Android frontends and their build tooling have been removed. See the root README for current setup.
+# Current application implementation status
 
-# Implementation status and release gates
+Reconciled against source on **15 October 2026**, baseline commit `10d27c6`. This document describes the current Expo/FastAPI application. Hosting and native acceptance below are recorded observations from **11 October 2026**, not new live-service checks on the documentation review date.
 
-The codebase contains working implementations across all requested package boundaries. **The requested end-to-end production platform is not complete.** Tests establish the behaviors they cover; they do not establish the specification's complete functionality or non-functional targets.
+## What is delivered
 
-## Phase 1 foundation milestone
+The application supports English practice for students and independent learners, with instructor-managed courses, classrooms and feedback. The intended initial audience is adult college learners preparing for interviews, presentations, workplace and everyday communication; this remains a product hypothesis rather than completed audience research.
 
-The engineering checklist for **Phase 1: Core Engine, Persistence & Learner UI** in the pasted roadmap is implemented and locally verified. See `PHASE_1.md` for the requirement-by-requirement evidence and scope. This does not complete the broader prototype schedule or remove the external release gates below.
+| Area | Implemented behavior | Source |
+| --- | --- | --- |
+| Frontend | One Expo SDK 57 / React Native / TypeScript application for Android, iOS and web; learner and instructor navigation | `apps/vaachak/src/app`, `apps/vaachak/src/features` |
+| Accounts | Teacher, student and learner roles; email/password sessions; production teacher invitation; password change, reset-token handling, export and erasure | `classroom_web/server/main.py`, `operations.py`, `growth.py` |
+| Learning | Six task kinds: choice, fill, listen, build, read and free response; courses, lessons, class assignments, history and retry comparison | `main.py`, `courses.py`; frontend `Player.tsx`, `Courses.tsx`, `Learning.tsx` |
+| Personal practice | Four goals, starter/stretch preference, weekly goal, saved bounded sessions, task snapshots, drafts and another-session action | `growth.py`; frontend `Growth.tsx` |
+| Review and teacher attention | Skill-specific evidence, delayed-success checks, due review, recommendation reasons, snooze/resolve and follow-up assignments | `insights.py`, `operations.py`, `evidence.py` |
+| Speech and feedback | Server-side Groq transcription; transcript preview/correction; deterministic grading and AI-assisted coaching; provenance, uncertainty and unscored attempts | `ai.py`, `feedback.py`, `main.py`, `growth.py` |
+| Teaching knowledge | Owner-scoped create/edit/review/publish/withdraw; versioned citations; published edits return to private drafts | `knowledge.py`, `main.py`; frontend `Knowledge.tsx` |
+| AI content authoring | Synchronous drafts and persisted generation jobs with leases/recovery; human review before publication | `ai.py`, `generation_jobs.py`, `inline_worker.py`; frontend `Composer.tsx` |
+| Conversation practice | Four scripted scenarios (everyday, interview, workplace, presentation); persisted turns, revision checks and bounded participation summaries | `growth.py`; frontend `Growth.tsx` |
+| Optional reminders | Explicit permission request and scheduled native reminders; web/Expo Go report unavailable support | frontend `reminders.ts`, `reminders.web.ts` |
+| Limited offline use | Up to 30 public text activities downloaded for seven days; local self-practice feedback; logout removes the download | frontend `Downloads.tsx`, backend `/api/practice-download` |
+| Reliability | Submission UUIDs, task versions, recovery lookup, uniform errors, request IDs, structured logs, ownership checks and private audio access | `evidence.py`, `observability.py`, `audio_store.py` |
 
-## Phase 2 on-device AI milestone
+Source paths without a directory prefix in the table are relative to `classroom_web/server/`. The complete schema has **100 HTTP operations**; see [OpenAPI](../postman/openapi.json), [API list](../postman/API_LIST.txt) and [API guide](../classroom_web/API_CONTRACT.md).
 
-The speech, signed model-pack and local explanation workflows are implemented. The host suite passed 165 Dart/Flutter and 10 Python tests; Android build/installation and real desktop/Android Whisper/Piper integration passed. Android Gemma native inference/template-first fallback and offline profile/PIN/grammar/background-lock instrumentation also passed. Phase 2 engineering and emulator checks are complete. See `PHASE_2.md` for the checklist, reproducible native tests and remaining release gates. Emulator acceptance does not establish physical-phone performance, real microphone accuracy or production model approval.
+## Architecture and deployment
 
-## Phase 3 school synchronization milestone
+- **Web:** https://vaachak-ai.vercel.app on Vercel.
+- **API:** https://vaachak-api.onrender.com on Render Free; one instance and one Uvicorn worker, with `VAACHAK_RUN_WORKER=inline` waking persisted generation jobs on demand.
+- **Database:** Neon PostgreSQL selected by `DATABASE_URL`; local SQLite remains supported.
+- **Audio:** private S3-compatible object storage in the cloud; local files in local deployments. Recordings reach the API and, for transcription, Groq. Playback requires authorization.
+- **Android:** signed standalone version 1.0.0, version code 2, built and emulator-smoke-tested against the hosted API. See [release evidence](verification/android-share-release-2026-10-11.json) and [download/install instructions](../deploy/backend/README.md#android-and-ios-distribution).
+- **iOS:** Expo Go simulator journeys were checked. No signed native IPA was produced; the selected free distribution route is the hosted web app through Safari/Add to Home Screen.
 
-Class joining, consent-aware foreground synchronization, teacher approval/evidence/interventions and encrypted offline transfers are wired into the app. Real PostgreSQL/PostgREST service checks passed on desktop and Android; learner and teacher Android UI tests passed. Both migrations and protected API schemas are deployed to the supplied Supabase project; hosted synthetic SQL checks passed; real school/account onboarding and OTP acceptance remain. See `PHASE_3.md` for evidence and limits.
+See [architecture](ARCHITECTURE.md) and the [operator runbook](../deploy/backend/README.md). Free-host cold starts and provider quotas apply; this deployment does not promise an always-on SLA.
 
-## Phase 4 updates and privacy hardening milestone
+## What the current release does not establish
 
-Recoverable Play update flows, explicit flexible-update restart, signed/expiring CDN catalog discovery, replay protection, overlapping pack trust keys, actual installed-version compatibility, purpose-specific consent withdrawal and a fail-closed release preparation gate are implemented. The host suite plus final storage-reserve regression passed 185 Dart/Flutter and 14 Python tests; native Phase 4 consent/persistence/erasure/update-fallback acceptance passed. See `PHASE_4.md`. Actual Play delivery, production school configuration/content approval and physical-phone acceptance remain release gates. Phase 3 was reverified after Phase 4; real inbox and physical-device checks remain. See `PHASE_3_VERIFICATION.md`.
+- No integrated on-device speech/LLM runtime, complete offline learning or cross-device event synchronization. Submission-ID reconciliation is not an offline answer/audio outbox.
+- No deployed seven-skill BKT placement test or calibrated mastery probabilities. The current review policy uses attempt evidence and delayed-success rules.
+- No acoustic phoneme scoring. Transcript agreement and task scores are not validated pronunciation or CEFR proficiency measurements.
+- No generative multi-turn role-play. The four conversation scenarios use authored prompts.
+- No embedded vector database or embedding-based retrieval. Teaching knowledge is selected by skill/domain and deterministic keyword matching, with source-ID/version validation.
+- No guardian identity-verification workflow in the current account service; optional research consent is a different feature. No legal-compliance certification is claimed.
+- No unlimited unique curriculum or unlimited provider calls. Continuous practice reuses a finite accessible pool and labels repetition.
+- No completed human learning-efficacy, retention, accent-fairness or representative-device performance study. Synthetic test users and recordings are test fixtures.
 
-## Implemented
+## Remaining release and research work
 
-- 70-node acyclic graph spanning seven skills; prerequisites, five difficulty rungs, BKT binary/graded updates, ranking and one-sentence factors, skill-diversity limits, multi-teacher pin precedence, staircase and ladder algorithms.
-- 40 conservative grammar pattern rules with positive/negative fixtures. A narrow regex taxonomy is implemented; the broader POS/lemma tagger described in the design is not.
-- Weighted phonetic-fallback word alignment, omissions/substitutions/repetitions/hesitations from provided timestamps, WCPM, one chosen correction. The current ASR adapter does not fabricate missing confidence or word times.
-- Drift with actual SQLCipher Community encryption and verified compatibility with the earlier v4-format database, 210,000-iteration salted PBKDF2 PIN hashes, lockout, device-scoped sequences, HLC, ULIDs, immutable events, snapshots derived from replay, atomic imports, export and erasure tombstones.
-- Learner profile creation/unlock, separate minor flag, witnessed-consent reference, localized English/Hindi onboarding, dashboard and practice controls, distinct child/student/adult layouts, high-contrast palettes, duplicate-safe saved practice attempts, grammar templates, learner export/erase, background/inactivity locking.
-- Riverpod-owned encrypted-store, roster and active-session state; stale-unlock cancellation, profile isolation, consent-refresh locking, evidence-based weaknesses and recent progress, and content-aware top-five selection.
-- Resumable reviewed-choice assessment checks for vocabulary, grammar and sentence formation; seven-skill availability screen, exact-rung selection, six/eight-item stopping, transactional completion, idempotent retries and question-pool change detection. See `ASSESSMENT.md`.
-- Reviewed passage schema, signed-pack loading and rubric-bound educator review; read-aloud assessment using approved model versions, word accuracy/pace scoring, microphone consent recheck, numeric-only evidence and safe save retry. See `READING_ASSESSMENT.md`.
-- In-memory PCM capture and clearing, sherpa ASR and Piper-compatible VITS TTS adapter, background worker, quality gates, capped recording and text fallback after failure; native memory-only playback.
-- Signed pack folder/CDN installation, native device tiers, capability refresh, resumable file streams with checked HTTP Range responses, exact signed file sets, runtime-schema validation, digest verification, atomic activation and verified rollback, installed content-bank loading and runtime model configuration.
-- Verified Tier A Gemma/LiteRT-LM activation wired into the grammar coach as explicit optional local rewording; strict JSON/length/corrected-form checks, safety screening, reviewed practice-only output, template-first six-second fallback, child disablement, lifecycle cancellation and idle disposal. Speech and explanation share a resource lease.
-- Encrypted `.vbundle` codec and file utilities, systematic fountain QR encoder/decoder, bounded LAN receiver, HTTPS event sender and consent-filtered retrying sync queue.
-- Supabase dev/qa/prod tables, monthly partitions, identity registry, least-privilege policies, ingestion with authoritative consent checks, deterministic BKT fold, teacher interventions, evidence-based insight queries, export, erasure and maintenance SQL.
-- Teacher portal email OTP flow, RLS-backed class/learner queries, observed mastery, evidence drill-down and approve/reject/pin/assign controls. Backend provisioning is required.
-- Play update service (flexible routine updates; immediate for explicit migration policy or Play priority >=4), release-signing enforcement, dependency lockfile, CI, unit/contract/widget/SQL/pgTAP checks, Android integration test and benchmark helper.
+1. Configure and verify SMTP if self-service reset email is required; deployed email recovery was unconfigured at the last acceptance check. Operator-assisted reset exists.
+2. Establish external backup/retention scheduling, protected exports and a cloud restore drill. Cleanup and local backup tools alone do not establish a running schedule.
+3. Complete signed-build microphone/interruption/notification checks, screen-reader acceptance and broader physical-device coverage. Existing physical Android tests used Expo Go; iOS simulator acceptance is not physical iPhone acceptance.
+4. Review curriculum and run consented adult usability/speech evaluation with reproducible baselines. Separate measured engineering correctness from educational effectiveness.
+5. Review outstanding build-tool dependency advisories and production monitoring/capacity before broader distribution. Historical audit results are not a current security certification.
+6. Deliver the remaining generative-AI roadmap incrementally. G1/G2 feedback/knowledge is integrated; existing drafting and sessions cover parts of later work but do not complete G3–G7 acceptance.
 
-## Engineering still required before the roadmap is complete
+## Documentation and evidence boundaries
 
-1. **Full assessment and curriculum:** the app now orchestrates resumable reviewed-choice checks for three skills plus a read-aloud reading-check flow, with all seven shown independently. The complete seven-skill, 20-minute initial assessment still requires listening/pronunciation/free-speaking modalities, evaluated reading models and rubrics, age-band/final-level prior seeding and mandatory onboarding gating. Practice and coaching remain independently available. Listening, free speaking, picture vocabulary and phoneme-model activities are not implemented as complete learner journeys. The bundled reading passage remains draft and disabled in production; reviewed passages and exact approved model versions are now supported by the schema/loader and assessment flow.
-2. **Content production:** 15 draft questions and one draft passage do not replace the required 1,500 items, 300 passages, 2,000 vocabulary assets and 150 listening clips. All 40 rule explanations also need educator review, richer adversarial fixtures, and stronger linguistic matching.
-3. **School deployment and field validation:** the Phase 3 app flows are implemented and tested against real local PostgreSQL/PostgREST. Hosted configuration and account provisioning, physical camera QR scanning and transfers between separate phones remain deployment/field checks. Foreground sync runs on resume and every 60 seconds; OS background scheduling is not implemented.
-4. **Speech validation:** development-only signed model fixtures and native smoke harnesses now exist outside the repository. Desktop and Android Whisper/Piper inference passed with the synthetic speech fixture, including Android playback/stop and encrypted numeric evidence. This does not establish real microphone accuracy. Actual supported token intervals are merged into words, with ambiguous or missing timings left untimed. No real recorded speech corpus is bundled. Contextual biasing, calibrated confidence, full number expansion, a pronunciation lexicon/G2P, frequency/taxonomy correction weighting and phoneme-level pronunciation remain incomplete. Shipping model compatibility and speech quality need Android/reference-phone evaluation.
-5. **Explanation evaluation:** learner UI, verified explainer activation and shared runtime arbitration are connected. An authorized signed Gemma 1B fixture produced actual text on Android. Its explanation request retained the reviewed template; no validated model-generated grammar explanation was accepted in that run. Model quality, licensing/distribution review and representative-device performance remain release gates. No claim of hallucination-proof validation is made.
-6. **Reliability:** storage failures report that an attempt was not saved and allow retry. An automatic bounded memory spill queue, crash-resume orchestration for activities beyond the new assessment checks, nightly encrypted backups/corruption recovery, schema-upgrade fixtures, remote unlink and consent evidence correction still need work. Purpose-specific withdrawal UI is implemented.
-7. **Security and operations:** TLS certificate/SPKI pinning and rotation, production school release keys, audit retention enforcement, access auditing, observability and authenticated diagnostics remain required. Pairing keys, signed offline teacher interventions, rate-limited joining and erasure acknowledgements are implemented. Guardian reference entry is not cryptographic identity verification; offline revocations take effect on refresh or cache expiry.
-8. **Scale and performance:** no phone RAM, ASR/TTS latency, thermal, battery, cold-start or 500-event ingestion benchmark has passed. Full-history server replay is a correctness baseline and must be optimized with tested checkpoints/compaction. The 1M learner claim is not established.
-9. **Accessibility and localization:** no TalkBack/manual contrast audit has been completed. Phase 1 UI now covers English/Hindi onboarding, dashboard, practice and grammar-coach controls, with distinct age layouts tested at 200% text size. Full localization of later assessment, speech, teacher, pack, update and error screens remains required.
+Use [verification](VERIFICATION.md) for dated test evidence, [backend status](BACKEND_IMPLEMENTATION_STATUS.md) for service details, and [user-value status](USER_VALUE_IMPLEMENTATION_STATUS.md) for the product backlog. Original plans retain their original requirements and estimates; their baseline sections are not current status inventories.
 
-## External gates
-
-- Android SDK and an ARM64 API 30 emulator are installed. APK compilation/installation and native speech/playback/encrypted-evidence integration passed. Gemma native inference/safe fallback and the complete offline profile/PIN/grammar/background-lock test passed; physical reference-phone acceptance remains outstanding.
-- Shipping ASR, TTS and optional Gemma model approval, applicable licensing/distribution review, per-model calibration and a consented evaluation corpus. Development-only fixtures do not satisfy these release gates.
-- Educator approval and adequate content coverage. The release validator deliberately fails for the bundled drafts.
-- Supabase project/client configuration, school records, authenticated device bindings, guardian verification and purpose-scoped consent provisioning.
-- Release signing keys and school pack trust anchors, plus an approved rotation process.
-- Legal review of the deploying organization's DPDP obligations and consent process. This implementation is not a legal compliance certification.
-
-## Verification evidence
-
-The final check results are recorded in `docs/VERIFICATION.md`. The teacher web build can be compiled without live credentials. The local HTTP server was reachable with HTTP tools, but the available in-app browser timed out on the localhost preview; visual browser QA was not completed. Widget tests cover safe initial/error states, all six age/language dashboard combinations at 200% text size, consent refusal and offline profile-to-practice-to-lock navigation. CI was authored locally and has not run on a remote GitHub repository.
+`packages/` and `infra/supabase/` retain separate Dart/Flutter and Supabase implementations, including BKT, encrypted storage, packs and event sync. They are not imported into the deployed Expo application. [Legacy status](LEGACY_IMPLEMENTATION_STATUS.md) preserves their historical implementation and test record; features there must not be presented as current app integrations.

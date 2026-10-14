@@ -2,6 +2,8 @@
 
 Vaachak combines a FastAPI classroom backend with one React Native / Expo application for Android, iOS, and web. The original web and Android frontends were replaced by the isolated application in `apps/vaachak`; reusable libraries and curriculum tooling remain available.
 
+Current feature scope, delivered releases and remaining work are recorded in [implementation status](docs/IMPLEMENTATION_STATUS.md), [architecture](docs/ARCHITECTURE.md) and [verification](docs/VERIFICATION.md). These supersede baseline descriptions in older plans and Flutter/Supabase records.
+
 For release, follow the [Render, Vercel, and mobile deployment guide](deploy/backend/README.md). Backend hosting uses the root `render.yaml`; Vercel’s project root is `apps/vaachak`. See the [app README](apps/vaachak/README.md) for local development.
 
 ## Run the classroom API
@@ -18,7 +20,7 @@ API documentation is at http://localhost:8000/api/docs. The root URL and `/stati
 
 ## Repository layout
 
-- `classroom_web/server`: FastAPI, SQLite, AI feedback, courses, and classroom endpoints.
+- `classroom_web/server`: FastAPI, SQLite/PostgreSQL storage, local/private object audio, AI feedback, courses, and classroom endpoints.
 - `classroom_web/tests`: API and backend tests.
 - `apps/vaachak`: React Native application, web build, mobile profiles, and UI tests.
 - `deploy/backend`: backend container and release operations guide.
@@ -56,7 +58,7 @@ python tools/build_postman_smoke.py
 npx --yes newman run postman/VaachakAI.local-tests.postman_collection.json --working-dir postman --reporters cli,junit --reporter-junit-export postman/local-test-results.xml
 ```
 
-Audio uploads use `postman/fixtures/silence.wav`, a synthetic fixture. Regenerating the test collection sets its absolute upload path for your checkout. The tests verify upload/download, not speech transcription. When no AI key is configured, the AI drafting test verifies the expected HTTP 503; live model generation remains unverified.
+Audio uploads use `postman/fixtures/silence.wav`, a synthetic fixture. Regenerating the test collection sets its absolute upload path for your checkout. The tests verify upload/download, not speech transcription. When no AI key is configured, the AI drafting test verifies the expected HTTP 503; that run does not verify live model generation. Separate [hosted acceptance](docs/verification/hosted-release-2026-10-11.json) records live transcription and generation checks.
 
 Postman desktop restricts file access to its working directory. The generated collection uses `fixtures/silence.wav` relative to its working directory. Copy the synthetic fixture into your configured Postman working directory and regenerate with `python tools/build_postman_smoke.py --audio-file /absolute/path/to/silence.wav` before importing on another machine.
 

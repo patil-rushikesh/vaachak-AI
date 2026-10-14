@@ -1,3 +1,5 @@
+> Documentation reconciliation, 15 October 2026: This is the original page/control audit. Later G1/G2 work corrected the known segmentation case and added iOS runtime checks; later deployment delivered hosting and a signed Android APK. See [current verification](../VERIFICATION.md) for scoped superseding evidence. Original run results below are preserved.
+
 # End-to-end page and control audit — 11 October 2026
 
 ## Scope and evidence

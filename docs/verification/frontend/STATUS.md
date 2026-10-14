@@ -1,3 +1,5 @@
+> Documentation reconciliation, 15 October 2026: Historical frontend run status. Use [current verification](../../VERIFICATION.md) and [implementation status](../../IMPLEMENTATION_STATUS.md) for later G1/G2, iOS runtime, hosted deployment and signed Android evidence.
+
 # Frontend implementation and verification
 
 **Historical baseline.** The latest expanded page/control and physical Android results are in [the 11 October end-to-end report](../END_TO_END_TEST_REPORT.md). Counts and Android limitations below refer to the earlier run.

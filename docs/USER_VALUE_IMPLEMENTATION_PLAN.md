@@ -1,5 +1,7 @@
 # Vaachak: user value, retention and continuous learning implementation plan
 
+> Status reconciliation — 15 October 2026: this is the original planning document, not a current feature inventory. Read [implementation status](IMPLEMENTATION_STATUS.md), [architecture](ARCHITECTURE.md) and [dated verification](VERIFICATION.md) first. Hosted Render/Neon/Vercel deployment and a signed Android APK are delivered. G1/G2 feedback and teaching knowledge are integrated; remaining roadmap acceptance and human evaluation are separate. Historical statements below such as “not implemented” describe the planning baseline.
+
 Date: 11 October 2026. Status: proposed implementation backlog, not a completion report.
 
 This plan extends `REACT_NATIVE_PRODUCT_PLAN.md` and the existing M.Tech project. Preserve the FastAPI service, SQLite data, six task types, attempt evidence, review policy, course/class workflows and isolated Expo app. Deliver improvements incrementally; do not replace the product. All new API names and tables below are proposed contracts until implemented and verified.

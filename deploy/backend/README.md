@@ -1,5 +1,7 @@
 # Release deployment and operations
 
+Documentation reconciled 15 October 2026 against source baseline `10d27c6`. Hosting/build results below were recorded on 11 October 2026; this update is not a new live availability or deployment test. See [current implementation](../../docs/IMPLEMENTATION_STATUS.md) and [verification](../../docs/VERIFICATION.md).
+
 The cloud target is one FastAPI instance on Render Free, Neon Postgres, and private Neon S3-compatible audio storage. Local Docker Compose still supports SQLite and local audio. Keep one API instance for the current submission-recovery lifecycle. The existing Dart/Supabase components are separate and are not needed to run this service.
 
 ## Render backend, Vercel web, and mobile release
@@ -88,7 +90,7 @@ AI remains subject to provider availability and configured quotas; unlimited exi
 
 After deployment, verify readiness, allowed/rejected browser origins, instructor invitation, learner signup, all six task formats, real speech upload/transcription/playback, teacher review/publication, knowledge citations, unscored retries, account export/erasure, and password recovery. Redeploy and verify an account and recording survive. Run Postman smoke tests only against disposable staging records. Install signed Android/iOS builds and repeat microphone, session restoration, navigation, and network recovery checks.
 
-Keep backups outside the application disk and rehearse restoration before storing real learner work. Render Cron jobs cannot mount this service's disk. Run the existing backup/retention commands inside the service using an operator-controlled schedule or authenticated shell/SSH, with an external backup destination. This repository does not provision that external destination or scheduler; an explicit operator schedule is needed until configured.
+Keep backups outside the application disk and rehearse restoration before storing real learner work. Render Cron jobs cannot mount this service's disk. For self-hosted deployments, run backup/retention commands inside the service using an operator-controlled schedule or authenticated shell/SSH, with an external backup destination. For Render Free, use the trusted external operator environment and cloud export procedure above. This repository does not provision that external destination or scheduler; an explicit operator schedule is needed until configured.
 
 References: [Render Blueprint](https://render.com/docs/blueprint-spec), [persistent disks](https://render.com/docs/disks), [Expo web deployment](https://docs.expo.dev/guides/publishing-websites/), [Expo internal distribution](https://docs.expo.dev/build/internal-distribution/).
 
@@ -98,9 +100,11 @@ Use Python 3.13 and install FFmpeg (`ffprobe` must be on PATH). Install `classro
 
 The server loads `classroom_web/vaachak.env` locally. Never commit that file. Docker does not copy it. A missing provider key allows deterministic text practice but does not provide speech transcription or AI drafting.
 
-## Hosted deployment
+## Alternative self-hosted SQLite deployment
 
-1. Provision a Linux host with Docker Compose and persistent local storage. Point a DNS hostname to it and allow inbound 80/443. No host/domain has been provisioned by this change.
+The current hosted release uses Render/Neon as described above. The following procedure is an optional single-host SQLite deployment, not an outstanding requirement to provision the existing cloud release.
+
+1. Provision a Linux host with Docker Compose and persistent local storage. Point a DNS hostname to it and allow inbound 80/443. This alternative requires its own host/domain.
 2. Copy `deploy/backend/.env.example` to `deploy/backend/.env`, restrict permissions to the operator, and configure `DOMAIN`, a long random `VAACHAK_TEACHER_INVITE`, and the server-side `GROQ_API_KEY`. Do not put these secrets into an APK or Postman export.
 3. From this directory, run `docker compose up -d --build`. Caddy terminates HTTPS. The API port is not publicly published; only the proxy exposes ports. The data volume contains `/data/classroom.db` and `/data/audio`.
 4. Verify `https://YOUR_DOMAIN/api/ready`, register a test instructor using `teacher_invite`, register a learner, join a class, submit practice and verify authenticated playback.

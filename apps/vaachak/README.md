@@ -4,6 +4,8 @@ One Expo SDK 57 / React Native / TypeScript app for **iOS, Android and web**. Th
 
 ## Release deployment
 
+Recorded 11 October 2026: Render/Neon API and Vercel web are deployed; signed Android 1.0.0/code 2 is available and passed hosted emulator smoke. iPhone distribution uses the hosted Safari web app; no native IPA was produced. See [current implementation](../../docs/IMPLEMENTATION_STATUS.md) and [verification](../../docs/VERIFICATION.md).
+
 Use the [Render + Vercel + mobile release guide](../../deploy/backend/README.md). Vercel must use this directory as its project root. Set the actual HTTPS backend origin in both Vercel and the EAS production environment before building. `npm run build:release:web` validates the web release configuration. The EAS `apk` profile produces a shareable Android APK; iOS `preview` requires registered devices and Apple signing.
 
 ## Run locally
@@ -44,7 +46,8 @@ Check for existing services before choosing ports. Do not stop unrelated applica
 ## Folder boundaries
 
 ```text
-App.tsx                  Authenticated navigation and responsive app shell
+App.tsx                  Shared responsive app shell
+src/app/                 Expo Router routes and layout
 src/api/                 API client, generated schema/operation registry, domain types,
                          task validation and pending submission identities
 src/components/          Accessible shared controls, audio and submission recovery
@@ -66,7 +69,7 @@ Dockerfile, compose.yaml Web + existing backend containers
 - Single-task feedback with source/input labels, transcript disputes and retry linkage. No accent score or unsupported proficiency claim.
 - Teacher classrooms, roster removal, code rotation, attention/evidence/skill views, snooze/resolve, targeted follow-up and its evidence journal.
 - Courses, units and lessons; ordering, publish/unpublish, access settings, class assignment and progress. Structured task editor, human review gate for AI drafts, optional reviewed language skill, and teacher reference recordings.
-- Archive and guarded deletion. Archive restoration needs operator/API support because the backend does not list archived content. The legacy permanent-dismiss endpoint is intentionally superseded in the UI by snooze/resolve.
+- Archive and guarded deletion. Saved work lists archived resources and restores them through the archive API. The legacy permanent-dismiss endpoint is intentionally superseded in the UI by snooze/resolve.
 
 ## Reliability, privacy and accessibility
 
@@ -119,7 +122,7 @@ Regenerate Postman/OpenAPI from the repository root with `.venv313/bin/python to
 
 ## Release gates and bounded limitations
 
-- Set a deployed HTTPS API URL and complete signing setup for the linked EAS project. `eas.json` provides preview APK and release profiles; no signed APK/IPA or app-store upload is claimed. Use a development build for final verification, not only Expo Go.
+- Hosted HTTPS API configuration and Android signing are delivered. The signed APK passed bounded emulator smoke; see the [release report](../../docs/verification/android-share-release-2026-10-11.json). No native IPA or app-store upload is claimed. Broader signed-build acceptance remains separate.
 - Run real-device microphone/permission, accessibility, slow-network, long-session and user acceptance testing. Simulator/browser results do not establish speech or learning efficacy.
 - Publish reviewed teaching content and complete the user study in the product plan. The skill picker excludes acoustic/accent categories; the backend is not a phoneme-scoring model.
 - Teacher drafts and saved practice sessions are available. Full offline synchronization and interrupted native audio recovery remain outside this release.
@@ -128,9 +131,9 @@ Regenerate Postman/OpenAPI from the repository root with `.venv313/bin/python to
 
 ## User-value additions
 
-See [implementation status](../../docs/USER_VALUE_IMPLEMENTATION_STATUS.md) for shipped features, current test evidence, and remaining release gates. The current backend contract has 100 operations. Personal sessions, teacher drafts, transcript confirmation, optional public quiz downloads, and scripted conversations are incremental additions. Run the generation worker alongside the API; Compose includes it.
+See [implementation status](../../docs/USER_VALUE_IMPLEMENTATION_STATUS.md) for shipped features, current test evidence, and remaining release gates. The current backend contract has 100 operations. Personal sessions, teacher drafts, transcript confirmation, optional public quiz downloads, and scripted conversations are incremental additions. Local Compose includes a separate generation worker. Render uses the request-woken inline worker configured in `render.yaml`; both operate on persisted job state.
 
-Native Maestro flows live in `tests/native/`. Use only disposable emulator accounts, pass `TEST_EMAIL` and `TEST_PASSWORD` at execution, and keep runner output outside source control. Current flows target Expo Go through `exp://127.0.0.1:8091`; Android requires `adb reverse tcp:8091 tcp:8091` and a reachable API URL. These smoke flows do not replace signed-build, microphone, notification, or full accessibility acceptance.
+Native Maestro flows live in `tests/native/`. Use only disposable emulator accounts, pass `TEST_EMAIL` and `TEST_PASSWORD` at execution, and keep runner output outside source control. The original flows target Expo Go through `exp://127.0.0.1:8091`; Android requires `adb reverse tcp:8091 tcp:8091` and a reachable API URL. Those Expo Go flows do not replace signed-build, microphone, notification, or full accessibility acceptance. Separate signed-APK guest and hosted-learner smoke results are recorded in the release report.
 
 For repeatable Android ATD smoke checks, run `node scripts/seed-native.mjs /tmp/new-native-account.json` against the disposable API on port 8002. Start logged out, then run `guest.yaml`, `learner.yaml`, and `practice.yaml` in that order, supplying the synthetic credentials to the learner flow. These flows target the ATD image without a software keyboard. Use a normal emulator with appropriate keyboard handling for keyboard-occlusion acceptance. Maestro 2.11.0 was verified against its official release checksum and installed under `/Users/admin/.maestro`; Java 21 was already available. Native runner logs stay outside the repository because they may contain test input values.
 

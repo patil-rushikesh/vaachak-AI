@@ -1,6 +1,6 @@
 # Vaachak Classroom API
 
-FastAPI backend with SQLite storage and local audio files. The cross-platform Expo frontend is maintained separately in `../apps/vaachak`.
+FastAPI backend with local SQLite/audio files or PostgreSQL/private S3-compatible audio storage. The deployed service uses Render and Neon; `DATABASE_URL` selects PostgreSQL. The cross-platform Expo frontend is maintained separately in `../apps/vaachak`.
 
 Use Python 3.13 and install FFmpeg so `ffprobe` is available.
 
@@ -14,11 +14,11 @@ Run these commands from `classroom_web`. API docs: http://localhost:8000/api/doc
 
 On Windows, `start.bat` creates an environment and opens the API docs. It seeds demo data on first run. `start-fresh.bat` deletes local data after confirmation.
 
-Copy `vaachak.env.example` to `vaachak.env` and configure the desired AI provider. Without AI configuration, rule-based feedback remains available; clients must supply transcripts when server transcription is unavailable. Data defaults to `data/`; override with `VAACHAK_DATA`.
+Copy `vaachak.env.example` to `vaachak.env` and configure the desired AI provider. Without AI configuration, supported typed/deterministic practice remains available. Recorded-audio transcription returns an explicit unavailable error; clients can offer a separately labeled typed alternative rather than treating typed text as recognized speech. Data defaults to `data/`; override with `VAACHAK_DATA`.
 
 See [API contract](API_CONTRACT.md) for endpoints and authentication. Run tests with `python -m pytest tests -q`.
 
-For container deployment, logs, backup/restore and account recovery, see [the operator runbook](../deploy/backend/README.md). [Verification results](../docs/verification/backend-release-summary.json) distinguish local checks from external deployment gates.
+For container deployment, logs, backup/restore and account recovery, see [the operator runbook](../deploy/backend/README.md). [Current verification](../docs/VERIFICATION.md) separates backend, hosted, native and historical results. [Implementation status](../docs/IMPLEMENTATION_STATUS.md) records delivered features and remaining work.
 
 ## Starter knowledge and upgrades
 

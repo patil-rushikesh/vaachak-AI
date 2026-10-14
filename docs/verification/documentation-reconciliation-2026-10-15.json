@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-15",
+  "baseline_commit": "10d27c6317fb32088fd8be80320dbf92a0598b99",
+  "scope": "Documentation reconciliation against implementation and dated evidence; no application code changes.",
+  "checks": {
+    "api_contract": "100 operations match freshly imported FastAPI schema and frontend registry",
+    "typecheck": "passed",
+    "lint": {
+      "errors": 0,
+      "existing_warnings": 11
+    },
+    "local_markdown_file_links": {
+      "checked": 130,
+      "missing": 0,
+      "scope": "Changed active guides; URLs/fragments and archived historical paths excluded"
+    },
+    "git_diff_check": "passed"
+  },
+  "not_rerun": [
+    "backend regression suite",
+    "browser journeys",
+    "native emulator/physical-device journeys",
+    "live deployment/provider checks"
+  ],
+  "historical_records": "Original Flutter/Dart/Supabase architecture, status, verification, operations and preparation retained as docs/LEGACY_*.md."
+}

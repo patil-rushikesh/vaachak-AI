@@ -1,5 +1,7 @@
 # VaachakAI M.Tech final year project and deployment plan
 
+> Status reconciliation — 15 October 2026: this is the original planning document, not a current feature inventory. Read [implementation status](IMPLEMENTATION_STATUS.md), [architecture](ARCHITECTURE.md) and [dated verification](VERIFICATION.md) first. Hosted Render/Neon/Vercel deployment and a signed Android APK are delivered. G1/G2 feedback and teaching knowledge are integrated; remaining roadmap acceptance and human evaluation are separate. Historical statements below such as “not implemented” describe the planning baseline.
+
 > Follow-on execution plan: [User value, retention and continuous learning](USER_VALUE_IMPLEMENTATION_PLAN.md) maps the implemented app to the next milestones. Existing verification reports remain the source of completed-work claims.
 
 

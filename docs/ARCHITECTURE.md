@@ -1,18 +1,58 @@
-> Historical reference: the web and Android frontends and their build tooling have been removed. See the root README for current setup.
+# Current application architecture
 
-# Implementation decisions
+Source reviewed 15 October 2026 at baseline `10d27c6`. Scope: the deployed Expo/FastAPI application. The [earlier Dart/Supabase design](LEGACY_ARCHITECTURE.md) is a separate retained implementation.
 
-1. **Pure deterministic engine.** `vaachak_engine/lib` uses only `dart:math` and `dart:convert`. Time is passed to algorithms. BKT graded evidence mixes the two Bayesian posteriors before applying transition. Sorting by HLC and event ID makes replay independent of arrival order. Duplicate identities must have the same canonical payload. Erasure dominates all observations.
-2. **Device sequences are transactional.** Drift assigns the sequence, advances the HLC, inserts the event and invalidates the snapshot in one transaction. Imports are all-or-nothing, roster-restricted and idempotent. Incoming remote clocks more than a day ahead are rejected. Teacher events require an explicitly trusted import path; no ordinary import gets that permission.
-3. **SQLCipher encryption.** Drift 2.35 and sqlite3 3.6 use the `sqlcipher` build hook with SQLCipher Community binaries, checked by `PRAGMA cipher_version` outside assertions. Connections use v4 compatibility, `cipher_memory_security=ON`, WAL and full synchronous writes. Random 256-bit secrets are stored via Flutter Secure Storage. A preserved SQLite3MultipleCiphers v4-format fixture verifies compatibility with the earlier baseline; wrong-key reopen and plaintext absence are tested. A missing key/device identity on an existing database fails closed without generating a replacement. See [SQLCipher API](https://www.zetetic.net/sqlcipher/sqlcipher-api/).
-4. **Fail closed on teaching-content review.** Draft starter items and grammar patterns are available only with the explicit development flag. Installed content must be signed, complete under the coverage validator, and retain the original graph IDs. Reviewer sign-off remains a human workflow. The signer never approves content on its own.
-5. **Model execution remains optional.** Grammar displays deterministic templates immediately. The Gemma adapter accepts only a verified local model path from its caller; it must never be wired directly to unverified user-picked files. Generated practice must match the rule's reviewed examples. The validation checks are conservative heuristics, not a proof of semantic safety. Youngest-band model inference is disabled.
-6. **No fabricated speech evidence.** sherpa token timing is not treated as calibrated word timing. The adapter returns unknown confidence and no word timing until a model-specific converter is available. Alignment can classify real supplied word gaps, but the current ASR adapter cannot support hesitation claims. Unknown-confidence substitutions ask for confirmation. Phone latency and memory remain unmeasured.
-7. **Signed, immutable packs.** Canonical sorted JSON excluding `signature` is Ed25519-signed. Every file path, size and SHA-256 digest is covered. Files stream to a staging directory; a pointer changes only after all hashes pass. Reinstalling a retained verified version activates it for rollback. The signing private key never ships in the app.
-8. **Separate event identity registry.** PostgreSQL partitioned indexes cannot enforce an ID-only global primary key without the partition key. `event_ids` therefore owns global ID and device-sequence uniqueness; `events` is partitioned by server receipt month. Client time cannot select arbitrary server partitions.
-9. **Roster-based authorization.** Teachers receive active assigned classes; devices receive only their bound learners. Mutation is through functions with fixed empty search paths and fully qualified names. Consent authority is in backend consent records, not blindly inferred from client `ConsentGranted` events. Core revocation invokes erasure; other purpose revocations update authoritative consent state.
-10. **Schema environments.** All environments have independent tables/functions in `dev`, `qa`, and `prod`, selected with PostgREST profiles. Production should also use a separate Supabase project for operational and identity isolation. A shared project alone does not isolate auth administration or service credentials.
-11. **Replay-first server correctness.** The server currently refolds the affected learner history after ingestion. This handles out-of-order batches correctly but is O(history) and has not met the 500 ms / million-learner SLO. Safe compaction, checkpoints and incremental replay must precede scale claims.
+```mermaid
+flowchart LR
+  Web[Expo web on Vercel] --> API[FastAPI on Render]
+  Mobile[Expo Android / iOS client] --> API
+  API --> DB[(Neon PostgreSQL)]
+  API --> Audio[Private S3-compatible audio storage]
+  API --> Groq[Groq transcription and coaching]
+  API --> Jobs[Request-woken inline job runner]
+  Jobs --> DB
+  Jobs --> Groq
+```
 
-12. **Riverpod owns offline session state.** The device-store and roster providers feed a notifier that owns the active session. A generation counter cancels stale unlocks. Progress changes notify the dashboard; locking closes the session immediately and removes learner routes. Practice command IDs are checked transactionally before appending, so save retries cannot create duplicate BKT observations.
-13. **Evidence-based presentation.** The pure Dart progress projection excludes unseen nodes from weaknesses and keeps unassessed skills scoreless. Age-specific layouts use responsive widths and scalable text, with localized UI reasons. Attempt counts are labelled evidence, not statistical confidence.
+The iOS client has simulator development coverage; current free iPhone distribution uses the web client. Local development substitutes SQLite and local audio files; Compose can run a separate generation worker. The Render configuration uses one API instance/worker and an inline job runner (`render.yaml`).
+
+## Frontend boundaries
+
+`apps/vaachak/src/app` contains Expo Router routes. Feature screens live in `src/features`, shared controls/audio in `src/components`, and typed API access and submission identities in `src/api`. `src/providers/Auth.tsx` owns authentication: native tokens use SecureStore; web tokens remain in tab memory. Account changes clear query caches and downloads.
+
+Public quiz downloads use AsyncStorage and contain no private classroom material. Pending submission identities survive restart, but unsent answers/audio do not form a durable offline queue. Personal practice sessions are stored on the server and can resume through their API; temporary unsaved editor/recording state has narrower guarantees.
+
+## Backend boundaries
+
+| Module | Responsibility |
+| --- | --- |
+| `main.py`, `courses.py` | Authentication/authorization, classrooms, assignments, courses, attempt submission, audio access and knowledge routes |
+| `db.py`, `postgres.py`, `migrations.py`, `postgres_schema.sql` | SQLite/PostgreSQL selection, database compatibility and schema lifecycle |
+| `audio_store.py` | Local or private S3-compatible storage, temporary local materialization for processing, authorized/range responses |
+| `feedback.py`, `ai.py` | Deterministic evaluation, Groq transcription/coaching, bounded provider fallback and result validation |
+| `knowledge.py`, `knowledge_seed.py` | Versioned teaching units, explicit review/publication, skill/keyword retrieval and idempotent starter installation |
+| `evidence.py`, `insights.py`, `operations.py` | Attempt identity/provenance, scored evidence, review recommendations, teacher follow-up and account operations |
+| `growth.py` | Preferences, sessions, drafts, transcription preview, feedback reports, public downloads and scripted conversations |
+| `generation_jobs.py`, `inline_worker.py` | Durable job state, leases, bounded retry/recovery and request-woken processing |
+| `observability.py` | Sanitized error envelopes, request correlation and structured HTTP logs |
+
+All module paths above are relative to `classroom_web/server/`.
+
+## Attempt and AI data flow
+
+1. The learner retrieves an authorized, versioned task. The client sends a logical submission UUID and task version for retry reconciliation.
+2. Text/choice answers use the corresponding grading path. Audio is uploaded to the server, validated, and sent to Groq for transcription. The optional preview flow preserves original ASR separately from learner corrections.
+3. Reading evaluation compares text; it is not acoustic pronunciation scoring. Deterministic grading is used where appropriate. Coaching can receive up to three relevant published teaching units selected by skill/domain and keyword overlap.
+4. Provider output is validated; citations must refer to supplied teaching units. This constrains provenance, not the semantic truth of every model statement. Uncertain results are marked unscored and excluded from scored progress.
+5. The database preserves the task snapshot, result, input/transcript basis, model/rubric information, retry relation and citation versions. Authorized history/audio endpoints expose the learner's evidence.
+6. Review and teacher attention derive from eligible skill-specific evidence and delayed success. The deployed algorithm is not the separate Dart BKT engine.
+
+`ai.py` uses Groq-hosted Whisper models for ASR and a configured/fallback chat-model list. Model availability and response provenance determine the actual model used; do not describe a single model as guaranteed for every attempt. Teacher AI drafts enter a review workflow, not automatic publication.
+
+## Access, privacy and operations
+
+Roles and resource ownership are enforced by FastAPI handlers/shared checks. Neon persistence does not automatically enable the separate Supabase row-level-security policies. Audio can persist remotely; this release does not promise that voice stays on the phone. Account export/erasure and configurable retention tools are implemented; an external cleanup/backup schedule still requires operations setup.
+
+Responses carry request IDs; errors use a safe `detail` and structured `error` object. CORS is configured for permitted web origins. Logs omit credentials, answer bodies and raw audio. SMTP recovery is optional; its last recorded hosted configuration was unavailable.
+
+The supported Render topology is one instance/worker. Inline AI jobs are persistent and leased but may be delayed by sleeping/restarting free infrastructure. See [deployment and recovery](../deploy/backend/README.md) for exact configuration and limits.

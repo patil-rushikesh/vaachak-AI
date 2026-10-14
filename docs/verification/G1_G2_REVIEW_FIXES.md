@@ -1,3 +1,5 @@
+> Documentation reconciliation, 15 October 2026: Later release evidence supersedes the then-pending hosting/signing/push statements below: see [current verification](../VERIFICATION.md) and [Android release](android-share-release-2026-10-11.json). This document retains its original run counts and observations.
+
 # G1 and G2 review fixes
 
 Date: 11 October 2026. Scope: the current G1/G2 feedback and teaching-knowledge release, including the seven findings from review at commit `1b34394`.

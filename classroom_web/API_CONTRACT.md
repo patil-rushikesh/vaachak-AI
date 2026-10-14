@@ -1,51 +1,29 @@
-# Vaachak Classroom — API contract
+# Vaachak Classroom API guide
 
-For building a new frontend (React Native) against the existing `classroom_web` backend.
+Reconciled 15 October 2026 against source baseline `10d27c6`. The existing Expo frontend is in `apps/vaachak`. The service exposes **100 HTTP operations**. Exact fields, response models and routes are authoritative in [OpenAPI](../postman/openapi.json), generated from FastAPI; this guide includes illustrative examples that do not enumerate every additive field.
 
-The examples below originated from the 51-operation baseline. The enhanced backend has 71 operations and additional response fields; use `postman/openapi.json` and the milestone update below as the current contract.
+## 0. Runtime and connectivity
 
----
+The deployed application uses FastAPI on Render, Neon PostgreSQL/private audio storage and Expo web on Vercel. Local installations can use SQLite/local audio. `DATABASE_URL` selects PostgreSQL; storage configuration selects the audio adapter. See [current architecture](../docs/ARCHITECTURE.md).
 
-## 0. Read this first: is the app offline-first?
+| Capability | Connectivity requirement |
+| --- | --- |
+| Accounts, courses, classrooms, saved progress and final submissions | Client must reach the API; deployed use requires internet |
+| Deterministic grading | Runs on the server without a provider call; local API can work without internet |
+| Speech transcription, AI coaching and AI drafting | Backend must reach configured Groq service |
+| Downloaded public quizzes | Previously downloaded text activities work locally for seven days; no AI, microphone, private classroom content or synced grades |
 
-**No. It is online, client–server.** This is the single most important thing to know before
-starting, so here it is plainly:
+CORS middleware is implemented and configured for allowed web origins. Native clients use the same bearer-authenticated API. Physical development devices need a reachable API address; use the [app setup](../apps/vaachak/README.md), not the phone's own localhost. Release builds require a configured HTTPS origin.
 
-- The backend is a FastAPI server holding a SQLite database. **Every screen is a network call.**
-- No frontend is included. Clients must reach this API over the network.
-- The server runs on *your* machine, so it does not need the **internet** — but the client always
-  needs the **server**.
+Provider failure does not silently become recognized speech. Audio transcription can return explicit 502/503 responses; typed alternatives are labeled separately. Coaching may fall back to deterministic feedback where supported, while uncertain attempts can remain unscored. The client should preserve error/retry context and never fabricate completion.
 
-What needs the internet, specifically:
-
-| Thing | Needs internet? |
-|---|---|
-| Logging in, classes, courses, progress, quizzes | No — just the local server |
-| Speech-to-text and AI feedback (Groq) | **Yes** |
-| Grading quizzes, rule-based grammar, scoring | No |
-
-If the AI key is missing or Groq is unreachable, the server quietly falls back to a rule engine and
-a transcript supplied by the client. Nothing errors; feedback just gets shallower.
-
-### What this means for a React Native app
-
-1. **The phone must reach the server over the network.** By default the server binds to
-   `127.0.0.1`, which a phone cannot reach. Start it with `python run.py --host 0.0.0.0` and point
-   the app at `http://<laptop-LAN-IP>:8000`. On Android, plain HTTP to a LAN IP needs a
-   `usesCleartextTraffic` / network-security-config exception; on iOS it needs an ATS exception.
-2. **There is no CORS middleware.** React Native native builds do not enforce CORS, so this is fine
-   — but an Expo *web* build will be blocked. If you need web, add `CORSMiddleware` server-side.
-3. **If you want the app to work offline, that is new backend work**, not a frontend concern. You
-   would need a local store on the device, an attempt outbox, and a sync endpoint. None of that
-   exists today. Worth deciding before the rebuild starts.
-
-The reusable Dart libraries and Supabase infrastructure are separate from this API.
+The retained Dart/Supabase engine, encrypted event store, on-device models and synchronization components are separate from this API and Expo release.
 
 ---
 
 ## 1. Basics
 
-**Base URL** `http://<host>:8000`, all endpoints under `/api`.
+**Base URL** `https://vaachak-api.onrender.com` for the deployed service, or `http://<host>:8000` locally; all endpoints under `/api`.
 
 **Auth** Bearer token.
 
@@ -61,44 +39,26 @@ to the sign-in screen.
 decides which endpoints are allowed. `student` and `learner` differ only in that a student is
 expected to join a class; both answer tasks the same way.
 
-**Content types** JSON everywhere, with two exceptions that are `multipart/form-data`:
-`POST /api/attempts` and `POST /api/recordings`.
+**Content types** JSON for ordinary operations; multipart for attempts, teacher recordings and transcription preview. Use the OpenAPI request body for each route; audio responses are binary.
 
 ### Errors
 
-| Status | Meaning | `detail` type |
-|---|---|---|
-| 401 | Not signed in, or the session expired | string |
-| 403 | Signed in, wrong role, or a locked lesson | string |
-| 404 | Not found — **also returned instead of 403 to avoid revealing that another teacher's class exists** | string |
-| 409 | Email already registered | string |
-| 413 / 415 | Audio too large / unsupported type | string |
-| 422 | Validation failed | **string _or_ array** |
-| 429 | Too many failed logins (10 per 10 minutes) | string |
-| 502 / 503 | AI unavailable or not configured | string |
-
-**`detail` is not always a string.** Hand-written errors give a string; FastAPI's own body
-validation gives an array. Handle both:
+Errors include a safe string `detail`, structured `error: {code, message, request_id}`, and optional sanitized validation `fields`. Responses carry `X-Request-ID`. Do not assume raw FastAPI validation arrays or echo submitted credentials/answers into logs.
 
 ```json
-{ "detail": "Email or password is not right." }
-```
-```json
-{ "detail": [ { "type": "string_too_short",
-                "loc": ["body", "name"],
-                "msg": "String should have at least 1 character",
-                "input": "" } ] }
-```
-
-```ts
-function errorMessage(detail: unknown): string {
-  if (typeof detail === 'string') return detail;
-  if (Array.isArray(detail)) {
-    return detail.map(d => `${d.loc?.slice(-1)[0] ?? ''}: ${d.msg}`).join('; ');
+{
+  "detail": "Email or password is not right.",
+  "error": {
+    "code": "authentication_required",
+    "message": "Email or password is not right.",
+    "request_id": "example-request-id"
   }
-  return 'Something went wrong.';
 }
 ```
+
+The request ID above is illustrative. Handle 401 (sign-in), 403 (access denied), 404 (missing or inaccessible resource), 409 (identity/version/lifecycle conflict), 413/415 (media), 422 (validation), 429 (quota), and 502/503 (provider/configuration/service availability). Use returned error codes rather than inferring the cause from status alone. Validation field messages are sanitized and omit raw input.
+
+For ambiguous submissions, query the existing submission UUID before retrying. Reuse it only for the same logical input; an intentional new answer gets a new UUID. Version conflicts require refreshing content, not blind retries.
 
 ### Timestamps
 
@@ -121,7 +81,7 @@ The one exception is `stats.days[].day`, which is a calendar day (`"2026-10-11"`
 { "name": "Rohit More", "email": "rohit@school.test",
   "password": "at-least-8-chars", "role": "student" }
 ```
-→ `200` — same shape as login. `409` if the email exists.
+→ `200` — same shape as login. `409` if the email exists. Production instructor registration also requires the configured private `teacher_invite`; student/learner signup does not grant teacher access.
 
 ### `POST /api/auth/login`
 ```json
@@ -141,8 +101,7 @@ The one exception is `stats.days[].day`, which is a calendar day (`"2026-10-11"`
 ```json
 { "ok": true, "server_speech_to_text": true, "demo": true, "ai": true }
 ```
-Call this on launch. **`ai` decides the whole speaking flow** (see §6): `true` means the server
-transcribes, `false` means the client must supply the text itself.
+Use `server_speech_to_text` and `ai` as configuration/capability hints, not guarantees that the next provider request will succeed. `/api/ready` checks storage/schema/media readiness; health does not perform a live model call. Handle transcription/coaching errors on each request.
 
 ---
 
@@ -263,31 +222,21 @@ so a learner can never read the answer out of the response.
 | Field | When | Notes |
 |---|---|---|
 | `item_index` | always | 0-based |
-| exactly one of `assignment_id` / `lesson_id` / `set_id` | always | where the task came from |
+| exactly one of `assignment_id` / `lesson_id` / `set_id` / `practice_session_id` | always | where the task came from |
 | `choice` | tapped tasks | the chosen option index |
 | `transcript` | spoken tasks | what the learner said, as text |
-| `audio` | spoken tasks | the recording, optional but recommended |
+| `audio` | direct audio submission | recording for server transcription; do not combine with `transcription_id` |
+| `transcription_id` | preview/confirmation flow | owned, completed, unexpired transcription; send confirmed/corrected text |
+| `client_uuid`, `item_version` | reliable submissions | logical request identity and returned task version |
+| `retry_of_attempt_id` | intentional retry | own prior attempt of the same task/content version |
 
-**Which to send for a spoken task depends on `health.ai`:**
+**Supported input paths:**
 
-- **`ai: true`** — send `audio` with an **empty** `transcript`. The server transcribes with Whisper
-  and grades that. This is the good path: better with Indian accents, and no dependence on
-  on-device speech.
-- **`ai: false`** — the server cannot transcribe. Send a `transcript` you produced yourself
-  (device speech-to-text, or let the user type). Sending neither returns `422`.
+- Direct recording: send audio with an empty transcript. The server performs ASR; missing configuration returns 503, and unusable provider output returns 502. Neither failure creates a successful grade.
+- Preview/confirmation: upload through `POST /api/transcriptions`, show the recognized text, then submit `transcription_id` plus confirmed/corrected text. The result distinguishes `server_asr_confirmed` from `learner_corrected_asr`.
+- Typed alternative: send transcript text without audio. It is recorded as client text, not proof of speech recognition or pronunciation. Audio accompanied by arbitrary client text also retains client-text provenance.
 
-```ts
-const form = new FormData();
-form.append('lesson_id', String(lessonId));
-form.append('item_index', String(index));
-form.append('transcript', serverListens ? '' : typedText);
-if (recordingUri) {
-  form.append('audio', { uri: recordingUri, name: 'attempt.m4a', type: 'audio/mp4' } as any);
-}
-// Do NOT set Content-Type; let fetch set the multipart boundary.
-await fetch(`${BASE}/api/attempts`, { method: 'POST', body: form,
-  headers: { Authorization: `Bearer ${token}` } });
-```
+The existing SDK 57 client uses [the native binary-upload helper](../apps/vaachak/src/features/nativeRecordingUpload.ts), [native recording](../apps/vaachak/src/features/useRecorder.ts), [web recording](../apps/vaachak/src/features/useRecorder.web.ts) and [the task player](../apps/vaachak/src/features/Player.tsx). The old `{uri, name, type}` multipart-object example is removed because it failed with the current Expo upload path. Let the runtime set multipart boundaries and send bearer authorization through the API client.
 
 Accepted audio: `audio/webm`, `audio/ogg`, `audio/mp4`, `audio/mpeg`, `audio/wav`, `audio/aac`.
 Max **8 MB** per attempt. React Native records `.m4a` (`audio/mp4`) on both platforms — that works.
@@ -352,8 +301,7 @@ Field notes:
 - `words[].status` is `correct` | `close` | `wrong` | `missed`. Render as a word-by-word mark-up.
   `heard` is `null` for `missed`.
 - `source` is `"ai"` or `"rules"` — tells you whether a model or the regex fallback produced this.
-- `verdict`, `strengths`, `next_line` are **only present when `source === "ai"`**. Treat them as
-  optional.
+- `verdict`, `strengths`, `next_line` are optional. Neutral unscored responses may also carry these fields; use `evaluation_status` and `basis` to decide how to display them.
 - `grammar[].start` / `end` are character offsets, and are `0` for AI-produced corrections — do not
   rely on them for highlighting; match on `said` instead.
 - For `read`, `score` is word accuracy. If almost nothing matched, the server returns
@@ -655,12 +603,12 @@ previously auto-approved teacher notes back to draft and removes orphaned privat
 
 **This is a draft, not content.** The product rule, which the frontend must preserve: a teacher
 reviews every item before it is saved. The web client marks each as an unchecked draft and refuses
-to save the lesson until each is kept or deleted. Rebuild that gate — do not auto-save generated
+to save the lesson until each is kept or deleted. The existing composer implements that gate; do not auto-save generated
 questions.
 
 ---
 
-## 12. Suggested build order
+## 12. Integration map for the existing frontend
 
 1. `GET /api/health` → login → `GET /api/me`. Store the token in secure storage, not AsyncStorage.
 2. Learner home: `/api/me/stats` + `/api/me/review` + `/api/courses`.
@@ -677,10 +625,10 @@ questions.
 - `detail` is a safe string; structured `error` and sanitized validation `fields` carry additional information.
 - Learner payloads have answers stripped — never assume `correct` exists.
 - `best` map keys are strings, not numbers.
-- `verdict` / `strengths` / `next_line` only exist when `source === "ai"`.
+- `verdict` / `strengths` / `next_line` are optional; unscored results can also include neutral messages.
 - `404` sometimes means "not yours", not "does not exist" — don't show "deleted" to the user.
 - The server binds to `127.0.0.1` by default; a phone needs `--host 0.0.0.0`.
-- There is no offline support. See §0.
+- Offline public quizzes are limited self-practice; server submissions and private data still need connectivity. See §0.
 
 ### Generating a typed client
 
@@ -701,4 +649,4 @@ All errors now include `{detail, error: {code, message, request_id}}`; validatio
 also include sanitized `fields`. Responses carry `X-Request-ID`. Audio requires an
 Authorization bearer header; query-string tokens are no longer accepted. Media must
 be valid decodable audio. DELETE on content with learner attempts returns 409; use
-its archive operation instead. The new behavior supersedes older examples above.
+its archive operation instead. Examples above are illustrative; use the current schema for exact response fields.

@@ -1,5 +1,7 @@
 # Vaachak generative AI implementation plan
 
+> Status reconciliation — 15 October 2026: this is the original planning document, not a current feature inventory. Read [implementation status](IMPLEMENTATION_STATUS.md), [architecture](ARCHITECTURE.md) and [dated verification](VERIFICATION.md) first. Hosted Render/Neon/Vercel deployment and a signed Android APK are delivered. G1/G2 feedback and teaching knowledge are integrated; remaining roadmap acceptance and human evaluation are separate. Historical statements below such as “not implemented” describe the planning baseline.
+
 Date: 11 October 2026. Status: proposed implementation and acceptance plan. No feature described as proposed below is complete merely because it appears here.
 
 Vaachak should help an English learner turn a real difficulty into an understandable correction, a useful practice task, and successful use in a new situation. Extend the existing FastAPI and Expo application incrementally. Preserve authentication, classes, courses, six exercise types, recorded attempts, teacher approval, and the current working learner journeys.
